@@ -16,7 +16,7 @@ class CameraViewController: UIViewController {
     }
     
     @IBAction private func cameraButtonPressed(_ button: UIButton) {
-        print("Capture")
+        viewModel.capture()
     }
     
     var viewModel: CameraVM!

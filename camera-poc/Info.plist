@@ -26,6 +26,8 @@
 	<string>This app uses the camera to take your photos</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string></string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Use microphone for video</string>
 	<key>UIRequiredDeviceCapabilities</key>

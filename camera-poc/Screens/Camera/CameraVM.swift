@@ -7,13 +7,16 @@
 
 import Foundation
 import AVKit
+import Photos
 
-class CameraVM {
+class CameraVM: NSObject {
     private let router: CameraRouting
+    private let photoOutput = AVCapturePhotoOutput()
     let captureSession: AVCaptureSession = AVCaptureSession()
     
     init(router: CameraRouting) {
         self.router = router
+        super.init()
     }
     
     func requestCameraAccess() {
@@ -50,12 +53,33 @@ class CameraVM {
             assertionFailure("Can't add video input")
         }
         
-        let photoOutput = AVCapturePhotoOutput()
         if captureSession.canAddOutput(photoOutput) {
             captureSession.sessionPreset = .photo
             captureSession.addOutput(photoOutput)
         }
         captureSession.commitConfiguration()
         captureSession.startRunning()
+    }
+    
+    func capture() {
+        let settings = AVCapturePhotoSettings()
+        settings.flashMode = .off
+        photoOutput.capturePhoto(with: settings, delegate: self)
+    }
+}
+
+extension CameraVM: AVCapturePhotoCaptureDelegate {
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+        PHPhotoLibrary.requestAuthorization { status in
+            guard status == .authorized else { return }
+            
+            PHPhotoLibrary.shared().performChanges {
+                let creationRequest = PHAssetCreationRequest.forAsset()
+                creationRequest.addResource(with: .photo, data: photo.fileDataRepresentation()!, options: nil)
+            } completionHandler: { isSaved, error in
+                guard let error = error else { return }
+                assertionFailure("Handle saving error: \(error.localizedDescription)")
+            }
+        }
     }
 }
