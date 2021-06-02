@@ -8,20 +8,36 @@
 
 /* Begin PBXBuildFile section */
 		6315857026675AB5006E60EA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6315856F26675AB5006E60EA /* AppDelegate.swift */; };
-		6315857426675AB5006E60EA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6315857326675AB5006E60EA /* ViewController.swift */; };
-		6315857726675AB5006E60EA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6315857526675AB5006E60EA /* Main.storyboard */; };
 		6315857926675AB7006E60EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6315857826675AB7006E60EA /* Assets.xcassets */; };
 		6315857C26675AB7006E60EA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6315857A26675AB7006E60EA /* LaunchScreen.storyboard */; };
+		6315858726675C75006E60EA /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6315858626675C75006E60EA /* CameraViewController.swift */; };
+		6315858926675C8D006E60EA /* Camera.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6315858826675C8D006E60EA /* Camera.storyboard */; };
+		6315858C26675D01006E60EA /* ScreenBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6315858B26675D01006E60EA /* ScreenBuilder.swift */; };
+		6315858E26675D11006E60EA /* ScreenBuilder+Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6315858D26675D11006E60EA /* ScreenBuilder+Camera.swift */; };
+		6315859126675DA8006E60EA /* NibInstantiatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6315859026675DA8006E60EA /* NibInstantiatable.swift */; };
+		6315859326675DBA006E60EA /* Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6315859226675DBA006E60EA /* Identifiable.swift */; };
+		6315859526675DCA006E60EA /* StoryboardInstantiatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6315859426675DCA006E60EA /* StoryboardInstantiatable.swift */; };
+		631585972667604A006E60EA /* CameraVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 631585962667604A006E60EA /* CameraVM.swift */; };
+		6315859926676152006E60EA /* Bound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6315859826676152006E60EA /* Bound.swift */; };
+		6315859D266764D5006E60EA /* Storyboard+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6315859C266764D5006E60EA /* Storyboard+Name.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		6315856C26675AB5006E60EA /* camera-poc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "camera-poc.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6315856F26675AB5006E60EA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		6315857326675AB5006E60EA /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		6315857626675AB5006E60EA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		6315857826675AB7006E60EA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6315857B26675AB7006E60EA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6315857D26675AB7006E60EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6315858626675C75006E60EA /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = SOURCE_ROOT; };
+		6315858826675C8D006E60EA /* Camera.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Camera.storyboard; sourceTree = "<group>"; };
+		6315858B26675D01006E60EA /* ScreenBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenBuilder.swift; sourceTree = "<group>"; };
+		6315858D26675D11006E60EA /* ScreenBuilder+Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScreenBuilder+Camera.swift"; sourceTree = "<group>"; };
+		6315859026675DA8006E60EA /* NibInstantiatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NibInstantiatable.swift; sourceTree = "<group>"; };
+		6315859226675DBA006E60EA /* Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifiable.swift; sourceTree = "<group>"; };
+		6315859426675DCA006E60EA /* StoryboardInstantiatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryboardInstantiatable.swift; sourceTree = "<group>"; };
+		631585962667604A006E60EA /* CameraVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraVM.swift; sourceTree = "<group>"; };
+		6315859826676152006E60EA /* Bound.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bound.swift; sourceTree = "<group>"; };
+		6315859C266764D5006E60EA /* Storyboard+Name.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Storyboard+Name.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,14 +70,62 @@
 		6315856E26675AB5006E60EA /* camera-poc */ = {
 			isa = PBXGroup;
 			children = (
+				6315858426675C5B006E60EA /* Common Services */,
+				6315858326675C52006E60EA /* Screens */,
 				6315856F26675AB5006E60EA /* AppDelegate.swift */,
-				6315857326675AB5006E60EA /* ViewController.swift */,
-				6315857526675AB5006E60EA /* Main.storyboard */,
 				6315857826675AB7006E60EA /* Assets.xcassets */,
 				6315857A26675AB7006E60EA /* LaunchScreen.storyboard */,
 				6315857D26675AB7006E60EA /* Info.plist */,
 			);
 			path = "camera-poc";
+			sourceTree = "<group>";
+		};
+		6315858326675C52006E60EA /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				6315858526675C65006E60EA /* Camera */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		6315858426675C5B006E60EA /* Common Services */ = {
+			isa = PBXGroup;
+			children = (
+				6315858F26675D79006E60EA /* Extensions */,
+				6315858A26675CD5006E60EA /* Screen Builder */,
+				6315859826676152006E60EA /* Bound.swift */,
+			);
+			path = "Common Services";
+			sourceTree = "<group>";
+		};
+		6315858526675C65006E60EA /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				6315858826675C8D006E60EA /* Camera.storyboard */,
+				6315858626675C75006E60EA /* CameraViewController.swift */,
+				631585962667604A006E60EA /* CameraVM.swift */,
+			);
+			path = Camera;
+			sourceTree = "<group>";
+		};
+		6315858A26675CD5006E60EA /* Screen Builder */ = {
+			isa = PBXGroup;
+			children = (
+				6315858B26675D01006E60EA /* ScreenBuilder.swift */,
+				6315858D26675D11006E60EA /* ScreenBuilder+Camera.swift */,
+			);
+			path = "Screen Builder";
+			sourceTree = "<group>";
+		};
+		6315858F26675D79006E60EA /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				6315859026675DA8006E60EA /* NibInstantiatable.swift */,
+				6315859226675DBA006E60EA /* Identifiable.swift */,
+				6315859426675DCA006E60EA /* StoryboardInstantiatable.swift */,
+				6315859C266764D5006E60EA /* Storyboard+Name.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -122,8 +186,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				6315857C26675AB7006E60EA /* LaunchScreen.storyboard in Resources */,
+				6315858926675C8D006E60EA /* Camera.storyboard in Resources */,
 				6315857926675AB7006E60EA /* Assets.xcassets in Resources */,
-				6315857726675AB5006E60EA /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -134,22 +198,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6315857426675AB5006E60EA /* ViewController.swift in Sources */,
+				6315858C26675D01006E60EA /* ScreenBuilder.swift in Sources */,
+				6315859326675DBA006E60EA /* Identifiable.swift in Sources */,
+				6315859926676152006E60EA /* Bound.swift in Sources */,
 				6315857026675AB5006E60EA /* AppDelegate.swift in Sources */,
+				6315859526675DCA006E60EA /* StoryboardInstantiatable.swift in Sources */,
+				6315859D266764D5006E60EA /* Storyboard+Name.swift in Sources */,
+				6315859126675DA8006E60EA /* NibInstantiatable.swift in Sources */,
+				631585972667604A006E60EA /* CameraVM.swift in Sources */,
+				6315858726675C75006E60EA /* CameraViewController.swift in Sources */,
+				6315858E26675D11006E60EA /* ScreenBuilder+Camera.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		6315857526675AB5006E60EA /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				6315857626675AB5006E60EA /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		6315857A26675AB7006E60EA /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (

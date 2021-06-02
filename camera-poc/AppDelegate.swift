@@ -11,13 +11,13 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        showStartScreen()
         return true
     }
 
     private func showStartScreen() {
         let window = UIWindow()
-        window.rootViewController = UIViewController()
+        window.rootViewController = ScreenBuilder.camera()
         self.window = window
         window.makeKeyAndVisible()
     }
