@@ -8,7 +8,7 @@
 import UIKit
 
 class CameraViewController: UIViewController {
-    @IBOutlet private weak var containerView: UIView!
+    @IBOutlet private weak var containerView: CameraPreviewView!
     @IBOutlet private weak var captureButton: UIButton!
     
     @IBAction private func cancelButtonPressed(_ button: UIButton) {
@@ -21,7 +21,10 @@ class CameraViewController: UIViewController {
     
     var viewModel: CameraVM!
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        containerView.videoPreviewLayer.session = viewModel.captureSession
+        containerView.videoPreviewLayer.videoGravity = .resizeAspectFill
+        viewModel.requestCameraAccess()
     }
 }

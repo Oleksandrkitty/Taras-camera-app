@@ -10,7 +10,8 @@ import UIKit
 extension ScreenBuilder {
     static func camera() -> UIViewController {
         let controller = CameraViewController.instantiateFromStoryboard(.camera)
-        let viewModel = CameraVM()
+        let router = CameraRouter(controller: controller)
+        let viewModel = CameraVM(router: router)
         controller.viewModel = viewModel
         return controller
     }

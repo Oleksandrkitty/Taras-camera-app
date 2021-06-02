@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		630908542667F51E005CC22D /* CameraPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 630908532667F51E005CC22D /* CameraPreviewView.swift */; };
+		630908562667F85D005CC22D /* CameraRoueter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 630908552667F85D005CC22D /* CameraRoueter.swift */; };
 		6315857026675AB5006E60EA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6315856F26675AB5006E60EA /* AppDelegate.swift */; };
 		6315857926675AB7006E60EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6315857826675AB7006E60EA /* Assets.xcassets */; };
 		6315857C26675AB7006E60EA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6315857A26675AB7006E60EA /* LaunchScreen.storyboard */; };
@@ -23,6 +25,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		630908532667F51E005CC22D /* CameraPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreviewView.swift; sourceTree = "<group>"; };
+		630908552667F85D005CC22D /* CameraRoueter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraRoueter.swift; sourceTree = "<group>"; };
 		6315856C26675AB5006E60EA /* camera-poc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "camera-poc.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6315856F26675AB5006E60EA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6315857826675AB7006E60EA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -104,6 +108,8 @@
 				6315858826675C8D006E60EA /* Camera.storyboard */,
 				6315858626675C75006E60EA /* CameraViewController.swift */,
 				631585962667604A006E60EA /* CameraVM.swift */,
+				630908552667F85D005CC22D /* CameraRoueter.swift */,
+				630908532667F51E005CC22D /* CameraPreviewView.swift */,
 			);
 			path = Camera;
 			sourceTree = "<group>";
@@ -202,6 +208,8 @@
 				6315859326675DBA006E60EA /* Identifiable.swift in Sources */,
 				6315859926676152006E60EA /* Bound.swift in Sources */,
 				6315857026675AB5006E60EA /* AppDelegate.swift in Sources */,
+				630908542667F51E005CC22D /* CameraPreviewView.swift in Sources */,
+				630908562667F85D005CC22D /* CameraRoueter.swift in Sources */,
 				6315859526675DCA006E60EA /* StoryboardInstantiatable.swift in Sources */,
 				6315859D266764D5006E60EA /* Storyboard+Name.swift in Sources */,
 				6315859126675DA8006E60EA /* NibInstantiatable.swift in Sources */,
