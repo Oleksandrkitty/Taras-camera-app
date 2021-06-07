@@ -109,7 +109,7 @@ class CameraViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        containerView.videoPreviewLayer.session = viewModel.captureSession
+        containerView.videoPreviewLayer.session = viewModel.session
         containerView.videoPreviewLayer.videoGravity = .resizeAspectFill
         viewModel.requestCameraAccess()
     }
