@@ -26,6 +26,7 @@
 		632576C0266DFFA300B55E27 /* SliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632576BF266DFFA300B55E27 /* SliderView.swift */; };
 		632576C6266EAFCB00B55E27 /* CameraSDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632576C5266EAFCB00B55E27 /* CameraSDK.swift */; };
 		632576C8266EB14100B55E27 /* BrigtnessSeries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632576C7266EB14100B55E27 /* BrigtnessSeries.swift */; };
+		632576CA266EB4DA00B55E27 /* WhiteBalanceSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632576C9266EB4DA00B55E27 /* WhiteBalanceSliderView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 		632576BF266DFFA300B55E27 /* SliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderView.swift; sourceTree = "<group>"; };
 		632576C5266EAFCB00B55E27 /* CameraSDK.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraSDK.swift; sourceTree = "<group>"; };
 		632576C7266EB14100B55E27 /* BrigtnessSeries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrigtnessSeries.swift; sourceTree = "<group>"; };
+		632576C9266EB4DA00B55E27 /* WhiteBalanceSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhiteBalanceSliderView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,6 +152,7 @@
 			children = (
 				632576BD266DFF6800B55E27 /* USVPickerView.swift */,
 				632576BF266DFFA300B55E27 /* SliderView.swift */,
+				632576C9266EB4DA00B55E27 /* WhiteBalanceSliderView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -226,6 +229,7 @@
 			files = (
 				6315858C26675D01006E60EA /* ScreenBuilder.swift in Sources */,
 				6315859326675DBA006E60EA /* Identifiable.swift in Sources */,
+				632576CA266EB4DA00B55E27 /* WhiteBalanceSliderView.swift in Sources */,
 				6315859926676152006E60EA /* Bound.swift in Sources */,
 				6315857026675AB5006E60EA /* AppDelegate.swift in Sources */,
 				630908542667F51E005CC22D /* CameraPreviewView.swift in Sources */,

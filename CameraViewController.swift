@@ -57,6 +57,13 @@ class CameraViewController: UIViewController {
         return slider
     }()
     
+    private lazy var wbSlider: WhiteBalanceSliderView = {
+        let slider = WhiteBalanceSliderView(frame: .zero)
+        slider.translatesAutoresizingMaskIntoConstraints = false
+        slider.delegate = self
+        return slider
+    }()
+    
     var viewModel: CameraVM! {
         didSet {
             viewModel.isFlashEnabled.bind { [unowned self] isEnabled in
@@ -73,9 +80,15 @@ class CameraViewController: UIViewController {
             }
             viewModel.isSliderEnabled.bind { [unowned self] isEnabled in
                 self.slider.isHidden = !isEnabled
+                self.pickerViewHeightConstraint.constant = isEnabled ? 50.0 : 0
             }
             viewModel.isUSVPickerEnabled.bind { [unowned self] isEnabled in
                 self.usvPicker.isHidden = !isEnabled
+                self.pickerViewHeightConstraint.constant = isEnabled ? 50.0 : 0
+            }
+            viewModel.isWhiteBalanceSliderEnabled.bind { [unowned self] isEnabled in
+                self.wbSlider.isHidden = !isEnabled
+                self.pickerViewHeightConstraint.constant = isEnabled ? 100.0 : 0
             }
             viewModel.sliderMinValue.bind { [unowned self] value in
                 self.slider.set(minValue: value)
@@ -85,6 +98,26 @@ class CameraViewController: UIViewController {
             }
             viewModel.sliderCurrentValue.bind { [unowned self] value in
                 self.slider.set(value: value)
+            }
+            
+            viewModel.tintMinValue.bind { [unowned self] value in
+                self.wbSlider.set(minTint: value)
+            }
+            viewModel.tintMaxValue.bind { [unowned self] value in
+                self.wbSlider.set(maxTint: value)
+            }
+            viewModel.tintValue.bind { [unowned self] value in
+                self.wbSlider.set(tint: value)
+            }
+            
+            viewModel.temperatureMinValue.bind { [unowned self] value in
+                self.wbSlider.set(minTemperature: value)
+            }
+            viewModel.temperatureMaxValue.bind { [unowned self] value in
+                self.wbSlider.set(maxTemperature: value)
+            }
+            viewModel.temperatureValue.bind { [unowned self] value in
+                self.wbSlider.set(temperature: value)
             }
         }
     }
@@ -103,8 +136,16 @@ class CameraViewController: UIViewController {
         slider.topAnchor.constraint(equalTo: pickerView.topAnchor, constant: 0).isActive = true
         slider.bottomAnchor.constraint(equalTo: pickerView.bottomAnchor, constant: 0).isActive = true
         
+        pickerView.addSubview(wbSlider)
+        wbSlider.leftAnchor.constraint(equalTo: pickerView.leftAnchor, constant: 0).isActive = true
+        wbSlider.rightAnchor.constraint(equalTo: pickerView.rightAnchor, constant: 0).isActive = true
+        wbSlider.topAnchor.constraint(equalTo: pickerView.topAnchor, constant: 0).isActive = true
+        wbSlider.bottomAnchor.constraint(equalTo: pickerView.bottomAnchor, constant: 0).isActive = true
+        
         usvPicker.isHidden = true
         slider.isHidden = true
+        wbSlider.isHidden = true
+        self.pickerViewHeightConstraint.constant = 0
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -132,5 +173,15 @@ extension CameraViewController: USVPickerViewDelegate {
 extension CameraViewController: SliderViewDelegate {
     func sliderDidChangedValue(_ value: Float) {
         viewModel.change(value: value)
+    }
+}
+
+extension CameraViewController: WhiteBalanceSliderViewDelegate {
+    func tintValueDidChanged(_ value: Float) {
+        viewModel.change(tint: value)
+    }
+    
+    func temperatureValueDidChanged(_ value: Float) {
+        viewModel.change(temperature: value)
     }
 }

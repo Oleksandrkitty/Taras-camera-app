@@ -19,11 +19,20 @@ class CameraVM: NSObject {
     private(set) var isFlashEnabled: Bound<Bool> = Bound(false)
     private(set) var isUSVPickerEnabled: Bound<Bool> = Bound(false)
     private(set) var isSliderEnabled: Bound<Bool> = Bound(false)
+    private(set) var isWhiteBalanceSliderEnabled: Bound<Bool> = Bound(false)
     
     private(set) var flashBrightness: Bound<CGFloat> = Bound(0.0)
     private(set) var sliderMinValue: Bound<Float> = Bound(0.0)
     private(set) var sliderMaxValue: Bound<Float> = Bound(0.0)
     private(set) var sliderCurrentValue: Bound<Float> = Bound(0.0)
+    
+    private(set) var tintMinValue: Bound<Float> = Bound(0.0)
+    private(set) var tintMaxValue: Bound<Float> = Bound(0.0)
+    private(set) var tintValue: Bound<Float> = Bound(0.0)
+    
+    private(set) var temperatureMinValue: Bound<Float> = Bound(0.0)
+    private(set) var temperatureMaxValue: Bound<Float> = Bound(0.0)
+    private(set) var temperatureValue: Bound<Float> = Bound(0.0)
     
     private(set) var seriesString: Bound<String> = Bound("")
     private var series: BrigtnessSeries = Medium {
@@ -69,8 +78,9 @@ class CameraVM: NSObject {
             return
         }
         sdk.setupISO()
-        isSliderEnabled.value = true
         isUSVPickerEnabled.value = false
+        isWhiteBalanceSliderEnabled.value = false
+        isSliderEnabled.value = true
         currentSetting = .iso
         sliderMinValue.value = sdk.minISO
         sliderMaxValue.value = sdk.maxISO
@@ -82,8 +92,9 @@ class CameraVM: NSObject {
             return
         }
         sdk.setupExposure()
-        isSliderEnabled.value = true
         isUSVPickerEnabled.value = false
+        isWhiteBalanceSliderEnabled.value = false
+        isSliderEnabled.value = true
         currentSetting = .exposure
         sliderMinValue.value = sdk.minExposureTargetBias
         sliderMaxValue.value = sdk.maxExposureTargetBias
@@ -95,8 +106,9 @@ class CameraVM: NSObject {
             return
         }
         sdk.setupShutterSpeed()
-        isSliderEnabled.value = true
         isUSVPickerEnabled.value = false
+        isWhiteBalanceSliderEnabled.value = false
+        isSliderEnabled.value = true
         currentSetting = .shutterSpeed
         sliderMinValue.value = sdk.minShutterSpeed
         sliderMaxValue.value = sdk.maxShutterSpeed
@@ -107,8 +119,18 @@ class CameraVM: NSObject {
         guard currentSetting != .whiteBalance else {
             return
         }
-        isSliderEnabled.value = true
+        sdk.setupWhiteBalance()
         isUSVPickerEnabled.value = false
+        isSliderEnabled.value = false
+        isWhiteBalanceSliderEnabled.value = true
+        
+        tintMinValue.value = sdk.minTint
+        tintMaxValue.value = sdk.maxTint
+        tintValue.value = sdk.tint
+        
+        temperatureMinValue.value = sdk.minTemperature
+        temperatureMaxValue.value = sdk.maxTemperature
+        temperatureValue.value = sdk.temperature
     }
     
     func selectUSV() {
@@ -116,6 +138,7 @@ class CameraVM: NSObject {
             return
         }
         isSliderEnabled.value = false
+        isWhiteBalanceSliderEnabled.value = false
         isUSVPickerEnabled.value = true
     }
     
@@ -134,6 +157,14 @@ class CameraVM: NSObject {
     
     func change(series: BrigtnessSeries) {
         self.series = series
+    }
+    
+    func change(tint: Float) {
+        sdk.changeWhiteBalance(tint: tint)
+    }
+    
+    func change(temperature: Float) {
+        sdk.changeWhiteBalance(temperature: temperature)
     }
     
     private func makePhoto() {
@@ -172,8 +203,8 @@ extension CameraVM: AVCapturePhotoCaptureDelegate {
             guard status == .authorized else { return }
             
             PHPhotoLibrary.shared().performChanges {
-//                let creationRequest = PHAssetCreationRequest.forAsset()
-//                creationRequest.addResource(with: .photo, data: photo.fileDataRepresentation()!, options: nil)
+                let creationRequest = PHAssetCreationRequest.forAsset()
+                creationRequest.addResource(with: .photo, data: photo.fileDataRepresentation()!, options: nil)
                 let brightness = self.brightness + self.series.step
                 self.brightness = round(brightness * 100) / 100
                 self.makePhoto()
