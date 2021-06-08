@@ -17,6 +17,7 @@ class WhiteBalanceSliderView: UIView {
         let slider = UISlider(frame: .zero)
         slider.addTarget(self, action: #selector(tintValueDidChanged), for: .valueChanged)
         slider.tintColor = .yellow
+        slider.tintColor = UIColor(red: 254 / 255, green: 212 / 255, blue: 22 / 255, alpha: 1.0)
         return slider
     }()
     
@@ -24,6 +25,7 @@ class WhiteBalanceSliderView: UIView {
         let slider = UISlider(frame: .zero)
         slider.addTarget(self, action: #selector(temperatureValueDidChanged), for: .valueChanged)
         slider.tintColor = .blue
+        slider.tintColor = UIColor(red: 254 / 255, green: 212 / 255, blue: 22 / 255, alpha: 1.0)
         return slider
     }()
     
@@ -77,8 +79,23 @@ class WhiteBalanceSliderView: UIView {
         container.distribution = .fillEqually
         container.spacing = 0.0
         
-        container.addArrangedSubview(tintSlider)
-        container.addArrangedSubview(temperatureSlider)
+        let tintLabel = UILabel(frame: .zero)
+        tintLabel.text = "Tint"
+        tintLabel.textColor = .white
+        tintLabel.font = UIFont.systemFont(ofSize: 10)
+        let temperatureLabel = UILabel(frame: .zero)
+        temperatureLabel.text = "Temperature"
+        temperatureLabel.font = UIFont.systemFont(ofSize: 10)
+        temperatureLabel.textColor = .white
+        
+        let tintVStack = UIStackView(arrangedSubviews: [tintLabel, tintSlider])
+        tintVStack.spacing = 0.0
+        tintVStack.axis = .vertical
+        let temperaturVStack = UIStackView(arrangedSubviews: [temperatureLabel, temperatureSlider])
+        temperaturVStack.spacing = 0.0
+        temperaturVStack.axis = .vertical
+        container.addArrangedSubview(tintVStack)
+        container.addArrangedSubview(temperaturVStack)
         
         addSubview(container)
         container.translatesAutoresizingMaskIntoConstraints = false
