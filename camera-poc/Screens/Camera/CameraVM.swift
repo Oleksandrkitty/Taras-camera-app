@@ -34,13 +34,24 @@ class CameraVM: NSObject {
     private(set) var temperatureMaxValue: Bound<Float> = Bound(0.0)
     private(set) var temperatureValue: Bound<Float> = Bound(0.0)
     
-    private(set) var seriesString: Bound<String> = Bound("")
+    private(set) var isoValue: Bound<String> = Bound("A 100")
+    private(set) var exposureValue: Bound<String> = Bound("0.0")
+    private(set) var shutterSpeedValue: Bound<String> = Bound("0.0")
+    private(set) var wbValue: Bound<String> = Bound("0.0")
+    private(set) var usvValue: Bound<String> = Bound("40%")
+    
+    private var defaultISO: Float!
+    private var defaultExposure: Float!
+    private var defaultShutterSpeed: Float!
+    private var defaultTint: Float!
+    private var defaultTemperature: Float!
+    private var defaultSeries: BrigtnessSeries!
+    
     private var series: BrigtnessSeries = Medium {
         didSet {
             brightness = series.min / 100
             minBrightness = series.min / 100
             maxBrightness = series.max / 100
-            seriesString.value = "\(series.min)% - \(series.max)%"
             UIScreen.main.brightness = minBrightness
         }
     }
@@ -60,8 +71,8 @@ class CameraVM: NSObject {
         brightness = series.min / 100
         minBrightness = series.min / 100
         maxBrightness = series.max / 100
-        seriesString.value = "\(series.min)% - \(series.max)%"
         UIScreen.main.brightness = minBrightness
+        self.sdk.delegate = self
     }
     
     func requestCameraAccess() {
@@ -123,6 +134,7 @@ class CameraVM: NSObject {
         isUSVPickerEnabled.value = false
         isSliderEnabled.value = false
         isWhiteBalanceSliderEnabled.value = true
+        currentSetting = .whiteBalance
         
         tintMinValue.value = sdk.minTint
         tintMaxValue.value = sdk.maxTint
@@ -137,6 +149,7 @@ class CameraVM: NSObject {
         guard currentSetting != .usv else {
             return
         }
+        currentSetting = .usv
         isSliderEnabled.value = false
         isWhiteBalanceSliderEnabled.value = false
         isUSVPickerEnabled.value = true
@@ -145,9 +158,15 @@ class CameraVM: NSObject {
     func change(value: Float) {
         do {
             switch currentSetting {
-                case .iso: try sdk.changeISO(value)
-                case .exposure: try sdk.changeExposure(value)
-                case .shutterSpeed: try sdk.changeShutterSpeed(value)
+                case .iso:
+                    try sdk.changeISO(value)
+                    self.isoValue.value = "\(sdk.iso)"
+                case .exposure:
+                    try sdk.changeExposure(value)
+                    self.exposureValue.value = "\(sdk.exposureTargetBias)"
+                case .shutterSpeed:
+                    try sdk.changeShutterSpeed(value)
+                    self.shutterSpeedValue.value = "\(sdk.shutterSpeed)"
                 default: break
             }
         } catch {
@@ -157,14 +176,40 @@ class CameraVM: NSObject {
     
     func change(series: BrigtnessSeries) {
         self.series = series
+        self.usvValue.value = "\(series.max)%"
     }
     
     func change(tint: Float) {
-        sdk.changeWhiteBalance(tint: tint)
+        do {
+            try sdk.changeWhiteBalance(tint: tint)
+        } catch {
+            assertionFailure(error.localizedDescription)
+        }
     }
     
     func change(temperature: Float) {
-        sdk.changeWhiteBalance(temperature: temperature)
+        do {
+            try sdk.changeWhiteBalance(temperature: temperature)
+        } catch {
+            assertionFailure(error.localizedDescription)
+        }
+    }
+    
+    func reset() {
+        currentSetting = .none
+        isUSVPickerEnabled.value = false
+        isWhiteBalanceSliderEnabled.value = false
+        isSliderEnabled.value = false
+        do {
+            try sdk.changeExposure(iso: defaultISO, shutterSpeed: defaultShutterSpeed)
+            try sdk.changeWhiteBalance(tint: defaultTint, temperature: defaultTemperature)
+            change(series: defaultSeries)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                self.updateUI()
+            }
+        } catch {
+            assertionFailure(error.localizedDescription)
+        }
     }
     
     private func makePhoto() {
@@ -213,5 +258,28 @@ extension CameraVM: AVCapturePhotoCaptureDelegate {
                 assertionFailure("Handle saving error: \(error.localizedDescription)")
             }
         }
+    }
+}
+
+extension CameraVM: CameraSDKDelegate {
+    func sessionDidStart() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.defaultISO = self.sdk.iso
+            self.defaultExposure = self.sdk.exposureTargetBias
+            self.defaultShutterSpeed = self.sdk.shutterSpeed
+            self.defaultTint = self.sdk.tint
+            self.defaultTemperature = self.sdk.temperature
+            self.defaultSeries = self.series
+            
+            self.updateUI()
+        }
+    }
+    
+    private func updateUI() {
+        self.isoValue.value = "A \(Int(sdk.iso))"
+        self.exposureValue.value = "\(sdk.exposureTargetBias)"
+        self.shutterSpeedValue.value = "\(sdk.shutterSpeed)"
+        self.wbValue.value = "AWB"
+        self.usvValue.value = "\(series.max)%"
     }
 }

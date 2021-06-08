@@ -11,9 +11,14 @@ class CameraViewController: UIViewController {
     @IBOutlet private weak var containerView: CameraPreviewView!
     @IBOutlet private weak var captureButton: UIButton!
     @IBOutlet private weak var flashView: UIView!
-    @IBOutlet private weak var seriesLabel: UILabel!
     @IBOutlet private weak var pickerView: UIView!
     @IBOutlet private weak var pickerViewHeightConstraint: NSLayoutConstraint!
+    
+    @IBOutlet private weak var isoValueLabel: UILabel!
+    @IBOutlet private weak var exposureValueLabel: UILabel!
+    @IBOutlet private weak var shutterSpeedValueLabel: UILabel!
+    @IBOutlet private weak var whiteBalanceValueLabel: UILabel!
+    @IBOutlet private weak var usvValueLabel: UILabel!
     
     @IBAction private func cancelButtonPressed(_ button: UIButton) {
        //TODO: dismiss screen here
@@ -41,6 +46,10 @@ class CameraViewController: UIViewController {
     
     @IBAction private func usvButtonPressed(_ button: UIButton) {
         viewModel.selectUSV()
+    }
+    
+    @IBAction private func resetButtonPressed(_ button: UIButton) {
+        viewModel.reset()
     }
     
     private lazy var usvPicker: UIView = {
@@ -75,9 +84,6 @@ class CameraViewController: UIViewController {
                     }
                 }
             }
-            viewModel.seriesString.bind { [unowned self] string in
-                self.seriesLabel.text = string
-            }
             viewModel.isSliderEnabled.bind { [unowned self] isEnabled in
                 self.slider.isHidden = !isEnabled
                 self.pickerViewHeightConstraint.constant = isEnabled ? 50.0 : 0
@@ -99,7 +105,6 @@ class CameraViewController: UIViewController {
             viewModel.sliderCurrentValue.bind { [unowned self] value in
                 self.slider.set(value: value)
             }
-            
             viewModel.tintMinValue.bind { [unowned self] value in
                 self.wbSlider.set(minTint: value)
             }
@@ -109,7 +114,6 @@ class CameraViewController: UIViewController {
             viewModel.tintValue.bind { [unowned self] value in
                 self.wbSlider.set(tint: value)
             }
-            
             viewModel.temperatureMinValue.bind { [unowned self] value in
                 self.wbSlider.set(minTemperature: value)
             }
@@ -118,6 +122,21 @@ class CameraViewController: UIViewController {
             }
             viewModel.temperatureValue.bind { [unowned self] value in
                 self.wbSlider.set(temperature: value)
+            }
+            viewModel.isoValue.bind { [unowned self] value in
+                self.isoValueLabel.text = value
+            }
+            viewModel.exposureValue.bind { [unowned self] value in
+                self.exposureValueLabel.text = value
+            }
+            viewModel.shutterSpeedValue.bind { [unowned self] value in
+                self.shutterSpeedValueLabel.text = value
+            }
+            viewModel.wbValue.bind { [unowned self] value in
+                self.whiteBalanceValueLabel.text = value
+            }
+            viewModel.usvValue.bind { [unowned self] value in
+                self.usvValueLabel.text = value
             }
         }
     }

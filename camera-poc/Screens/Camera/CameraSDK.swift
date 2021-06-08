@@ -8,6 +8,10 @@
 import Foundation
 import AVKit
 
+protocol CameraSDKDelegate: AnyObject {
+    func sessionDidStart()
+}
+
 class CameraSDK {
     private enum Setting {
         case iso, exposure, shutterSpeed, whiteBalance, usv, none
@@ -51,7 +55,7 @@ class CameraSDK {
     }
     
     var maxShutterSpeed: Float {
-        return 0.0
+        return 1.0
     }
     
     var shutterSpeed: Float {
@@ -92,6 +96,9 @@ class CameraSDK {
 
         return whiteBalanceTemperatureAndTint.temperature
     }
+    
+    weak var delegate: CameraSDKDelegate?
+    
     init(router: CameraRouting) {
         self.router = router
     }
@@ -138,6 +145,7 @@ class CameraSDK {
         }
         captureSession.commitConfiguration()
         captureSession.startRunning()
+        delegate?.sessionDidStart()
     }
     
     func changeISO(_ value: Float) throws {
@@ -163,28 +171,51 @@ class CameraSDK {
         videoDevice.unlockForConfiguration()
     }
     
+    func changeExposure(iso: Float, shutterSpeed: Float) throws {
+        let p = pow(Double(shutterSpeed), kExposureDurationPower) // Apply power function to expand slider's low-end range
+        let minDurationSeconds = max(CMTimeGetSeconds(videoDevice.activeFormat.minExposureDuration), kExposureMinimumDuration)
+        let maxDurationSeconds = CMTimeGetSeconds(videoDevice.activeFormat.maxExposureDuration)
+        let newDurationSeconds = p * ( maxDurationSeconds - minDurationSeconds ) + minDurationSeconds; // Scale from 0-1 slider range to actual duration
+        let duration = CMTimeMakeWithSeconds(newDurationSeconds, preferredTimescale: 1000 * 1000 * 1000)
+        try videoDevice!.lockForConfiguration()
+        videoDevice.setExposureModeCustom(
+            duration: duration,
+            iso: iso
+        )
+        videoDevice.unlockForConfiguration()
+    }
+    
     func changeExposure(_ value: Float) throws {
         try videoDevice.lockForConfiguration()
         videoDevice.setExposureTargetBias(value)
         videoDevice.unlockForConfiguration()
     }
     
-    func changeWhiteBalance(tint: Float) {
+    func changeWhiteBalance(tint: Float) throws {
         let temperatureAndTint = AVCaptureDevice.WhiteBalanceTemperatureAndTintValues(
             temperature: temperature,
             tint: tint
         )
         
-        self.setWhiteBalanceGains(self.videoDevice!.deviceWhiteBalanceGains(for: temperatureAndTint))
+        try setWhiteBalanceGains(self.videoDevice!.deviceWhiteBalanceGains(for: temperatureAndTint))
     }
     
-    func changeWhiteBalance(temperature: Float) {
+    func changeWhiteBalance(temperature: Float) throws {
         let temperatureAndTint = AVCaptureDevice.WhiteBalanceTemperatureAndTintValues(
             temperature: temperature,
             tint: tint
         )
         
-        self.setWhiteBalanceGains(self.videoDevice!.deviceWhiteBalanceGains(for: temperatureAndTint))
+        try setWhiteBalanceGains(self.videoDevice!.deviceWhiteBalanceGains(for: temperatureAndTint))
+    }
+    
+    func changeWhiteBalance(tint: Float, temperature: Float) throws {
+        let temperatureAndTint = AVCaptureDevice.WhiteBalanceTemperatureAndTintValues(
+            temperature: temperature,
+            tint: tint
+        )
+        
+        try setWhiteBalanceGains(self.videoDevice!.deviceWhiteBalanceGains(for: temperatureAndTint))
     }
     
     func setupISO() {
@@ -229,16 +260,11 @@ class CameraSDK {
         }
     }
     
-    private func setWhiteBalanceGains(_ gains: AVCaptureDevice.WhiteBalanceGains) {
-        
-        do {
-            try self.videoDevice!.lockForConfiguration()
-            let normalizedGains = self.normalizedGains(gains) // Conversion can yield out-of-bound values, cap to limits
-            self.videoDevice!.setWhiteBalanceModeLocked(with: normalizedGains, completionHandler: nil)
-            self.videoDevice!.unlockForConfiguration()
-        } catch let error {
-            NSLog("Could not lock device for configuration: \(error)")
-        }
+    private func setWhiteBalanceGains(_ gains: AVCaptureDevice.WhiteBalanceGains) throws {
+        try self.videoDevice!.lockForConfiguration()
+        let normalizedGains = self.normalizedGains(gains) // Conversion can yield out-of-bound values, cap to limits
+        self.videoDevice!.setWhiteBalanceModeLocked(with: normalizedGains, completionHandler: nil)
+        self.videoDevice!.unlockForConfiguration()
     }
     
     private func normalizedGains(_ gains: AVCaptureDevice.WhiteBalanceGains) -> AVCaptureDevice.WhiteBalanceGains {
