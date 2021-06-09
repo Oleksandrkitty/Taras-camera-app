@@ -11,4 +11,8 @@ extension UIStoryboard {
     static var camera: UIStoryboard {
         return UIStoryboard(name: "Camera", bundle: nil)
     }
+    
+    static var photosList: UIStoryboard {
+        return UIStoryboard(name: "PhotosList", bundle: nil)
+    }
 }

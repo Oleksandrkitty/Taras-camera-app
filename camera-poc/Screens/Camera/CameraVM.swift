@@ -13,6 +13,7 @@ class CameraVM: NSObject {
     private enum Setting {
         case iso, exposure, shutterSpeed, whiteBalance, usv, none
     }
+    private let router: CameraRouting
     private let sdk: CameraSDK
     private let dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
@@ -66,11 +67,14 @@ class CameraVM: NSObject {
     private var minBrightness: CGFloat = 0.0
     private var maxBrightness: CGFloat = 1.0
     
+    private var photosCount = 0
+    
     var session: AVCaptureSession {
         return sdk.captureSession
     }
     
     init(router: CameraRouting) {
+        self.router = router
         self.sdk = CameraSDK(router: router)
         super.init()
         brightness = series.min / 100
@@ -85,12 +89,14 @@ class CameraVM: NSObject {
     }
     
     func capture() {
+        photosCount = 0
         brightness = minBrightness
         makePhoto()
     }
 
     func selectISO() {
         guard currentSetting != .iso else {
+            isSliderEnabled.value = false
             return
         }
         isUSVPickerEnabled.value = false
@@ -104,6 +110,7 @@ class CameraVM: NSObject {
     
     func selectExposure() {
         guard currentSetting != .exposure else {
+            isSliderEnabled.value = false
             return
         }
         isUSVPickerEnabled.value = false
@@ -118,6 +125,7 @@ class CameraVM: NSObject {
     
     func selectShutterSpeed() {
         guard currentSetting != .shutterSpeed else {
+            isSliderEnabled.value = false
             return
         }
         isUSVPickerEnabled.value = false
@@ -131,6 +139,7 @@ class CameraVM: NSObject {
     
     func selectWhiteBalance() {
         guard currentSetting != .whiteBalance else {
+            isWhiteBalanceSliderEnabled.value = false
             return
         }
         isUSVPickerEnabled.value = false
@@ -149,6 +158,7 @@ class CameraVM: NSObject {
     
     func selectUSV() {
         guard currentSetting != .usv else {
+            isUSVPickerEnabled.value = false
             return
         }
         currentSetting = .usv
@@ -215,10 +225,15 @@ class CameraVM: NSObject {
     }
     
     private func makePhoto() {
-        if brightness > maxBrightness {
+        if self.brightness > self.maxBrightness {
+            //To make sure last photo was saved to photo library
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.router.presentPhotosList(maxCount: self.photosCount)
+            }
             return
         }
-        capture(brightness: brightness)
+        self.photosCount += 1
+        self.capture(brightness: self.brightness)
     }
     
     private func capture(brightness: CGFloat) {

@@ -9,6 +9,7 @@ import UIKit
 
 protocol CameraRouting {
     func presentCameraDeniedAlert()
+    func presentPhotosList(maxCount: Int)
 }
 
 struct CameraRouter: CameraRouting {
@@ -28,5 +29,10 @@ struct CameraRouter: CameraRouting {
         alert.addAction(UIAlertAction(title: "Ok", style: .default))
         
         controller.present(alert, animated: true)
+    }
+    
+    func presentPhotosList(maxCount: Int) {
+        let controller = ScreenBuilder.PhotosList.photosList(numberOfPhotos: maxCount)
+        self.controller.present(controller, animated: true)
     }
 }
