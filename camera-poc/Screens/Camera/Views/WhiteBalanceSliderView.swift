@@ -17,7 +17,7 @@ class WhiteBalanceSliderView: UIView {
         let slider = UISlider(frame: .zero)
         slider.addTarget(self, action: #selector(tintValueDidChanged), for: .valueChanged)
         slider.tintColor = .yellow
-        slider.tintColor = UIColor(red: 254 / 255, green: 212 / 255, blue: 22 / 255, alpha: 1.0)
+        slider.tintColor = UIColor.turbo
         return slider
     }()
     
@@ -25,7 +25,7 @@ class WhiteBalanceSliderView: UIView {
         let slider = UISlider(frame: .zero)
         slider.addTarget(self, action: #selector(temperatureValueDidChanged), for: .valueChanged)
         slider.tintColor = .blue
-        slider.tintColor = UIColor(red: 254 / 255, green: 212 / 255, blue: 22 / 255, alpha: 1.0)
+        slider.tintColor = UIColor.turbo
         return slider
     }()
     

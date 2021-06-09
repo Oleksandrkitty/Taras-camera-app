@@ -15,7 +15,7 @@ class SliderView: UIView {
     private lazy var slider: UISlider = {
         let slider = UISlider(frame: .zero)
         slider.addTarget(self, action: #selector(sliderDidChangedValue(_:)), for: .valueChanged)
-        slider.tintColor = UIColor(red: 254 / 255, green: 212 / 255, blue: 22 / 255, alpha: 1.0)
+        slider.tintColor = UIColor.turbo
         return slider
     }()
     

@@ -235,7 +235,7 @@ class OvalOverlayView: UIView {
         let ovalLayer = CAShapeLayer()
         ovalLayer.path = ovalPath.cgPath
         ovalLayer.fillColor = UIColor.clear.cgColor
-        ovalLayer.strokeColor = UIColor(red: 254 / 255, green: 212 / 255, blue: 22 / 255, alpha: 1.0).cgColor
+        ovalLayer.strokeColor = UIColor.turbo.cgColor
         ovalLayer.lineWidth = 2.0
         
         let fillLayer = CAShapeLayer()
