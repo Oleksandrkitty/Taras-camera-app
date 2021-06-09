@@ -252,10 +252,10 @@ extension CameraVM: AVCapturePhotoCaptureDelegate {
             PHPhotoLibrary.shared().performChanges {
                 let creationRequest = PHAssetCreationRequest.forAsset()
                 let options = PHAssetResourceCreationOptions()
-                let fileName = "\(UIDevice.modelName)_\(self.dateFormatter.string(from: Date()))_ISO: \("A \(Int(self.sdk.iso))")_Exp: \(String(format: "%0.2f", self.sdk.shutterSpeed))_Tint: \(self.sdk.tint)_Temperature: \(self.sdk.temperature)_USV: \(Int(self.series.max))%_Step: \(Int(self.brightness * 100))%"
+                let fileName = "\(UIDevice.modelName)_\(self.dateFormatter.string(from: Date()))_ISO: \("A \(Int(self.sdk.iso))")_Exp: \(String(format: "%0.2f", self.sdk.shutterSpeed))_Tint: \(Int(self.sdk.tint))_Temperature: \(Int(self.sdk.temperature))_USV: \(Int(self.series.max))%_Step: \(Int(self.brightness * 100))%.jpg"
                 options.originalFilename = fileName
                 print(fileName)
-                creationRequest.addResource(with: .photo, data: photo.fileDataRepresentation()!, options: nil)
+                creationRequest.addResource(with: .photo, data: photo.fileDataRepresentation()!, options: options)
                 let brightness = self.brightness + self.series.step
                 self.brightness = round(brightness * 100) / 100
                 self.makePhoto()
