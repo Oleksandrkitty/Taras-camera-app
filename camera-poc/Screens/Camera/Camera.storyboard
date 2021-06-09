@@ -17,6 +17,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gGF-yB-1oh">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JAh-tR-KFK" customClass="CameraPreviewView" customModule="camera_poc" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="682"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -434,10 +438,6 @@
                                     <constraint firstItem="Hbx-rn-O93" firstAttribute="top" secondItem="V8F-9p-odt" secondAttribute="bottom" constant="10" id="u9U-Xy-yyP"/>
                                     <constraint firstAttribute="height" constant="180" id="ucj-3R-EQZ"/>
                                 </constraints>
-                            </view>
-                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gGF-yB-1oh">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
