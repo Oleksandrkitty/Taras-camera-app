@@ -55,7 +55,7 @@ class CameraSDK {
     }
     
     var maxShutterSpeed: Float {
-        return 1.0
+        return 0.6
     }
     
     var shutterSpeed: Float {
@@ -171,8 +171,8 @@ class CameraSDK {
         videoDevice.unlockForConfiguration()
     }
     
-    func changeExposure(iso: Float, shutterSpeed: Float) throws {
-        let p = pow(Double(shutterSpeed), kExposureDurationPower) // Apply power function to expand slider's low-end range
+    func changeExposure(duration: Float, iso: Float) throws {
+        let p = pow(Double(duration), kExposureDurationPower) // Apply power function to expand slider's low-end range
         let minDurationSeconds = max(CMTimeGetSeconds(videoDevice.activeFormat.minExposureDuration), kExposureMinimumDuration)
         let maxDurationSeconds = CMTimeGetSeconds(videoDevice.activeFormat.maxExposureDuration)
         let newDurationSeconds = p * ( maxDurationSeconds - minDurationSeconds ) + minDurationSeconds; // Scale from 0-1 slider range to actual duration

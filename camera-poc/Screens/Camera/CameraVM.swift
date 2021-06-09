@@ -14,6 +14,11 @@ class CameraVM: NSObject {
         case iso, exposure, shutterSpeed, whiteBalance, usv, none
     }
     private let sdk: CameraSDK
+    private let dateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM-dd-yyyy HH:mm"
+        return dateFormatter
+    }()
     
     private var screenBrightness: CGFloat = 0.5
     private(set) var isFlashEnabled: Bound<Bool> = Bound(false)
@@ -88,7 +93,6 @@ class CameraVM: NSObject {
         guard currentSetting != .iso else {
             return
         }
-        sdk.setupISO()
         isUSVPickerEnabled.value = false
         isWhiteBalanceSliderEnabled.value = false
         isSliderEnabled.value = true
@@ -102,21 +106,20 @@ class CameraVM: NSObject {
         guard currentSetting != .exposure else {
             return
         }
-        sdk.setupExposure()
         isUSVPickerEnabled.value = false
         isWhiteBalanceSliderEnabled.value = false
         isSliderEnabled.value = true
         currentSetting = .exposure
-        sliderMinValue.value = sdk.minExposureTargetBias
-        sliderMaxValue.value = sdk.maxExposureTargetBias
-        sliderCurrentValue.value = sdk.exposureTargetBias
+        
+        sliderMinValue.value = sdk.minShutterSpeed
+        sliderMaxValue.value = sdk.maxShutterSpeed
+        sliderCurrentValue.value = sdk.shutterSpeed
     }
     
     func selectShutterSpeed() {
         guard currentSetting != .shutterSpeed else {
             return
         }
-        sdk.setupShutterSpeed()
         isUSVPickerEnabled.value = false
         isWhiteBalanceSliderEnabled.value = false
         isSliderEnabled.value = true
@@ -130,7 +133,6 @@ class CameraVM: NSObject {
         guard currentSetting != .whiteBalance else {
             return
         }
-        sdk.setupWhiteBalance()
         isUSVPickerEnabled.value = false
         isSliderEnabled.value = false
         isWhiteBalanceSliderEnabled.value = true
@@ -159,14 +161,14 @@ class CameraVM: NSObject {
         do {
             switch currentSetting {
                 case .iso:
-                    try sdk.changeISO(value)
-                    self.isoValue.value = "\(sdk.iso)"
+                    try sdk.changeExposure(duration: sdk.shutterSpeed, iso: value)
+                    self.isoValue.value = "A \(Int(sdk.iso))"
                 case .exposure:
-                    try sdk.changeExposure(value)
-                    self.exposureValue.value = "\(sdk.exposureTargetBias)"
-                case .shutterSpeed:
-                    try sdk.changeShutterSpeed(value)
-                    self.shutterSpeedValue.value = "\(sdk.shutterSpeed)"
+                    try sdk.changeExposure(duration: value, iso: sdk.iso)
+                    self.exposureValue.value = String(format: "%0.2f", sdk.shutterSpeed)
+//                case .shutterSpeed:
+//                    try sdk.changeShutterSpeed(value)
+//                    self.shutterSpeedValue.value = "\(sdk.shutterSpeed)"
                 default: break
             }
         } catch {
@@ -201,7 +203,7 @@ class CameraVM: NSObject {
         isWhiteBalanceSliderEnabled.value = false
         isSliderEnabled.value = false
         do {
-            try sdk.changeExposure(iso: defaultISO, shutterSpeed: defaultShutterSpeed)
+            try sdk.changeExposure(duration: defaultShutterSpeed, iso: defaultISO)
             try sdk.changeWhiteBalance(tint: defaultTint, temperature: defaultTemperature)
             change(series: defaultSeries)
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
@@ -249,6 +251,10 @@ extension CameraVM: AVCapturePhotoCaptureDelegate {
             
             PHPhotoLibrary.shared().performChanges {
                 let creationRequest = PHAssetCreationRequest.forAsset()
+                let options = PHAssetResourceCreationOptions()
+                let fileName = "\(UIDevice.modelName)_\(self.dateFormatter.string(from: Date()))_ISO: \("A \(Int(self.sdk.iso))")_Exp: \(String(format: "%0.2f", self.sdk.shutterSpeed))_Tint: \(self.sdk.tint)_Temperature: \(self.sdk.temperature)_USV: \(Int(self.series.max))%_Step: \(Int(self.brightness * 100))%"
+                options.originalFilename = fileName
+                print(fileName)
                 creationRequest.addResource(with: .photo, data: photo.fileDataRepresentation()!, options: nil)
                 let brightness = self.brightness + self.series.step
                 self.brightness = round(brightness * 100) / 100
@@ -264,20 +270,30 @@ extension CameraVM: AVCapturePhotoCaptureDelegate {
 extension CameraVM: CameraSDKDelegate {
     func sessionDidStart() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.sdk.setupISO()
+            self.sdk.setupWhiteBalance()
+            do {
+                try self.sdk.changeExposure(duration: self.sdk.maxShutterSpeed / 2, iso: self.sdk.iso)
+            } catch {
+                assertionFailure(error.localizedDescription)
+            }
+            
             self.defaultISO = self.sdk.iso
             self.defaultExposure = self.sdk.exposureTargetBias
-            self.defaultShutterSpeed = self.sdk.shutterSpeed
+            self.defaultShutterSpeed = self.sdk.maxShutterSpeed / 2
             self.defaultTint = self.sdk.tint
             self.defaultTemperature = self.sdk.temperature
             self.defaultSeries = self.series
             
-            self.updateUI()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                self.updateUI()
+            }
         }
     }
     
     private func updateUI() {
         self.isoValue.value = "A \(Int(sdk.iso))"
-        self.exposureValue.value = "\(sdk.exposureTargetBias)"
+        self.exposureValue.value = String(format: "%0.2f", sdk.shutterSpeed)
         self.shutterSpeedValue.value = "\(sdk.shutterSpeed)"
         self.wbValue.value = "AWB"
         self.usvValue.value = "\(series.max)%"
