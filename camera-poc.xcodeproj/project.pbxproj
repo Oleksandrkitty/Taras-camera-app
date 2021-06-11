@@ -36,6 +36,7 @@
 		632576C6266EAFCB00B55E27 /* CameraSDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632576C5266EAFCB00B55E27 /* CameraSDK.swift */; };
 		632576C8266EB14100B55E27 /* BrigtnessSeries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632576C7266EB14100B55E27 /* BrigtnessSeries.swift */; };
 		632576CA266EB4DA00B55E27 /* WhiteBalanceSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632576C9266EB4DA00B55E27 /* WhiteBalanceSliderView.swift */; };
+		6382A711267336A5009C7254 /* PhotosListRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6382A710267336A5009C7254 /* PhotosListRouter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -71,6 +72,7 @@
 		632576C5266EAFCB00B55E27 /* CameraSDK.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraSDK.swift; sourceTree = "<group>"; };
 		632576C7266EB14100B55E27 /* BrigtnessSeries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrigtnessSeries.swift; sourceTree = "<group>"; };
 		632576C9266EB4DA00B55E27 /* WhiteBalanceSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhiteBalanceSliderView.swift; sourceTree = "<group>"; };
+		6382A710267336A5009C7254 /* PhotosListRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosListRouter.swift; sourceTree = "<group>"; };
 		BE9086BA37838834834F34BF /* Pods-camera-poc.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-camera-poc.debug.xcconfig"; path = "Target Support Files/Pods-camera-poc/Pods-camera-poc.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -181,6 +183,7 @@
 				631C4A382671221000765660 /* PhotosList.storyboard */,
 				631C4A3A2671221F00765660 /* PhotosListViewController.swift */,
 				631C4A412671247E00765660 /* PhotosListVM.swift */,
+				6382A710267336A5009C7254 /* PhotosListRouter.swift */,
 			);
 			path = "Photos List";
 			sourceTree = "<group>";
@@ -356,6 +359,7 @@
 				631C4A3B2671221F00765660 /* PhotosListViewController.swift in Sources */,
 				631C4A462671289100765660 /* UIDevice+Model.swift in Sources */,
 				631C4A422671247E00765660 /* PhotosListVM.swift in Sources */,
+				6382A711267336A5009C7254 /* PhotosListRouter.swift in Sources */,
 				6315858E26675D11006E60EA /* ScreenBuilder+Camera.swift in Sources */,
 				631C4A3626711FD600765660 /* UIColor+Names.swift in Sources */,
 				631C4A442671254E00765660 /* ScreenBuilder+PhotosList.swift in Sources */,
@@ -499,6 +503,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "camera-poc/camera-poc.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = Z5G3WDJ23W;
@@ -521,6 +526,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "camera-poc/camera-poc.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = Z5G3WDJ23W;

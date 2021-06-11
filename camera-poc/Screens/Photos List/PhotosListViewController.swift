@@ -16,6 +16,10 @@ class PhotosListViewController: UIViewController {
         }
     }
     
+    @IBAction private func uploadButtonPressed(_ button: UIButton) {
+        viewModel.upload()
+    }
+    
     var viewModel: PhotosListVM! {
         didSet {
             viewModel.photos.bind { [weak self] _ in
@@ -46,7 +50,7 @@ extension PhotosListViewController: UICollectionViewDataSource {
             for: indexPath
         ) as! ImageCollectionViewCell
         let photo = viewModel.photos.value[indexPath.row]
-        cell.set(photo: photo, selected: true)
+        cell.set(photo: photo, selected: false)
         return cell
     }
 }
