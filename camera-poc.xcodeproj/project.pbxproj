@@ -13,7 +13,6 @@
 		6315857026675AB5006E60EA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6315856F26675AB5006E60EA /* AppDelegate.swift */; };
 		6315857926675AB7006E60EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6315857826675AB7006E60EA /* Assets.xcassets */; };
 		6315857C26675AB7006E60EA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6315857A26675AB7006E60EA /* LaunchScreen.storyboard */; };
-		6315858726675C75006E60EA /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6315858626675C75006E60EA /* CameraViewController.swift */; };
 		6315858926675C8D006E60EA /* Camera.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6315858826675C8D006E60EA /* Camera.storyboard */; };
 		6315858C26675D01006E60EA /* ScreenBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6315858B26675D01006E60EA /* ScreenBuilder.swift */; };
 		6315858E26675D11006E60EA /* ScreenBuilder+Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6315858D26675D11006E60EA /* ScreenBuilder+Camera.swift */; };
@@ -37,6 +36,7 @@
 		632576C8266EB14100B55E27 /* BrigtnessSeries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632576C7266EB14100B55E27 /* BrigtnessSeries.swift */; };
 		632576CA266EB4DA00B55E27 /* WhiteBalanceSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632576C9266EB4DA00B55E27 /* WhiteBalanceSliderView.swift */; };
 		6382A711267336A5009C7254 /* PhotosListRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6382A710267336A5009C7254 /* PhotosListRouter.swift */; };
+		63AB5858267345E000B0D104 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63AB5857267345E000B0D104 /* CameraViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,7 +49,6 @@
 		6315857826675AB7006E60EA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6315857B26675AB7006E60EA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6315857D26675AB7006E60EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		6315858626675C75006E60EA /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = SOURCE_ROOT; };
 		6315858826675C8D006E60EA /* Camera.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Camera.storyboard; sourceTree = "<group>"; };
 		6315858B26675D01006E60EA /* ScreenBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenBuilder.swift; sourceTree = "<group>"; };
 		6315858D26675D11006E60EA /* ScreenBuilder+Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScreenBuilder+Camera.swift"; sourceTree = "<group>"; };
@@ -73,6 +72,7 @@
 		632576C7266EB14100B55E27 /* BrigtnessSeries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrigtnessSeries.swift; sourceTree = "<group>"; };
 		632576C9266EB4DA00B55E27 /* WhiteBalanceSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhiteBalanceSliderView.swift; sourceTree = "<group>"; };
 		6382A710267336A5009C7254 /* PhotosListRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosListRouter.swift; sourceTree = "<group>"; };
+		63AB5857267345E000B0D104 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		BE9086BA37838834834F34BF /* Pods-camera-poc.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-camera-poc.debug.xcconfig"; path = "Target Support Files/Pods-camera-poc/Pods-camera-poc.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -144,8 +144,8 @@
 			children = (
 				632576BC266DFEF900B55E27 /* Views */,
 				6315858826675C8D006E60EA /* Camera.storyboard */,
-				6315858626675C75006E60EA /* CameraViewController.swift */,
 				631585962667604A006E60EA /* CameraVM.swift */,
+				63AB5857267345E000B0D104 /* CameraViewController.swift */,
 				630908552667F85D005CC22D /* CameraRoueter.swift */,
 				630908532667F51E005CC22D /* CameraPreviewView.swift */,
 				632576C5266EAFCB00B55E27 /* CameraSDK.swift */,
@@ -235,7 +235,6 @@
 				6315856826675AB5006E60EA /* Sources */,
 				6315856926675AB5006E60EA /* Frameworks */,
 				6315856A26675AB5006E60EA /* Resources */,
-				1504B7D6CED3C1C8A27F5304 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -294,23 +293,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		1504B7D6CED3C1C8A27F5304 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-camera-poc/Pods-camera-poc-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-camera-poc/Pods-camera-poc-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-camera-poc/Pods-camera-poc-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		5C2CA7B197D3757CA339BF01 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -345,6 +327,7 @@
 				632576CA266EB4DA00B55E27 /* WhiteBalanceSliderView.swift in Sources */,
 				6315859926676152006E60EA /* Bound.swift in Sources */,
 				6315857026675AB5006E60EA /* AppDelegate.swift in Sources */,
+				63AB5858267345E000B0D104 /* CameraViewController.swift in Sources */,
 				630908542667F51E005CC22D /* CameraPreviewView.swift in Sources */,
 				631C4A3F2671236900765660 /* ImageCollectionViewCell.swift in Sources */,
 				630908562667F85D005CC22D /* CameraRoueter.swift in Sources */,
@@ -355,7 +338,6 @@
 				631585972667604A006E60EA /* CameraVM.swift in Sources */,
 				632576BE266DFF6800B55E27 /* USVPickerView.swift in Sources */,
 				632576C8266EB14100B55E27 /* BrigtnessSeries.swift in Sources */,
-				6315858726675C75006E60EA /* CameraViewController.swift in Sources */,
 				631C4A3B2671221F00765660 /* PhotosListViewController.swift in Sources */,
 				631C4A462671289100765660 /* UIDevice+Model.swift in Sources */,
 				631C4A422671247E00765660 /* PhotosListVM.swift in Sources */,
