@@ -17,6 +17,7 @@ class USVPickerView: UIView {
     private lazy var lowButton: UIButton = {
         let button = UIButton(frame: .zero)
         button.setTitle("Low Light", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 15)
         button.addTarget(self, action: #selector(lowButtonPressed), for: .touchUpInside)
         return button
     }()
@@ -24,6 +25,7 @@ class USVPickerView: UIView {
     private lazy var mediumButton: UIButton = {
         let button = UIButton(frame: .zero)
         button.setTitle("Medium Light", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 15)
         button.addTarget(self, action: #selector(mediumButtonPressed), for: .touchUpInside)
         return button
     }()
@@ -31,6 +33,7 @@ class USVPickerView: UIView {
     private lazy var highButton: UIButton = {
         let button = UIButton(frame: .zero)
         button.setTitle("High Light", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 15)
         button.addTarget(self, action: #selector(highButtonPressed), for: .touchUpInside)
         return button
     }()

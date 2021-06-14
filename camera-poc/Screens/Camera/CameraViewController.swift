@@ -112,6 +112,9 @@ class CameraViewController: UIViewController {
             viewModel.tintValue.bind { [unowned self] value in
                 self.wbSlider.set(tint: value)
             }
+            viewModel.tintLabel.bind { [unowned self] value in
+                self.wbSlider.tint = value
+            }
             viewModel.temperatureMinValue.bind { [unowned self] value in
                 self.wbSlider.set(minTemperature: value)
             }
@@ -120,6 +123,9 @@ class CameraViewController: UIViewController {
             }
             viewModel.temperatureValue.bind { [unowned self] value in
                 self.wbSlider.set(temperature: value)
+            }
+            viewModel.temperatureLabel.bind { [unowned self] value in
+                self.wbSlider.temperature = value
             }
             viewModel.isoValue.bind { [unowned self] value in
                 self.isoValueLabel.text = value
@@ -136,10 +142,10 @@ class CameraViewController: UIViewController {
             viewModel.usvValue.bind { [unowned self] value in
                 self.usvValueLabel.text = value
             }
-            viewModel.isCaptureEnabled.bind { isEnabled in
+            viewModel.isCaptureEnabled.bind { [unowned self] isEnabled in
                 self.captureButton.isUserInteractionEnabled = isEnabled
             }
-            viewModel.usvPercents.bind { value in
+            viewModel.usvPercents.bind { [unowned self] value in
                 DispatchQueue.main.async {
                     self.captureButton.setTitle(value, for: .normal)
                 }
@@ -170,7 +176,8 @@ class CameraViewController: UIViewController {
         usvPicker.isHidden = true
         slider.isHidden = true
         wbSlider.isHidden = true
-        self.pickerViewHeightConstraint.constant = 0
+        pickerViewHeightConstraint.constant = 0
+        captureButton.setTitle(viewModel.usvPercents.value, for: .normal)
     }
 
     override func viewDidAppear(_ animated: Bool) {

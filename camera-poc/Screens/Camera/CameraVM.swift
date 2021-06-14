@@ -36,10 +36,12 @@ class CameraVM: NSObject {
     private(set) var tintMinValue: Bound<Float> = Bound(0.0)
     private(set) var tintMaxValue: Bound<Float> = Bound(0.0)
     private(set) var tintValue: Bound<Float> = Bound(0.0)
+    private(set) var tintLabel: Bound<String> = Bound("")
     
     private(set) var temperatureMinValue: Bound<Float> = Bound(0.0)
     private(set) var temperatureMaxValue: Bound<Float> = Bound(0.0)
     private(set) var temperatureValue: Bound<Float> = Bound(0.0)
+    private(set) var temperatureLabel: Bound<String> = Bound("")
     
     private(set) var isoValue: Bound<String> = Bound("A 100")
     private(set) var exposureValue: Bound<String> = Bound("0.0")
@@ -88,6 +90,7 @@ class CameraVM: NSObject {
         maxBrightness = series.max / 100
         UIScreen.main.brightness = minBrightness
         self.sdk.delegate = self
+        usvPercents.value = "\(Int(brightness * 100))%"
     }
     
     func requestCameraAccess() {
@@ -104,6 +107,7 @@ class CameraVM: NSObject {
     func selectISO() {
         guard currentSetting != .iso else {
             isSliderEnabled.value = false
+            currentSetting = .none
             return
         }
         isUSVPickerEnabled.value = false
@@ -118,6 +122,7 @@ class CameraVM: NSObject {
     func selectExposure() {
         guard currentSetting != .exposure else {
             isSliderEnabled.value = false
+            currentSetting = .none
             return
         }
         isUSVPickerEnabled.value = false
@@ -133,6 +138,7 @@ class CameraVM: NSObject {
     func selectShutterSpeed() {
         guard currentSetting != .shutterSpeed else {
             isSliderEnabled.value = false
+            currentSetting = .none
             return
         }
         isUSVPickerEnabled.value = false
@@ -147,6 +153,7 @@ class CameraVM: NSObject {
     func selectWhiteBalance() {
         guard currentSetting != .whiteBalance else {
             isWhiteBalanceSliderEnabled.value = false
+            currentSetting = .none
             return
         }
         isUSVPickerEnabled.value = false
@@ -166,6 +173,7 @@ class CameraVM: NSObject {
     func selectUSV() {
         guard currentSetting != .usv else {
             isUSVPickerEnabled.value = false
+            currentSetting = .none
             return
         }
         currentSetting = .usv
@@ -194,11 +202,13 @@ class CameraVM: NSObject {
         self.series = series
         self.usvValue.value = series.title
         self.isUSVPickerEnabled.value = false
+        self.currentSetting = .none
     }
     
     func change(tint: Float) {
         do {
             try sdk.changeWhiteBalance(tint: tint)
+            tintLabel.value = "\(Int(tint))"
         } catch {
             assertionFailure(error.localizedDescription)
         }
@@ -207,6 +217,7 @@ class CameraVM: NSObject {
     func change(temperature: Float) {
         do {
             try sdk.changeWhiteBalance(temperature: temperature)
+            temperatureLabel.value = "\(Int(temperature))"
         } catch {
             assertionFailure(error.localizedDescription)
         }
@@ -235,6 +246,7 @@ class CameraVM: NSObject {
             //To make sure last photo was saved to photo library
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.isCaptureEnabled.value = true
+                self.brightness = self.minBrightness
                 self.router.presentPhotosList(maxCount: self.photosCount)
             }
             return
@@ -251,11 +263,9 @@ class CameraVM: NSObject {
             UIScreen.main.brightness = max(brightness - 0.12, self.series.min / 100)
             self.screenBrightness = max(brightness - 0.12, self.series.min / 100)
             self.isFlashEnabled.value = true
+            UIScreen.main.brightness = brightness
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                UIScreen.main.brightness = brightness
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    self.sdk.photoOutput.capturePhoto(with: settings, delegate: self)
-                }
+                self.sdk.photoOutput.capturePhoto(with: settings, delegate: self)
             }
         }
     }
@@ -263,10 +273,8 @@ class CameraVM: NSObject {
 
 extension CameraVM: AVCapturePhotoCaptureDelegate {
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        DispatchQueue.main.asyncAfter(deadline: .now()) {
-            self.isFlashEnabled.value = false
-            UIScreen.main.brightness = self.screenBrightness
-        }
+        self.isFlashEnabled.value = false
+        UIScreen.main.brightness = self.screenBrightness
         
         PHPhotoLibrary.requestAuthorization { status in
             guard status == .authorized else { return }
@@ -320,5 +328,7 @@ extension CameraVM: CameraSDKDelegate {
         self.shutterSpeedValue.value = "\(sdk.shutterSpeed)"
         self.wbValue.value = "AWB"
         self.usvValue.value = series.title
+        self.tintLabel.value = "\(Int(sdk.tint))"
+        self.temperatureLabel.value = "\(Int(sdk.temperature))"
     }
 }

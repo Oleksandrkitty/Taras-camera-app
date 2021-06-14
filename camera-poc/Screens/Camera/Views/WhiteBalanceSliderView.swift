@@ -13,6 +13,8 @@ protocol WhiteBalanceSliderViewDelegate: AnyObject {
 }
 
 class WhiteBalanceSliderView: UIView {
+    let tintLabel = UILabel(frame: .zero)
+    let temperatureLabel = UILabel(frame: .zero)
     private lazy var tintSlider: UISlider = {
         let slider = UISlider(frame: .zero)
         slider.addTarget(self, action: #selector(tintValueDidChanged), for: .valueChanged)
@@ -30,6 +32,18 @@ class WhiteBalanceSliderView: UIView {
     }()
     
     weak var delegate: WhiteBalanceSliderViewDelegate?
+    
+    var tint: String? {
+        didSet {
+            tintLabel.text = "Tint: \(tint ?? "0")"
+        }
+    }
+    
+    var temperature: String? {
+        didSet {
+            temperatureLabel.text = "Temperature: \(temperature ?? "0")"
+        }
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -79,11 +93,11 @@ class WhiteBalanceSliderView: UIView {
         container.distribution = .fillEqually
         container.spacing = 0.0
         
-        let tintLabel = UILabel(frame: .zero)
+        
         tintLabel.text = "Tint"
         tintLabel.textColor = .white
         tintLabel.font = UIFont.systemFont(ofSize: 10)
-        let temperatureLabel = UILabel(frame: .zero)
+
         temperatureLabel.text = "Temperature"
         temperatureLabel.font = UIFont.systemFont(ofSize: 10)
         temperatureLabel.textColor = .white
