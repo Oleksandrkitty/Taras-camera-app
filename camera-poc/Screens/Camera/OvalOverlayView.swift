@@ -34,8 +34,8 @@ class OvalOverlayView: UIView {
         let ovalLayer = CAShapeLayer()
         ovalLayer.path = ovalPath.cgPath
         ovalLayer.fillColor = UIColor.clear.cgColor
-        ovalLayer.strokeColor = UIColor.turbo.cgColor
-        ovalLayer.lineWidth = 2.0
+        ovalLayer.strokeColor = UIColor.white.cgColor
+        ovalLayer.lineWidth = 5.0
         
         let fillLayer = CAShapeLayer()
         fillLayer.path = overlayPath.cgPath

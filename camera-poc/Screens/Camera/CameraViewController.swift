@@ -20,10 +20,6 @@ class CameraViewController: UIViewController {
     @IBOutlet private weak var whiteBalanceValueLabel: UILabel!
     @IBOutlet private weak var usvValueLabel: UILabel!
     
-    @IBAction private func cancelButtonPressed(_ button: UIButton) {
-       //TODO: dismiss screen here
-    }
-    
     @IBAction private func cameraButtonPressed(_ button: UIButton) {
         viewModel.capture()
     }
@@ -175,6 +171,10 @@ class CameraViewController: UIViewController {
         containerView.videoPreviewLayer.videoGravity = .resizeAspectFill
         viewModel.requestCameraAccess()
         containerView.addSubview(ovalOverlayView)
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
     }
 }
 
