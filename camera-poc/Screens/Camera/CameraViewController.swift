@@ -136,6 +136,9 @@ class CameraViewController: UIViewController {
             viewModel.usvValue.bind { [unowned self] value in
                 self.usvValueLabel.text = value
             }
+            viewModel.isCaptureEnabled.bind { isEnabled in
+                self.captureButton.isUserInteractionEnabled = isEnabled
+            }
         }
     }
     
