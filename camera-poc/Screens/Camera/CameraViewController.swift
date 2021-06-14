@@ -13,12 +13,33 @@ class CameraViewController: UIViewController {
     @IBOutlet private weak var flashView: UIView!
     @IBOutlet private weak var pickerView: UIView!
     @IBOutlet private weak var pickerViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var controlsView: UIView! {
+        didSet {
+            controlsView.clipsToBounds = true
+            controlsView.layer.cornerRadius = 10.0
+        }
+    }
     
     @IBOutlet private weak var isoValueLabel: UILabel!
     @IBOutlet private weak var exposureValueLabel: UILabel!
     @IBOutlet private weak var shutterSpeedValueLabel: UILabel!
     @IBOutlet private weak var whiteBalanceValueLabel: UILabel!
     @IBOutlet private weak var usvValueLabel: UILabel!
+    @IBOutlet private weak var lightLabel: UILabel!
+    @IBOutlet private weak var singleShootSwitch: UISwitch!
+    @IBOutlet private weak var lightView: UIView!
+    @IBOutlet private weak var lightPickerContainerView: UIView! {
+        didSet {
+            lightPickerContainerView.isHidden = true
+            lightPickerContainerView.clipsToBounds = true
+            lightPickerContainerView.layer.cornerRadius = 10.0
+        }
+    }
+    @IBOutlet private weak var lightPickerContainerViewBottomConstraint: NSLayoutConstraint! {
+        didSet {
+            lightPickerContainerViewBottomConstraint.constant = -300
+        }
+    }
     
     @IBAction private func cameraButtonPressed(_ button: UIButton) {
         viewModel.capture()
@@ -48,6 +69,14 @@ class CameraViewController: UIViewController {
         viewModel.reset()
     }
     
+    @IBAction private func signleShootValueChanged(_ sender: UISwitch) {
+        viewModel.setSingleShootEnabled(sender.isOn)
+    }
+    
+    @IBAction private func lightButtonPressed(_ button: UIButton) {
+        viewModel.changeLight()
+    }
+    
     private lazy var ovalOverlayView = OvalOverlayView(frame: containerView.bounds)
     
     private lazy var usvPicker: UIView = {
@@ -69,6 +98,12 @@ class CameraViewController: UIViewController {
         slider.translatesAutoresizingMaskIntoConstraints = false
         slider.delegate = self
         return slider
+    }()
+    
+    private lazy var lightPickerView: LightPickerView = {
+        let view = LightPickerView(frame: .zero)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
     
     var viewModel: CameraVM! {
@@ -148,7 +183,15 @@ class CameraViewController: UIViewController {
             viewModel.usvPercents.bind { [unowned self] value in
                 DispatchQueue.main.async {
                     self.captureButton.setTitle(value, for: .normal)
+                    self.lightLabel.text = value
                 }
+            }
+            viewModel.singleShootEnabled.bind { [unowned self] isEnabled in
+                self.singleShootSwitch.isOn = isEnabled
+                UIView.animate(withDuration: 0.3) {
+                    self.lightView.isHidden = !isEnabled
+                }
+                
             }
         }
     }
@@ -178,6 +221,23 @@ class CameraViewController: UIViewController {
         wbSlider.isHidden = true
         pickerViewHeightConstraint.constant = 0
         captureButton.setTitle(viewModel.usvPercents.value, for: .normal)
+        singleShootSwitch.isOn = viewModel.singleShootEnabled.value
+        lightView.isHidden = !viewModel.singleShootEnabled.value
+        lightPickerContainerView.addSubview(lightPickerView)
+        
+        lightPickerContainerView.addSubview(lightPickerView)
+        lightPickerView.leftAnchor.constraint(equalTo: lightPickerContainerView.leftAnchor, constant: 0).isActive = true
+        lightPickerView.rightAnchor.constraint(equalTo: lightPickerContainerView.rightAnchor, constant: 0).isActive = true
+        lightPickerView.topAnchor.constraint(equalTo: lightPickerContainerView.topAnchor, constant: 0).isActive = true
+        lightPickerView.bottomAnchor.constraint(equalTo: lightPickerContainerView.bottomAnchor, constant: 0).isActive = true
+        
+        lightPickerView.canceled = { [unowned self] in
+            self.hideLightPicker()
+        }
+        lightPickerView.completed = { [unowned self] value in
+            self.hideLightPicker()
+            self.viewModel.change(brightness: value)
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -190,6 +250,23 @@ class CameraViewController: UIViewController {
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
+    }
+    
+    func presentLightPicker(values: [Float]) {
+        lightPickerContainerView.isHidden = false
+        lightPickerContainerViewBottomConstraint.constant = 0
+        lightPickerView.values = values
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+        }
+    }
+    
+    func hideLightPicker() {
+        lightPickerContainerViewBottomConstraint.constant = -300
+        self.lightPickerContainerView.isHidden = true
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+        }
     }
 }
 

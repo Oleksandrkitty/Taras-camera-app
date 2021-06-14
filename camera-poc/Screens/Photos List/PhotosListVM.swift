@@ -62,7 +62,6 @@ class PhotosListVM {
                     }
                     group.leave()
                 }
-                print(resource.originalFilename)
             }
         }
         

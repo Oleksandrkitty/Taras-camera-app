@@ -10,12 +10,13 @@ import UIKit
 protocol CameraRouting {
     func presentCameraDeniedAlert()
     func presentPhotosList(maxCount: Int)
+    func presentChangeLight(from: Float, to: Float)
 }
 
 struct CameraRouter: CameraRouting {
-    private weak var controller: UIViewController!
+    private weak var controller: CameraViewController!
     
-    init(controller: UIViewController) {
+    init(controller: CameraViewController) {
         self.controller = controller
     }
     
@@ -34,5 +35,13 @@ struct CameraRouter: CameraRouting {
     func presentPhotosList(maxCount: Int) {
         let controller = ScreenBuilder.PhotosList.photosList(numberOfPhotos: maxCount)
         self.controller.present(controller, animated: true)
+    }
+    
+    func presentChangeLight(from: Float, to: Float) {
+        var values: [Float] = []
+        for i in stride(from: from, to: to + 5, by: 5) {
+            values.append(i)
+        }
+        controller.presentLightPicker(values: values)
     }
 }

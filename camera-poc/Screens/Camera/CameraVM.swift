@@ -27,6 +27,7 @@ class CameraVM: NSObject {
     private(set) var isSliderEnabled: Bound<Bool> = Bound(false)
     private(set) var isWhiteBalanceSliderEnabled: Bound<Bool> = Bound(false)
     private(set) var isCaptureEnabled: Bound<Bool> = Bound(true)
+    private(set) var singleShootEnabled: Bound<Bool> = Bound(false)
     
     private(set) var flashBrightness: Bound<CGFloat> = Bound(0.0)
     private(set) var sliderMinValue: Bound<Float> = Bound(0.0)
@@ -100,7 +101,6 @@ class CameraVM: NSObject {
     func capture() {
         self.isCaptureEnabled.value = false
         photosCount = 0
-        brightness = minBrightness
         makePhoto()
     }
 
@@ -223,11 +223,29 @@ class CameraVM: NSObject {
         }
     }
     
+    func change(brightness: Float) {
+        self.brightness = CGFloat(brightness) / 100
+    }
+    
+    func changeLight() {
+        isUSVPickerEnabled.value = false
+        isSliderEnabled.value = false
+        isWhiteBalanceSliderEnabled.value = false
+        currentSetting = .none
+        router.presentChangeLight(from: Float(series.min), to: Float(series.max))
+    }
+    
+    func setSingleShootEnabled(_ isEnabled: Bool) {
+        singleShootEnabled.value = isEnabled
+        brightness = minBrightness
+    }
+    
     func reset() {
         currentSetting = .none
         isUSVPickerEnabled.value = false
         isWhiteBalanceSliderEnabled.value = false
         isSliderEnabled.value = false
+        singleShootEnabled.value = false
         do {
             try sdk.changeExposure(duration: defaultShutterSpeed, iso: defaultISO)
             try sdk.changeWhiteBalance(tint: defaultTint, temperature: defaultTemperature)
@@ -241,8 +259,7 @@ class CameraVM: NSObject {
     }
     
     private func makePhoto() {
-        
-        if self.brightness > self.maxBrightness {
+        if self.brightness > self.maxBrightness || (self.singleShootEnabled.value && self.photosCount == 1) {
             //To make sure last photo was saved to photo library
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.isCaptureEnabled.value = true
@@ -282,13 +299,15 @@ extension CameraVM: AVCapturePhotoCaptureDelegate {
             PHPhotoLibrary.shared().performChanges {
                 let creationRequest = PHAssetCreationRequest.forAsset()
                 let options = PHAssetResourceCreationOptions()
-                let fileName = "\(UIDevice.modelName)_\(self.dateFormatter.string(from: Date()))_ISO: \("A \(Int(self.sdk.iso))")_Exp: \(String(format: "%0.2f", self.sdk.shutterSpeed))_Tint: \(Int(self.sdk.tint))_Temperature: \(Int(self.sdk.temperature))_USV: \(Int(self.series.max))%_Step: \(Int(self.brightness * 100))%.jpg"
+                let fileName = "\(UIDevice.modelName)_\(self.dateFormatter.string(from: Date()))_ISO: \("A \(Int(self.sdk.iso))")_Exp: \(String(format: "%0.2f", self.sdk.shutterSpeed))_Tint: \(Int(self.sdk.tint))_Temperature: \(Int(self.sdk.temperature))_Frame: \(self.series.title)_Light: \(Int(self.brightness * 100))%.jpg"
                 options.originalFilename = fileName
                 if let data = photo.fileDataRepresentation() {
                     creationRequest.addResource(with: .photo, data: data, options: options)
                 }
-                let brightness = self.brightness + self.series.step
-                self.brightness = round(brightness * 100) / 100
+                if !self.singleShootEnabled.value {
+                    let brightness = self.brightness + self.series.step
+                    self.brightness = round(brightness * 100) / 100
+                }
                 self.makePhoto()
             } completionHandler: { isSaved, error in
                 guard let error = error else { return }
