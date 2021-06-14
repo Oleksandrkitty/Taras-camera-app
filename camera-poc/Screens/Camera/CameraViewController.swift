@@ -139,6 +139,11 @@ class CameraViewController: UIViewController {
             viewModel.isCaptureEnabled.bind { isEnabled in
                 self.captureButton.isUserInteractionEnabled = isEnabled
             }
+            viewModel.usvPercents.bind { value in
+                DispatchQueue.main.async {
+                    self.captureButton.setTitle(value, for: .normal)
+                }
+            }
         }
     }
     

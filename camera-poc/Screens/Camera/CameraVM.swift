@@ -46,6 +46,7 @@ class CameraVM: NSObject {
     private(set) var shutterSpeedValue: Bound<String> = Bound("0.0")
     private(set) var wbValue: Bound<String> = Bound("0.0")
     private(set) var usvValue: Bound<String> = Bound("Low")
+    private(set) var usvPercents: Bound<String> = Bound("0%")
     
     private var defaultISO: Float!
     private var defaultExposure: Float!
@@ -64,7 +65,11 @@ class CameraVM: NSObject {
     }
 
     private var currentSetting: Setting = .none
-    private var brightness: CGFloat = 0.0
+    private var brightness: CGFloat = 0.0 {
+        didSet {
+            self.usvPercents.value = "\(Int(brightness * 100))%"
+        }
+    }
     private var minBrightness: CGFloat = 0.0
     private var maxBrightness: CGFloat = 1.0
     
@@ -178,9 +183,6 @@ class CameraVM: NSObject {
                 case .exposure:
                     try sdk.changeExposure(duration: value, iso: sdk.iso)
                     self.exposureValue.value = String(format: "%0.2f", sdk.shutterSpeed)
-//                case .shutterSpeed:
-//                    try sdk.changeShutterSpeed(value)
-//                    self.shutterSpeedValue.value = "\(sdk.shutterSpeed)"
                 default: break
             }
         } catch {
@@ -191,6 +193,7 @@ class CameraVM: NSObject {
     func change(series: BrigtnessSeries) {
         self.series = series
         self.usvValue.value = series.title
+        self.isUSVPickerEnabled.value = false
     }
     
     func change(tint: Float) {
@@ -241,7 +244,7 @@ class CameraVM: NSObject {
     }
     
     private func capture(brightness: CGFloat) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             let settings = AVCapturePhotoSettings()
             settings.flashMode = .off
             //set starting brightness to achive flashing effect
@@ -260,7 +263,7 @@ class CameraVM: NSObject {
 
 extension CameraVM: AVCapturePhotoCaptureDelegate {
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+        DispatchQueue.main.asyncAfter(deadline: .now()) {
             self.isFlashEnabled.value = false
             UIScreen.main.brightness = self.screenBrightness
         }

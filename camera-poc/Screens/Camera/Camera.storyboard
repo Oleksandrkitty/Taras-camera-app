@@ -45,6 +45,9 @@
                                                                 <subviews>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QHm-Cw-izA">
                                                                         <rect key="frame" x="0.0" y="0.0" width="64" height="64"/>
+                                                                        <state key="normal">
+                                                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                        </state>
                                                                         <connections>
                                                                             <action selector="cameraButtonPressed:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="bce-sE-Mg8"/>
                                                                         </connections>
