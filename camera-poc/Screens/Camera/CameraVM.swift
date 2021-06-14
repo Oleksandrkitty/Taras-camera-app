@@ -44,7 +44,7 @@ class CameraVM: NSObject {
     private(set) var exposureValue: Bound<String> = Bound("0.0")
     private(set) var shutterSpeedValue: Bound<String> = Bound("0.0")
     private(set) var wbValue: Bound<String> = Bound("0.0")
-    private(set) var usvValue: Bound<String> = Bound("40%")
+    private(set) var usvValue: Bound<String> = Bound("Low")
     
     private var defaultISO: Float!
     private var defaultExposure: Float!
@@ -188,7 +188,7 @@ class CameraVM: NSObject {
     
     func change(series: BrigtnessSeries) {
         self.series = series
-        self.usvValue.value = "\(series.max)%"
+        self.usvValue.value = series.title
     }
     
     func change(tint: Float) {
@@ -310,6 +310,6 @@ extension CameraVM: CameraSDKDelegate {
         self.exposureValue.value = String(format: "%0.2f", sdk.shutterSpeed)
         self.shutterSpeedValue.value = "\(sdk.shutterSpeed)"
         self.wbValue.value = "AWB"
-        self.usvValue.value = "\(series.max)%"
+        self.usvValue.value = series.title
     }
 }
