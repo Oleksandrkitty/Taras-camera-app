@@ -1,5 +1,5 @@
 //
-//  LightPickerView.swift
+//  ListPickerView.swift
 //  camera-poc
 //
 //  Created by Taras Chernyshenko on 14.06.2021.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class LightPickerView: UIView {
+class ListPickerView: UIView {
     private lazy var cancelButton: UIButton = {
         let button = UIButton(frame: .zero)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -40,9 +40,9 @@ class LightPickerView: UIView {
     }()
     
     var canceled: (() -> ())?
-    var completed: ((Float) -> ())?
+    var completed: ((Int) -> ())?
     
-    var values: [Float] = [] {
+    var values: [String] = [] {
         didSet {
             pickerView.reloadAllComponents()
             pickerView.selectRow(0, inComponent: 0, animated: false)
@@ -59,13 +59,17 @@ class LightPickerView: UIView {
         setup()
     }
     
+    func select(_ row: Int) {
+        pickerView.selectRow(row, inComponent: 0, animated: true)
+    }
+    
     @objc private func cancel() {
         canceled?()
     }
     
     @objc private func complete() {
         let row = pickerView.selectedRow(inComponent: 0)
-        completed?(values[row])
+        completed?(row)
     }
     
     private func setup() {
@@ -94,7 +98,7 @@ class LightPickerView: UIView {
     }
 }
 
-extension LightPickerView: UIPickerViewDataSource, UIPickerViewDelegate {
+extension ListPickerView: UIPickerViewDataSource, UIPickerViewDelegate {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
@@ -104,6 +108,6 @@ extension LightPickerView: UIPickerViewDataSource, UIPickerViewDelegate {
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return "\(Int(values[row]))%"
+        return values[row]
     }
 }

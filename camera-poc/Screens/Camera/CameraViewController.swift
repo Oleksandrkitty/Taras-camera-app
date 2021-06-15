@@ -34,11 +34,15 @@ class CameraViewController: UIViewController {
             lightPickerContainerView.layer.cornerRadius = 10.0
         }
     }
+    @IBOutlet private weak var deviceFamilyLabel: UILabel!
+    
     @IBOutlet private weak var lightPickerContainerViewBottomConstraint: NSLayoutConstraint! {
         didSet {
             lightPickerContainerViewBottomConstraint.constant = -300
         }
     }
+    @IBOutlet private weak var flashWidthConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var flashHeightConstraint: NSLayoutConstraint!
     
     @IBAction private func cameraButtonPressed(_ button: UIButton) {
         viewModel.capture()
@@ -72,6 +76,10 @@ class CameraViewController: UIViewController {
         viewModel.changeLight()
     }
     
+    @IBAction private func deviceFamilyButtonPressed(_ button: UIButton) {
+        viewModel.presentFamilyDevicePicker()
+    }
+    
     private lazy var ovalOverlayView = OvalOverlayView(frame: containerView.bounds)
     
     private lazy var usvPicker: UIView = {
@@ -95,8 +103,8 @@ class CameraViewController: UIViewController {
         return slider
     }()
     
-    private lazy var lightPickerView: LightPickerView = {
-        let view = LightPickerView(frame: .zero)
+    private lazy var listPickerView: ListPickerView = {
+        let view = ListPickerView(frame: .zero)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -185,6 +193,17 @@ class CameraViewController: UIViewController {
                 }
                 
             }
+            viewModel.deviceFamily.bind { [unowned self] family in
+                self.deviceFamilyLabel.text = family.stringValue
+                self.flashWidthConstraint.constant = self.viewModel.deviceFamily.value.screenSize.width
+                self.flashHeightConstraint.constant = self.viewModel.deviceFamily.value.screenSize.height
+                self.view.layoutIfNeeded()
+                //display example flashing
+                self.flashView.isHidden = false
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    self.flashView.isHidden = true
+                }
+            }
         }
     }
     
@@ -215,21 +234,16 @@ class CameraViewController: UIViewController {
         captureButton.setTitle(viewModel.usvPercents.value, for: .normal)
         singleShootSwitch.isOn = viewModel.isSingleShootEnabled.value
         lightView.isHidden = !viewModel.isSingleShootEnabled.value
-        lightPickerContainerView.addSubview(lightPickerView)
         
-        lightPickerContainerView.addSubview(lightPickerView)
-        lightPickerView.leftAnchor.constraint(equalTo: lightPickerContainerView.leftAnchor, constant: 0).isActive = true
-        lightPickerView.rightAnchor.constraint(equalTo: lightPickerContainerView.rightAnchor, constant: 0).isActive = true
-        lightPickerView.topAnchor.constraint(equalTo: lightPickerContainerView.topAnchor, constant: 0).isActive = true
-        lightPickerView.bottomAnchor.constraint(equalTo: lightPickerContainerView.bottomAnchor, constant: 0).isActive = true
+        lightPickerContainerView.addSubview(listPickerView)
+        listPickerView.leftAnchor.constraint(equalTo: lightPickerContainerView.leftAnchor, constant: 0).isActive = true
+        listPickerView.rightAnchor.constraint(equalTo: lightPickerContainerView.rightAnchor, constant: 0).isActive = true
+        listPickerView.topAnchor.constraint(equalTo: lightPickerContainerView.topAnchor, constant: 0).isActive = true
+        listPickerView.bottomAnchor.constraint(equalTo: lightPickerContainerView.bottomAnchor, constant: 0).isActive = true
         
-        lightPickerView.canceled = { [unowned self] in
-            self.hideLightPicker()
-        }
-        lightPickerView.completed = { [unowned self] value in
-            self.hideLightPicker()
-            self.viewModel.change(brightness: value)
-        }
+        deviceFamilyLabel.text = viewModel.deviceFamily.value.stringValue
+        flashWidthConstraint.constant = viewModel.deviceFamily.value.screenSize.width
+        flashHeightConstraint.constant = viewModel.deviceFamily.value.screenSize.height
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -247,13 +261,39 @@ class CameraViewController: UIViewController {
     func presentLightPicker(values: [Float]) {
         lightPickerContainerView.isHidden = false
         lightPickerContainerViewBottomConstraint.constant = 0
-        lightPickerView.values = values
+        listPickerView.values = values.map { "\(Int($0))%" }
+        listPickerView.canceled = { [unowned self] in
+            self.hidePicker()
+        }
+        listPickerView.completed = { [unowned self] index in
+            self.hidePicker()
+            self.viewModel.change(brightness: values[index])
+        }
         UIView.animate(withDuration: 0.3) {
             self.view.layoutIfNeeded()
         }
     }
     
-    func hideLightPicker() {
+    func presentFamilyDevicePicker() {
+        lightPickerContainerView.isHidden = false
+        lightPickerContainerViewBottomConstraint.constant = 0
+        let values = UIDevice.deviceFamilies
+        let index = values.firstIndex(of: viewModel.deviceFamily.value) ?? 0
+        listPickerView.values = values.map { $0.stringValue }
+        listPickerView.canceled = { [unowned self] in
+            self.hidePicker()
+        }
+        listPickerView.completed = { [unowned self] index in
+            self.hidePicker()
+            self.viewModel.change(family: values[index])
+        }
+        listPickerView.select(index)
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+        }
+    }
+    
+    func hidePicker() {
         lightPickerContainerViewBottomConstraint.constant = -300
         self.lightPickerContainerView.isHidden = true
         UIView.animate(withDuration: 0.3) {

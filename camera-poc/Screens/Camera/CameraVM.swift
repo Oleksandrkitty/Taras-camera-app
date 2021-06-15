@@ -49,6 +49,7 @@ class CameraVM: NSObject {
     private(set) var wbValue: Bound<String> = Bound("0.0")
     private(set) var usvValue: Bound<String> = Bound("Low")
     private(set) var usvPercents: Bound<String> = Bound("0%")
+    private(set) lazy var deviceFamily: Bound<UIDevice.DeviceFamily> = Bound(.xsMax)
     
     private var defaultSeries: BrigtnessSeries!
     
@@ -86,6 +87,13 @@ class CameraVM: NSObject {
         UIScreen.main.brightness = minBrightness
         self.sdk.delegate = self
         usvPercents.value = "\(Int(brightness * 100))%"
+        
+        let screenSize = UIScreen.main.bounds.size
+        for device in UIDevice.deviceFamilies {
+            if screenSize.width == device.screenSize.width && screenSize.height == device.screenSize.height {
+                self.deviceFamily.value = device
+            }
+        }
     }
     
     func requestCameraAccess() {
@@ -165,9 +173,7 @@ class CameraVM: NSObject {
     }
     
     func change(value: Float) {
-        guard sdk.isInitialized else {
-            return
-        }
+        guard sdk.isInitialized else { return }
         do {
             switch currentSetting {
                 case .iso:
@@ -191,26 +197,22 @@ class CameraVM: NSObject {
     }
     
     func change(tint: Float) {
-        guard sdk.isInitialized else {
-            return
-        }
+        guard sdk.isInitialized else { return }
         do {
             try sdk.changeWhiteBalance(tint: tint)
             tintLabel.value = "\(Int(tint))"
         } catch {
-            assertionFailure(error.localizedDescription)
+            assertionFailure("Could not lock device for white balance configuration: \(error)")
         }
     }
     
     func change(temperature: Float) {
-        guard sdk.isInitialized else {
-            return
-        }
+        guard sdk.isInitialized else { return }
         do {
             try sdk.changeWhiteBalance(temperature: temperature)
             temperatureLabel.value = "\(Int(temperature))"
         } catch {
-            assertionFailure(error.localizedDescription)
+            assertionFailure("Could not lock device for white balance configuration: \(error)")
         }
     }
     
@@ -229,6 +231,14 @@ class CameraVM: NSObject {
     func setSingleShootEnabled(_ isEnabled: Bool) {
         isSingleShootEnabled.value = isEnabled
         brightness = minBrightness
+    }
+    
+    func presentFamilyDevicePicker() {
+        router.presentFamilyDevicePicker()
+    }
+    
+    func change(family: UIDevice.DeviceFamily) {
+        deviceFamily.value = family
     }
     
     func reset() {

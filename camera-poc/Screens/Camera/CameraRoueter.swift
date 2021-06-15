@@ -11,6 +11,7 @@ protocol CameraRouting {
     func presentCameraDeniedAlert()
     func presentPhotosList(maxCount: Int)
     func presentChangeLight(from: Float, to: Float)
+    func presentFamilyDevicePicker()
 }
 
 struct CameraRouter: CameraRouting {
@@ -43,5 +44,9 @@ struct CameraRouter: CameraRouting {
             values.append(i)
         }
         controller.presentLightPicker(values: values)
+    }
+    
+    func presentFamilyDevicePicker() {
+        controller.presentFamilyDevicePicker()
     }
 }
