@@ -129,7 +129,7 @@
                                                             <constraint firstAttribute="height" constant="1" id="c5I-y7-4nv"/>
                                                         </constraints>
                                                     </view>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="A 1191" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9qb-Lm-bb2">
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="A 399" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9qb-Lm-bb2">
                                                         <rect key="frame" x="0.0" y="27.5" width="65.5" height="20"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="20" id="wU3-xS-gw0"/>
@@ -178,7 +178,7 @@
                                                             <constraint firstAttribute="height" constant="1" id="ksk-6U-6vR"/>
                                                         </constraints>
                                                     </view>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0.0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3dR-Ag-Zfj">
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0.35" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3dR-Ag-Zfj">
                                                         <rect key="frame" x="0.0" y="27.5" width="66" height="20"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="20" id="hDP-3b-B5U"/>

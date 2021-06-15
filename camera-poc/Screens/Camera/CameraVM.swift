@@ -27,7 +27,7 @@ class CameraVM: NSObject {
     private(set) var isSliderEnabled: Bound<Bool> = Bound(false)
     private(set) var isWhiteBalanceSliderEnabled: Bound<Bool> = Bound(false)
     private(set) var isCaptureEnabled: Bound<Bool> = Bound(true)
-    private(set) var singleShootEnabled: Bound<Bool> = Bound(false)
+    private(set) var isSingleShootEnabled: Bound<Bool> = Bound(false)
     
     private(set) var flashBrightness: Bound<CGFloat> = Bound(0.0)
     private(set) var sliderMinValue: Bound<Float> = Bound(0.0)
@@ -46,13 +46,11 @@ class CameraVM: NSObject {
     
     private(set) var isoValue: Bound<String> = Bound("A 100")
     private(set) var exposureValue: Bound<String> = Bound("0.0")
-    private(set) var shutterSpeedValue: Bound<String> = Bound("0.0")
     private(set) var wbValue: Bound<String> = Bound("0.0")
     private(set) var usvValue: Bound<String> = Bound("Low")
     private(set) var usvPercents: Bound<String> = Bound("0%")
     
     private var defaultISO: Float!
-    private var defaultExposure: Float!
     private var defaultShutterSpeed: Float!
     private var defaultTint: Float!
     private var defaultTemperature: Float!
@@ -236,7 +234,7 @@ class CameraVM: NSObject {
     }
     
     func setSingleShootEnabled(_ isEnabled: Bool) {
-        singleShootEnabled.value = isEnabled
+        isSingleShootEnabled.value = isEnabled
         brightness = minBrightness
     }
     
@@ -245,7 +243,7 @@ class CameraVM: NSObject {
         isUSVPickerEnabled.value = false
         isWhiteBalanceSliderEnabled.value = false
         isSliderEnabled.value = false
-        singleShootEnabled.value = false
+        isSingleShootEnabled.value = false
         do {
             try sdk.changeExposure(duration: defaultShutterSpeed, iso: defaultISO)
             try sdk.changeWhiteBalance(tint: defaultTint, temperature: defaultTemperature)
@@ -259,7 +257,7 @@ class CameraVM: NSObject {
     }
     
     private func makePhoto() {
-        if self.brightness > self.maxBrightness || (self.singleShootEnabled.value && self.photosCount == 1) {
+        if self.brightness > self.maxBrightness || (self.isSingleShootEnabled.value && self.photosCount == 1) {
             //To make sure last photo was saved to photo library
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.isCaptureEnabled.value = true
@@ -304,7 +302,7 @@ extension CameraVM: AVCapturePhotoCaptureDelegate {
                 if let data = photo.fileDataRepresentation() {
                     creationRequest.addResource(with: .photo, data: data, options: options)
                 }
-                if !self.singleShootEnabled.value {
+                if !self.isSingleShootEnabled.value {
                     let brightness = self.brightness + self.series.step
                     self.brightness = round(brightness * 100) / 100
                 }
@@ -319,32 +317,28 @@ extension CameraVM: AVCapturePhotoCaptureDelegate {
 
 extension CameraVM: CameraSDKDelegate {
     func sessionDidStart() {
+        self.sdk.setup()
+        let iso: Float = 400.0
+        let duration: Float = sdk.maxShutterSpeed / 2
+        do {
+            try self.sdk.changeExposure(duration: duration, iso: iso)
+        } catch {
+            assertionFailure(error.localizedDescription)
+        }
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            self.sdk.setupISO()
-            self.sdk.setupWhiteBalance()
-            do {
-                try self.sdk.changeExposure(duration: self.sdk.maxShutterSpeed / 2, iso: self.sdk.iso)
-            } catch {
-                assertionFailure(error.localizedDescription)
-            }
-            
-            self.defaultISO = self.sdk.iso
-            self.defaultExposure = self.sdk.exposureTargetBias
-            self.defaultShutterSpeed = self.sdk.maxShutterSpeed / 2
+            self.defaultISO = iso
+            self.defaultShutterSpeed = duration
             self.defaultTint = self.sdk.tint
             self.defaultTemperature = self.sdk.temperature
             self.defaultSeries = self.series
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                self.updateUI()
-            }
+            self.updateUI()
         }
     }
     
     private func updateUI() {
         self.isoValue.value = "A \(Int(sdk.iso))"
         self.exposureValue.value = String(format: "%0.2f", sdk.shutterSpeed)
-        self.shutterSpeedValue.value = "\(sdk.shutterSpeed)"
         self.wbValue.value = "AWB"
         self.usvValue.value = series.title
         self.tintLabel.value = "\(Int(sdk.tint))"

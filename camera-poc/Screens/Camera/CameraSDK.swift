@@ -38,18 +38,6 @@ class CameraSDK {
         return videoDevice.iso
     }
     
-    var minExposureTargetBias: Float {
-        return videoDevice.minExposureTargetBias
-    }
-    
-    var maxExposureTargetBias: Float {
-        return videoDevice.maxExposureTargetBias
-    }
-    
-    var exposureTargetBias: Float {
-        return videoDevice.exposureTargetBias
-    }
-    
     var minShutterSpeed: Float {
         return 0.0
     }
@@ -183,7 +171,7 @@ class CameraSDK {
             tint: tint
         )
         
-        try setWhiteBalanceGains(self.videoDevice!.deviceWhiteBalanceGains(for: temperatureAndTint))
+        try setWhiteBalanceGains(videoDevice.deviceWhiteBalanceGains(for: temperatureAndTint))
     }
     
     func changeWhiteBalance(temperature: Float) throws {
@@ -192,7 +180,7 @@ class CameraSDK {
             tint: tint
         )
         
-        try setWhiteBalanceGains(self.videoDevice!.deviceWhiteBalanceGains(for: temperatureAndTint))
+        try setWhiteBalanceGains(videoDevice.deviceWhiteBalanceGains(for: temperatureAndTint))
     }
     
     func changeWhiteBalance(tint: Float, temperature: Float) throws {
@@ -201,44 +189,13 @@ class CameraSDK {
             tint: tint
         )
         
-        try setWhiteBalanceGains(self.videoDevice!.deviceWhiteBalanceGains(for: temperatureAndTint))
+        try setWhiteBalanceGains(videoDevice.deviceWhiteBalanceGains(for: temperatureAndTint))
     }
     
-    func setupISO() {
+    func setup() {
         do {
             try videoDevice.lockForConfiguration()
             videoDevice.exposureMode = .custom
-            videoDevice.unlockForConfiguration()
-        } catch {
-            assertionFailure(error.localizedDescription)
-        }
-    }
-    
-    func setupExposure() {
-        do {
-            try videoDevice.lockForConfiguration()
-            videoDevice.exposureMode = .continuousAutoExposure
-            videoDevice.activeVideoMaxFrameDuration = CMTime.invalid
-            videoDevice.activeVideoMinFrameDuration = CMTime.invalid
-            videoDevice.unlockForConfiguration()
-        } catch {
-            assertionFailure(error.localizedDescription)
-        }
-    }
-    
-    func setupShutterSpeed() {
-        do {
-            try videoDevice.lockForConfiguration()
-            videoDevice.exposureMode = .custom
-            videoDevice.unlockForConfiguration()
-        } catch {
-            assertionFailure(error.localizedDescription)
-        }
-    }
-    
-    func setupWhiteBalance() {
-        do {
-            try videoDevice.lockForConfiguration()
             videoDevice.whiteBalanceMode = .locked
             videoDevice.unlockForConfiguration()
         } catch {
@@ -260,9 +217,9 @@ class CameraSDK {
         g.greenGain = max(1.0, g.greenGain)
         g.blueGain = max(1.0, g.blueGain)
         
-        g.redGain = min(self.videoDevice!.maxWhiteBalanceGain, g.redGain)
-        g.greenGain = min(self.videoDevice!.maxWhiteBalanceGain, g.greenGain)
-        g.blueGain = min(self.videoDevice!.maxWhiteBalanceGain, g.blueGain)
+        g.redGain = min(videoDevice.maxWhiteBalanceGain, g.redGain)
+        g.greenGain = min(videoDevice.maxWhiteBalanceGain, g.greenGain)
+        g.blueGain = min(videoDevice.maxWhiteBalanceGain, g.blueGain)
         
         return g
     }

@@ -168,9 +168,6 @@ class CameraViewController: UIViewController {
             viewModel.exposureValue.bind { [unowned self] value in
                 self.exposureValueLabel.text = value
             }
-            viewModel.shutterSpeedValue.bind { [unowned self] value in
-                self.shutterSpeedValueLabel.text = value
-            }
             viewModel.wbValue.bind { [unowned self] value in
                 self.whiteBalanceValueLabel.text = value
             }
@@ -186,7 +183,7 @@ class CameraViewController: UIViewController {
                     self.lightLabel.text = value
                 }
             }
-            viewModel.singleShootEnabled.bind { [unowned self] isEnabled in
+            viewModel.isSingleShootEnabled.bind { [unowned self] isEnabled in
                 self.singleShootSwitch.isOn = isEnabled
                 UIView.animate(withDuration: 0.3) {
                     self.lightView.isHidden = !isEnabled
@@ -221,8 +218,8 @@ class CameraViewController: UIViewController {
         wbSlider.isHidden = true
         pickerViewHeightConstraint.constant = 0
         captureButton.setTitle(viewModel.usvPercents.value, for: .normal)
-        singleShootSwitch.isOn = viewModel.singleShootEnabled.value
-        lightView.isHidden = !viewModel.singleShootEnabled.value
+        singleShootSwitch.isOn = viewModel.isSingleShootEnabled.value
+        lightView.isHidden = !viewModel.isSingleShootEnabled.value
         lightPickerContainerView.addSubview(lightPickerView)
         
         lightPickerContainerView.addSubview(lightPickerView)
