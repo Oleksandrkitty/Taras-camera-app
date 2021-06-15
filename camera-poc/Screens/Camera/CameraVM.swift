@@ -11,7 +11,7 @@ import Photos
 
 class CameraVM: NSObject {
     private enum Setting {
-        case iso, exposure, shutterSpeed, whiteBalance, usv, none
+        case iso, exposure, whiteBalance, usv, none
     }
     private let router: CameraRouting
     private let sdk: CameraSDK
@@ -127,21 +127,6 @@ class CameraVM: NSObject {
         isSliderEnabled.value = true
         currentSetting = .exposure
         
-        sliderMinValue.value = sdk.minShutterSpeed
-        sliderMaxValue.value = sdk.maxShutterSpeed
-        sliderCurrentValue.value = sdk.shutterSpeed
-    }
-    
-    func selectShutterSpeed() {
-        guard currentSetting != .shutterSpeed else {
-            isSliderEnabled.value = false
-            currentSetting = .none
-            return
-        }
-        isUSVPickerEnabled.value = false
-        isWhiteBalanceSliderEnabled.value = false
-        isSliderEnabled.value = true
-        currentSetting = .shutterSpeed
         sliderMinValue.value = sdk.minShutterSpeed
         sliderMaxValue.value = sdk.maxShutterSpeed
         sliderCurrentValue.value = sdk.shutterSpeed

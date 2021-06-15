@@ -22,7 +22,6 @@ class CameraViewController: UIViewController {
     
     @IBOutlet private weak var isoValueLabel: UILabel!
     @IBOutlet private weak var exposureValueLabel: UILabel!
-    @IBOutlet private weak var shutterSpeedValueLabel: UILabel!
     @IBOutlet private weak var whiteBalanceValueLabel: UILabel!
     @IBOutlet private weak var usvValueLabel: UILabel!
     @IBOutlet private weak var lightLabel: UILabel!
@@ -51,10 +50,6 @@ class CameraViewController: UIViewController {
     
     @IBAction private func exposureButtonPressed(_ button: UIButton) {
         viewModel.selectExposure()
-    }
-    
-    @IBAction private func shutterSpeedButtonPressed(_ button: UIButton) {
-        viewModel.selectShutterSpeed()
     }
     
     @IBAction private func whiteBalanceButtonPressed(_ button: UIButton) {
