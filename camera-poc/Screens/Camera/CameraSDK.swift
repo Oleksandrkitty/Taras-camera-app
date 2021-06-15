@@ -21,9 +21,15 @@ class CameraSDK {
     private let kExposureMinimumDuration = 1.0 / 1000 // Limit exposure duration to a useful range
     
     private let router: CameraRouting
-    let photoOutput = AVCapturePhotoOutput()
     private var videoInput: AVCaptureDeviceInput?
     private var videoDevice: AVCaptureDevice!
+    private(set) var isInitialized: Bool = false
+    private(set) var defaultISO: Float!
+    private(set) var defaultShutterSpeed: Float!
+    private(set) var defaultTint: Float!
+    private(set) var defaultTemperature: Float!
+    
+    let photoOutput = AVCapturePhotoOutput()
     let captureSession: AVCaptureSession = AVCaptureSession()
     
     var minISO: Float {
@@ -133,7 +139,7 @@ class CameraSDK {
         }
         captureSession.commitConfiguration()
         captureSession.startRunning()
-        delegate?.sessionDidStart()
+        setup()
     }
     
     func changeISO(_ value: Float) throws {
@@ -192,14 +198,27 @@ class CameraSDK {
         try setWhiteBalanceGains(videoDevice.deviceWhiteBalanceGains(for: temperatureAndTint))
     }
     
-    func setup() {
+    private func setup() {
+        let iso: Float = 400.0
+        let duration: Float = maxShutterSpeed / 2
         do {
             try videoDevice.lockForConfiguration()
             videoDevice.exposureMode = .custom
             videoDevice.whiteBalanceMode = .locked
             videoDevice.unlockForConfiguration()
+            
+            try changeExposure(duration: duration, iso: iso)
         } catch {
             assertionFailure(error.localizedDescription)
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.defaultISO = iso
+            self.defaultShutterSpeed = duration
+            self.defaultTint = self.tint
+            self.defaultTemperature = self.temperature
+            self.isInitialized = true
+            self.delegate?.sessionDidStart()
         }
     }
     

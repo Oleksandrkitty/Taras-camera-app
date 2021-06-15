@@ -50,10 +50,6 @@ class CameraVM: NSObject {
     private(set) var usvValue: Bound<String> = Bound("Low")
     private(set) var usvPercents: Bound<String> = Bound("0%")
     
-    private var defaultISO: Float!
-    private var defaultShutterSpeed: Float!
-    private var defaultTint: Float!
-    private var defaultTemperature: Float!
     private var defaultSeries: BrigtnessSeries!
     
     private var series: BrigtnessSeries = Medium {
@@ -97,6 +93,9 @@ class CameraVM: NSObject {
     }
     
     func capture() {
+        guard sdk.isInitialized else {
+            return
+        }
         self.isCaptureEnabled.value = false
         photosCount = 0
         makePhoto()
@@ -181,6 +180,9 @@ class CameraVM: NSObject {
     }
     
     func change(value: Float) {
+        guard sdk.isInitialized else {
+            return
+        }
         do {
             switch currentSetting {
                 case .iso:
@@ -204,6 +206,9 @@ class CameraVM: NSObject {
     }
     
     func change(tint: Float) {
+        guard sdk.isInitialized else {
+            return
+        }
         do {
             try sdk.changeWhiteBalance(tint: tint)
             tintLabel.value = "\(Int(tint))"
@@ -213,6 +218,9 @@ class CameraVM: NSObject {
     }
     
     func change(temperature: Float) {
+        guard sdk.isInitialized else {
+            return
+        }
         do {
             try sdk.changeWhiteBalance(temperature: temperature)
             temperatureLabel.value = "\(Int(temperature))"
@@ -239,14 +247,17 @@ class CameraVM: NSObject {
     }
     
     func reset() {
+        guard sdk.isInitialized else {
+            return
+        }
         currentSetting = .none
         isUSVPickerEnabled.value = false
         isWhiteBalanceSliderEnabled.value = false
         isSliderEnabled.value = false
         isSingleShootEnabled.value = false
         do {
-            try sdk.changeExposure(duration: defaultShutterSpeed, iso: defaultISO)
-            try sdk.changeWhiteBalance(tint: defaultTint, temperature: defaultTemperature)
+            try sdk.changeExposure(duration: sdk.defaultShutterSpeed, iso: sdk.defaultISO)
+            try sdk.changeWhiteBalance(tint: sdk.defaultTint, temperature: sdk.defaultTemperature)
             change(series: defaultSeries)
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 self.updateUI()
@@ -317,23 +328,8 @@ extension CameraVM: AVCapturePhotoCaptureDelegate {
 
 extension CameraVM: CameraSDKDelegate {
     func sessionDidStart() {
-        self.sdk.setup()
-        let iso: Float = 400.0
-        let duration: Float = sdk.maxShutterSpeed / 2
-        do {
-            try self.sdk.changeExposure(duration: duration, iso: iso)
-        } catch {
-            assertionFailure(error.localizedDescription)
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            self.defaultISO = iso
-            self.defaultShutterSpeed = duration
-            self.defaultTint = self.sdk.tint
-            self.defaultTemperature = self.sdk.temperature
-            self.defaultSeries = self.series
-            self.updateUI()
-        }
+        defaultSeries = series
+        updateUI()
     }
     
     private func updateUI() {
