@@ -8,6 +8,12 @@
 import UIKit
 
 class PhotosListViewController: UIViewController {
+    @IBOutlet private weak var progressView: UIView! {
+        didSet {
+            progressView.isHidden = true
+        }
+    }
+    @IBOutlet private weak var progressLabel: UILabel!
     @IBOutlet private weak var collectionView: UICollectionView! {
         didSet {
             collectionView.register(ImageCollectionViewCell.nib, forCellWithReuseIdentifier: "ImageCollectionViewCell")
@@ -15,6 +21,7 @@ class PhotosListViewController: UIViewController {
             collectionView.delegate = self
         }
     }
+    @IBOutlet private weak var spinner: UIActivityIndicatorView!
     
     @IBAction private func uploadButtonPressed(_ button: UIButton) {
         viewModel.upload()
@@ -32,6 +39,21 @@ class PhotosListViewController: UIViewController {
         super.viewDidLoad()
         title = "Upload"
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel))
+    }
+    
+    func showProgress() {
+        progressView.isHidden = false
+        progressLabel.text = "Uploading..."
+        spinner.startAnimating()
+    }
+    
+    func showProgress(_ progress: Float) {
+        progressLabel.text = "Uploading \(Int(progress * 100))%"
+    }
+    
+    func hideProgress() {
+        progressView.isHidden = true
+        spinner.stopAnimating()
     }
     
     @objc private func cancel() {

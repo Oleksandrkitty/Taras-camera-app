@@ -11,4 +11,5 @@ target 'camera-poc' do
 
   use_frameworks!
   inhibit_all_warnings!
+  pod "AWSS3"
 end

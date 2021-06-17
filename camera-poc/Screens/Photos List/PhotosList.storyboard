@@ -47,21 +47,72 @@
                                     <action selector="uploadButtonPressed:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="98p-0R-Fs2"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eli-Kc-Zzu">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ors-AM-GCW">
+                                        <rect key="frame" x="165.5" y="417" width="83" height="62"/>
+                                        <subviews>
+                                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="wyz-eS-avE">
+                                                <rect key="frame" x="23" y="0.0" width="37" height="37"/>
+                                                <color key="color" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </activityIndicatorView>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="V5M-lP-CLP">
+                                                <rect key="frame" x="0.0" y="40" width="83" height="1"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="1" id="rIg-Dx-hPn"/>
+                                                </constraints>
+                                            </view>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Uploading..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7bD-5k-I3R">
+                                                <rect key="frame" x="0.0" y="44" width="83" height="18"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstItem="7bD-5k-I3R" firstAttribute="leading" secondItem="ors-AM-GCW" secondAttribute="leading" id="BoS-Kp-Rrs"/>
+                                            <constraint firstItem="7bD-5k-I3R" firstAttribute="top" secondItem="V5M-lP-CLP" secondAttribute="bottom" constant="3" id="By0-3j-5Jz"/>
+                                            <constraint firstItem="V5M-lP-CLP" firstAttribute="leading" secondItem="ors-AM-GCW" secondAttribute="leading" id="CXc-5j-1Zw"/>
+                                            <constraint firstAttribute="bottom" secondItem="7bD-5k-I3R" secondAttribute="bottom" id="Obs-10-Esq"/>
+                                            <constraint firstItem="wyz-eS-avE" firstAttribute="top" secondItem="ors-AM-GCW" secondAttribute="top" id="bkF-eX-r4b"/>
+                                            <constraint firstItem="wyz-eS-avE" firstAttribute="centerX" secondItem="ors-AM-GCW" secondAttribute="centerX" id="dyt-fv-QGc"/>
+                                            <constraint firstAttribute="trailing" secondItem="V5M-lP-CLP" secondAttribute="trailing" id="gnx-2x-aqC"/>
+                                            <constraint firstItem="wyz-eS-avE" firstAttribute="bottom" secondItem="V5M-lP-CLP" secondAttribute="top" constant="-3" id="t7G-Ac-bkr"/>
+                                            <constraint firstAttribute="trailing" secondItem="7bD-5k-I3R" secondAttribute="trailing" id="vCK-p0-Jou"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstItem="ors-AM-GCW" firstAttribute="centerX" secondItem="eli-Kc-Zzu" secondAttribute="centerX" id="EXM-lw-36o"/>
+                                    <constraint firstItem="ors-AM-GCW" firstAttribute="centerY" secondItem="eli-Kc-Zzu" secondAttribute="centerY" id="Mv2-hK-ic1"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="YAb-bV-8bg" secondAttribute="trailing" id="5j8-7v-rwc"/>
                             <constraint firstItem="kwn-OU-frK" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="20" id="DWF-T0-7Ut"/>
+                            <constraint firstItem="eli-Kc-Zzu" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="Kox-Ry-56U"/>
+                            <constraint firstItem="eli-Kc-Zzu" firstAttribute="top" secondItem="5EZ-qb-Rvc" secondAttribute="top" id="Llg-Kb-dRx"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="YAb-bV-8bg" secondAttribute="bottom" id="Q7c-Qk-vID"/>
                             <constraint firstItem="YAb-bV-8bg" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="QX6-66-Qm3"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="kwn-OU-frK" secondAttribute="bottom" constant="20" id="dmA-Tb-r0R"/>
                             <constraint firstItem="YAb-bV-8bg" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" id="jj5-ii-JL2"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="eli-Kc-Zzu" secondAttribute="trailing" id="no9-6U-f7N"/>
+                            <constraint firstAttribute="bottom" secondItem="eli-Kc-Zzu" secondAttribute="bottom" id="nue-Eb-Uwj"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="kwn-OU-frK" secondAttribute="trailing" constant="20" id="sb6-3E-Fof"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="collectionView" destination="YAb-bV-8bg" id="brY-fN-dT3"/>
+                        <outlet property="progressLabel" destination="7bD-5k-I3R" id="wdE-kZ-MnE"/>
+                        <outlet property="progressView" destination="eli-Kc-Zzu" id="WVp-m1-hGW"/>
+                        <outlet property="spinner" destination="wyz-eS-avE" id="8J3-SK-oD6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

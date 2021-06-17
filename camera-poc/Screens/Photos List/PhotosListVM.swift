@@ -19,10 +19,9 @@ class PhotosListVM {
     }
     
     func upload() {
-        //TODO: upload to the SharePoint/GoogleDrive/etc
-        var urls: [URL] = []
         let requestOptions = PHImageRequestOptions()
         requestOptions.isSynchronous = true
+        router.showProgress()
         let group = DispatchGroup()
         for asset in self.assets {
             if let resource = PHAssetResource.assetResources(for: asset).first {
@@ -30,14 +29,22 @@ class PhotosListVM {
                 group.enter()
                 PHImageManager.default().requestImage(for: asset, targetSize: .zero, contentMode: .aspectFill, options: requestOptions) { (image, _) in
                     if let image = image, let url = self.saveImage(imageName: filename, image: image) {
-                        urls.append(url)
+                        AWSS3Service.shared.uploadFileFromURL(url, conentType: "image/jpeg", progress: nil) { _, error in
+                            group.leave()
+                            guard let error = error else {
+                                return
+                            }
+                            assertionFailure(error.localizedDescription)
+                        }
+                    } else {
+                        group.leave()
                     }
-                    group.leave()
                 }
             }
         }
         group.notify(queue: .main) {
-            self.router.presentShareDialog(urls)
+            self.router.hideProgress()
+            self.router.dismiss()
         }
     }
     
@@ -78,14 +85,7 @@ class PhotosListVM {
         guard let data = image.jpegData(compressionQuality: 1) else { return nil }
         //Checks if file exists, removes it if so.
         if FileManager.default.fileExists(atPath: fileURL.path) {
-            do {
-                try FileManager.default.removeItem(atPath: fileURL.path)
-                assertionFailure("Removed old image")
-            } catch {
-                assertionFailure("Couldn't remove file at path\(error)")
-                return nil
-            }
-            
+            return fileURL
         }
         
         do {

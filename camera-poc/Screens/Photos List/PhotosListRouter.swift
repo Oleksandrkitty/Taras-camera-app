@@ -9,18 +9,32 @@ import UIKit
 import Photos
 
 protocol PhotosListRouting {
-    func presentShareDialog(_ items: [URL])
+    func dismiss()
+    func showProgress()
+    func showProgress(_ progress: Float)
+    func hideProgress()
 }
 
 struct PhotosListRouter: PhotosListRouting {
-    private weak var controller: UIViewController!
+    private weak var controller: PhotosListViewController!
     
-    init(controller: UIViewController) {
+    init(controller: PhotosListViewController) {
         self.controller = controller
     }
     
-    func presentShareDialog(_ items: [URL]) {
-        let controller = UIActivityViewController(activityItems: items, applicationActivities: nil)
-        self.controller.present(controller, animated: true)
+    func dismiss() {
+        controller.dismiss(animated: true)
+    }
+    
+    func showProgress() {
+        controller.showProgress()
+    }
+    
+    func showProgress(_ progress: Float) {
+
+    }
+    
+    func hideProgress() {
+        controller.hideProgress()
     }
 }

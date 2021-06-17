@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -22,6 +22,7 @@
 		631585972667604A006E60EA /* CameraVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 631585962667604A006E60EA /* CameraVM.swift */; };
 		6315859926676152006E60EA /* Bound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6315859826676152006E60EA /* Bound.swift */; };
 		6315859D266764D5006E60EA /* Storyboard+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6315859C266764D5006E60EA /* Storyboard+Name.swift */; };
+		6319CE5D267BA4A100AF6082 /* AWSS3Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319CE5C267BA4A100AF6082 /* AWSS3Service.swift */; };
 		631C4A3626711FD600765660 /* UIColor+Names.swift in Sources */ = {isa = PBXBuildFile; fileRef = 631C4A3526711FD600765660 /* UIColor+Names.swift */; };
 		631C4A392671221000765660 /* PhotosList.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 631C4A382671221000765660 /* PhotosList.storyboard */; };
 		631C4A3B2671221F00765660 /* PhotosListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 631C4A3A2671221F00765660 /* PhotosListViewController.swift */; };
@@ -61,6 +62,7 @@
 		631585962667604A006E60EA /* CameraVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraVM.swift; sourceTree = "<group>"; };
 		6315859826676152006E60EA /* Bound.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bound.swift; sourceTree = "<group>"; };
 		6315859C266764D5006E60EA /* Storyboard+Name.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Storyboard+Name.swift"; sourceTree = "<group>"; };
+		6319CE5C267BA4A100AF6082 /* AWSS3Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3Service.swift; sourceTree = "<group>"; };
 		631C4A3526711FD600765660 /* UIColor+Names.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Names.swift"; sourceTree = "<group>"; };
 		631C4A382671221000765660 /* PhotosList.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = PhotosList.storyboard; sourceTree = "<group>"; };
 		631C4A3A2671221F00765660 /* PhotosListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosListViewController.swift; sourceTree = "<group>"; };
@@ -141,6 +143,7 @@
 				6315858A26675CD5006E60EA /* Screen Builder */,
 				6315859826676152006E60EA /* Bound.swift */,
 				632576C7266EB14100B55E27 /* BrigtnessSeries.swift */,
+				6319CE5C267BA4A100AF6082 /* AWSS3Service.swift */,
 			);
 			path = "Common Services";
 			sourceTree = "<group>";
@@ -244,6 +247,7 @@
 				6315856826675AB5006E60EA /* Sources */,
 				6315856926675AB5006E60EA /* Frameworks */,
 				6315856A26675AB5006E60EA /* Resources */,
+				4437CD608EA38094BEC3E037 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -302,6 +306,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		4437CD608EA38094BEC3E037 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-camera-poc/Pods-camera-poc-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-camera-poc/Pods-camera-poc-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-camera-poc/Pods-camera-poc-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		5C2CA7B197D3757CA339BF01 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -350,6 +371,7 @@
 				63AD3E9A267890CC007D87E8 /* UIDevice+ScreenSize.swift in Sources */,
 				632576C8266EB14100B55E27 /* BrigtnessSeries.swift in Sources */,
 				631C4A3B2671221F00765660 /* PhotosListViewController.swift in Sources */,
+				6319CE5D267BA4A100AF6082 /* AWSS3Service.swift in Sources */,
 				631C4A462671289100765660 /* UIDevice+Model.swift in Sources */,
 				631C4A422671247E00765660 /* PhotosListVM.swift in Sources */,
 				6382A711267336A5009C7254 /* PhotosListRouter.swift in Sources */,
