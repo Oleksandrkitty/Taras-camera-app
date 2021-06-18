@@ -8,7 +8,7 @@
 import UIKit
 
 extension UIDevice {
-    enum DeviceFamily {
+    enum DeviceFamily: Int {
         case seven
         case sevenPlus
         case ten

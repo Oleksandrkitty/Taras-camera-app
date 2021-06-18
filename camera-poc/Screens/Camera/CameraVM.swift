@@ -49,7 +49,7 @@ class CameraVM: NSObject {
     private(set) var wbValue: Bound<String> = Bound("0.0")
     private(set) var usvValue: Bound<String> = Bound("Low")
     private(set) var usvPercents: Bound<String> = Bound("0%")
-    private(set) lazy var deviceFamily: Bound<UIDevice.DeviceFamily> = Bound(.xsMax)
+    private(set) lazy var frameSize: Bound<FrameSize> = Bound(.none)
     
     private var defaultSeries: BrigtnessSeries!
     
@@ -58,7 +58,7 @@ class CameraVM: NSObject {
             brightness = series.min / 100
             minBrightness = series.min / 100
             maxBrightness = series.max / 100
-            UIScreen.main.brightness = minBrightness
+            UIScreen.main.brightness = 1.0
         }
     }
 
@@ -84,16 +84,10 @@ class CameraVM: NSObject {
         brightness = series.min / 100
         minBrightness = series.min / 100
         maxBrightness = series.max / 100
-        UIScreen.main.brightness = minBrightness
+        UIScreen.main.brightness = 1.0
         self.sdk.delegate = self
         usvPercents.value = "\(Int(brightness * 100))%"
-        
-        let screenSize = UIScreen.main.bounds.size
-        for device in UIDevice.deviceFamilies {
-            if screenSize.width == device.screenSize.width && screenSize.height == device.screenSize.height {
-                self.deviceFamily.value = device
-            }
-        }
+        frameSize.value = FramingService.size()
     }
     
     func requestCameraAccess() {
@@ -237,8 +231,9 @@ class CameraVM: NSObject {
         router.presentFamilyDevicePicker()
     }
     
-    func change(family: UIDevice.DeviceFamily) {
-        deviceFamily.value = family
+    func change(size: FrameSize) {
+        frameSize.value = size
+        FramingService.set(size: size)
     }
     
     func reset() {
@@ -295,7 +290,7 @@ class CameraVM: NSObject {
 extension CameraVM: AVCapturePhotoCaptureDelegate {
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         self.isFlashEnabled.value = false
-        UIScreen.main.brightness = self.screenBrightness
+        UIScreen.main.brightness = 1.0
         
         PHPhotoLibrary.requestAuthorization { status in
             guard status == .authorized else { return }

@@ -193,10 +193,16 @@ class CameraViewController: UIViewController {
                 }
                 
             }
-            viewModel.deviceFamily.bind { [unowned self] family in
-                self.deviceFamilyLabel.text = family.stringValue
-                self.flashWidthConstraint.constant = self.viewModel.deviceFamily.value.screenSize.width
-                self.flashHeightConstraint.constant = self.viewModel.deviceFamily.value.screenSize.height
+            viewModel.frameSize.bind { [unowned self] size in
+                self.deviceFamilyLabel.text = size.stringValue
+                switch size {
+                case .none:
+                    self.flashWidthConstraint.constant = UIScreen.main.bounds.width
+                    self.flashHeightConstraint.constant = UIScreen.main.bounds.height
+                case .iPhoneSeven:
+                    self.flashWidthConstraint.constant = UIDevice.DeviceFamily.seven.screenSize.width
+                    self.flashHeightConstraint.constant = UIDevice.DeviceFamily.seven.screenSize.height
+                }
                 self.view.layoutIfNeeded()
                 //display example flashing
                 self.flashView.isHidden = false
@@ -241,9 +247,15 @@ class CameraViewController: UIViewController {
         listPickerView.topAnchor.constraint(equalTo: lightPickerContainerView.topAnchor, constant: 0).isActive = true
         listPickerView.bottomAnchor.constraint(equalTo: lightPickerContainerView.bottomAnchor, constant: 0).isActive = true
         
-        deviceFamilyLabel.text = viewModel.deviceFamily.value.stringValue
-        flashWidthConstraint.constant = viewModel.deviceFamily.value.screenSize.width
-        flashHeightConstraint.constant = viewModel.deviceFamily.value.screenSize.height
+        deviceFamilyLabel.text = viewModel.frameSize.value.stringValue
+        switch viewModel.frameSize.value {
+        case .none:
+            flashWidthConstraint.constant = UIScreen.main.bounds.width
+            flashHeightConstraint.constant = UIScreen.main.bounds.height
+        case .iPhoneSeven:
+            flashWidthConstraint.constant = UIDevice.DeviceFamily.seven.screenSize.width
+            flashHeightConstraint.constant = UIDevice.DeviceFamily.seven.screenSize.height
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -277,15 +289,15 @@ class CameraViewController: UIViewController {
     func presentFamilyDevicePicker() {
         lightPickerContainerView.isHidden = false
         lightPickerContainerViewBottomConstraint.constant = 0
-        let values = UIDevice.deviceFamilies
-        let index = values.firstIndex(of: viewModel.deviceFamily.value) ?? 0
+        let values: [FrameSize] = [.none, .iPhoneSeven]
+        let index = FramingService.size().rawValue
         listPickerView.values = values.map { $0.stringValue }
         listPickerView.canceled = { [unowned self] in
             self.hidePicker()
         }
         listPickerView.completed = { [unowned self] index in
             self.hidePicker()
-            self.viewModel.change(family: values[index])
+            self.viewModel.change(size: values[index])
         }
         listPickerView.select(index)
         UIView.animate(withDuration: 0.3) {
