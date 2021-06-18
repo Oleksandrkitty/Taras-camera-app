@@ -16,7 +16,7 @@ class OvalOverlayView: UIView {
         super.init(frame: frame)
         backgroundColor = UIColor.clear
         overlayFrame = CGRect(x: (frame.width - width) / 2,
-                              y: (frame.height - height) / 2,
+                              y: 80,
                               width: width,
                               height: height)
     }
