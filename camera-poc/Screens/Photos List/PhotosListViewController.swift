@@ -14,11 +14,11 @@ class PhotosListViewController: UIViewController {
         }
     }
     @IBOutlet private weak var progressLabel: UILabel!
-    @IBOutlet private weak var collectionView: UICollectionView! {
+    @IBOutlet private weak var collectionView: UICollectionView? {
         didSet {
-            collectionView.register(ImageCollectionViewCell.nib, forCellWithReuseIdentifier: "ImageCollectionViewCell")
-            collectionView.dataSource = self
-            collectionView.delegate = self
+            collectionView?.register(ImageCollectionViewCell.nib, forCellWithReuseIdentifier: "ImageCollectionViewCell")
+            collectionView?.dataSource = self
+            collectionView?.delegate = self
         }
     }
     @IBOutlet private weak var spinner: UIActivityIndicatorView!
@@ -30,7 +30,7 @@ class PhotosListViewController: UIViewController {
     var viewModel: PhotosListVM! {
         didSet {
             viewModel.photos.bind { [weak self] _ in
-                self?.collectionView.reloadData()
+                self?.collectionView?.reloadData()
             }
         }
     }
