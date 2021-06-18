@@ -17,9 +17,10 @@ extension UIDevice {
         case twelveProMax
         
         var screenSize: CGSize {
+            let isZoomed = UIScreen.main.nativeScale > UIScreen.main.scale
             switch self {
             case .seven:
-                return CGSize(width: 375, height: 667)
+                return CGSize(width: isZoomed ? 320 : 375, height: isZoomed ? 568 : 667)
             case .sevenPlus:
                 return CGSize(width: 414, height: 736)
             case .ten:
