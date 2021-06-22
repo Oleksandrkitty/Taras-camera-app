@@ -9,8 +9,8 @@ import UIKit
 
 class OvalOverlayView: UIView {
     private var overlayFrame: CGRect!
-    private let width: CGFloat = 170
-    private let height: CGFloat = 240
+    private let width: CGFloat = 185
+    private let height: CGFloat = 265
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -40,7 +40,7 @@ class OvalOverlayView: UIView {
         let fillLayer = CAShapeLayer()
         fillLayer.path = overlayPath.cgPath
         fillLayer.fillRule = CAShapeLayerFillRule.evenOdd
-        fillLayer.fillColor = UIColor.black.withAlphaComponent(0.0).cgColor
+        fillLayer.fillColor = UIColor.white.withAlphaComponent(0.0).cgColor
         
         layer.addSublayer(fillLayer)
         layer.addSublayer(ovalLayer)

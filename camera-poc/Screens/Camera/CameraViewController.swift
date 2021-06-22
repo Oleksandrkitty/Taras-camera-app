@@ -13,12 +13,7 @@ class CameraViewController: UIViewController {
     @IBOutlet private weak var flashView: UIView!
     @IBOutlet private weak var pickerView: UIView!
     @IBOutlet private weak var pickerViewHeightConstraint: NSLayoutConstraint!
-    @IBOutlet private weak var controlsView: UIView! {
-        didSet {
-            controlsView.clipsToBounds = true
-            controlsView.layer.cornerRadius = 10.0
-        }
-    }
+    @IBOutlet private weak var controlsView: UIView!
     
     @IBOutlet private weak var isoValueLabel: UILabel!
     @IBOutlet private weak var exposureValueLabel: UILabel!
@@ -26,6 +21,8 @@ class CameraViewController: UIViewController {
     @IBOutlet private weak var usvValueLabel: UILabel!
     @IBOutlet private weak var lightLabel: UILabel!
     @IBOutlet private weak var singleShootSwitch: UISwitch!
+    @IBOutlet private weak var darkModeSwitch: UISwitch!
+    @IBOutlet private weak var panelSwitch: UISwitch!
     @IBOutlet private weak var lightView: UIView!
     @IBOutlet private weak var lightPickerContainerView: UIView! {
         didSet {
@@ -35,6 +32,12 @@ class CameraViewController: UIViewController {
         }
     }
     @IBOutlet private weak var deviceFamilyLabel: UILabel!
+    
+    @IBOutlet private weak var singleLabel: UILabel!
+    @IBOutlet private weak var darkModeLabel: UILabel!
+    @IBOutlet private weak var panelLabel: UILabel!
+    @IBOutlet private weak var contolsStackView: UIStackView!
+    @IBOutlet private weak var frameView: UIView!
     
     @IBOutlet private weak var lightPickerContainerViewBottomConstraint: NSLayoutConstraint! {
         didSet {
@@ -70,6 +73,14 @@ class CameraViewController: UIViewController {
     
     @IBAction private func signleShootValueChanged(_ sender: UISwitch) {
         viewModel.setSingleShootEnabled(sender.isOn)
+    }
+    
+    @IBAction private func darkModeValueChanged(_ sender: UISwitch) {
+        viewModel.setDarkModeEnabled(sender.isOn)
+    }
+    
+    @IBAction private func panelValueChanged(_ sender: UISwitch) {
+        changeElementsVisibility()
     }
     
     @IBAction private func lightButtonPressed(_ button: UIButton) {
@@ -191,7 +202,9 @@ class CameraViewController: UIViewController {
                 UIView.animate(withDuration: 0.3) {
                     self.lightView.isHidden = !isEnabled
                 }
-                
+            }
+            viewModel.isDarkModeEnabled.bind { [unowned self] isEnabled in
+                self.darkModeSwitch.isOn = isEnabled
             }
             viewModel.frameSize.bind { [unowned self] size in
                 self.deviceFamilyLabel.text = size.stringValue
@@ -239,6 +252,7 @@ class CameraViewController: UIViewController {
         pickerViewHeightConstraint.constant = 0
         captureButton.setTitle(viewModel.usvPercents.value, for: .normal)
         singleShootSwitch.isOn = viewModel.isSingleShootEnabled.value
+        darkModeSwitch.isOn = viewModel.isDarkModeEnabled.value
         lightView.isHidden = !viewModel.isSingleShootEnabled.value
         
         lightPickerContainerView.addSubview(listPickerView)
@@ -256,6 +270,7 @@ class CameraViewController: UIViewController {
             flashWidthConstraint.constant = UIDevice.DeviceFamily.seven.screenSize.width
             flashHeightConstraint.constant = UIDevice.DeviceFamily.seven.screenSize.height
         }
+        changeElementsVisibility()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -311,6 +326,16 @@ class CameraViewController: UIViewController {
         UIView.animate(withDuration: 0.3) {
             self.view.layoutIfNeeded()
         }
+    }
+    
+    private func changeElementsVisibility() {
+        contolsStackView.isHidden = !panelSwitch.isOn
+        frameView.isHidden = !panelSwitch.isOn
+        singleLabel.isHidden = !panelSwitch.isOn
+        darkModeLabel.isHidden = !panelSwitch.isOn
+        singleShootSwitch.isHidden = !panelSwitch.isOn
+        darkModeSwitch.isHidden = !panelSwitch.isOn
+        frameView.isHidden = !panelSwitch.isOn
     }
 }
 

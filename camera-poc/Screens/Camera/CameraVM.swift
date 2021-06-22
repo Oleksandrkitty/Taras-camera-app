@@ -10,6 +10,11 @@ import AVKit
 import Photos
 
 class CameraVM: NSObject {
+    enum LightMode {
+        case normal
+        case darkRoom
+    }
+    
     private enum Setting {
         case iso, exposure, whiteBalance, usv, none
     }
@@ -28,6 +33,7 @@ class CameraVM: NSObject {
     private(set) var isWhiteBalanceSliderEnabled: Bound<Bool> = Bound(false)
     private(set) var isCaptureEnabled: Bound<Bool> = Bound(true)
     private(set) var isSingleShootEnabled: Bound<Bool> = Bound(false)
+    private(set) var isDarkModeEnabled: Bound<Bool> = Bound(false)
     
     private(set) var flashBrightness: Bound<CGFloat> = Bound(0.0)
     private(set) var sliderMinValue: Bound<Float> = Bound(0.0)
@@ -52,7 +58,6 @@ class CameraVM: NSObject {
     private(set) lazy var frameSize: Bound<FrameSize> = Bound(.none)
     
     private var defaultSeries: BrigtnessSeries!
-    
     private var series: BrigtnessSeries = Medium {
         didSet {
             brightness = series.min / 100
@@ -62,16 +67,20 @@ class CameraVM: NSObject {
         }
     }
 
-    private var currentSetting: Setting = .none
+    private var minBrightness: CGFloat = 0.0
+    private var maxBrightness: CGFloat = 1.0
     private var brightness: CGFloat = 0.0 {
         didSet {
             self.usvPercents.value = "\(Int(brightness * 100))%"
         }
     }
-    private var minBrightness: CGFloat = 0.0
-    private var maxBrightness: CGFloat = 1.0
-    
+    private var currentSetting: Setting = .none
     private var photosCount = 0
+    
+    //Use these values as current state when change from Dark mode to Normal
+    private var lightMode: LightMode = .normal
+    private var currentISO: Float = 0.0
+    private var currentShutterSpeed: Float = 0.0
     
     var session: AVCaptureSession {
         return sdk.captureSession
@@ -95,8 +104,19 @@ class CameraVM: NSObject {
     }
     
     func capture() {
+        func start() {
+            
+        }
         guard sdk.isInitialized else {
             return
+        }
+        //Set Normal light state before making photos
+        if isDarkModeEnabled.value {
+            do {
+                try sdk.changeExposure(duration: currentShutterSpeed, iso: currentISO)
+            } catch {
+                assertionFailure(error.localizedDescription)
+            }
         }
         self.isCaptureEnabled.value = false
         photosCount = 0
@@ -113,9 +133,13 @@ class CameraVM: NSObject {
         isWhiteBalanceSliderEnabled.value = false
         isSliderEnabled.value = true
         currentSetting = .iso
-        sliderMinValue.value = sdk.minISO
-        sliderMaxValue.value = sdk.maxISO
-        sliderCurrentValue.value = sdk.iso
+        let delay = isDarkModeEnabled.value ? 0.5 : 0.0
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            self.sliderMinValue.value = self.sdk.minISO
+            self.sliderMaxValue.value = self.sdk.maxISO
+            self.sliderCurrentValue.value = self.sdk.iso
+        }
+        setDarkModeEnabled(false)
     }
     
     func selectExposure() {
@@ -128,10 +152,13 @@ class CameraVM: NSObject {
         isWhiteBalanceSliderEnabled.value = false
         isSliderEnabled.value = true
         currentSetting = .exposure
-        
-        sliderMinValue.value = sdk.minShutterSpeed
-        sliderMaxValue.value = sdk.maxShutterSpeed
-        sliderCurrentValue.value = sdk.shutterSpeed
+        let delay = isDarkModeEnabled.value ? 0.5 : 0.0
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            self.sliderMinValue.value = self.sdk.minShutterSpeed
+            self.sliderMaxValue.value = self.sdk.maxShutterSpeed
+            self.sliderCurrentValue.value = self.sdk.shutterSpeed
+        }
+        setDarkModeEnabled(false)
     }
     
     func selectWhiteBalance() {
@@ -168,6 +195,7 @@ class CameraVM: NSObject {
     
     func change(value: Float) {
         guard sdk.isInitialized else { return }
+        setDarkModeEnabled(false)
         do {
             switch currentSetting {
                 case .iso:
@@ -227,6 +255,48 @@ class CameraVM: NSObject {
         brightness = minBrightness
     }
     
+    func setDarkModeEnabled(_ isEnabled: Bool) {
+        guard isDarkModeEnabled.value != isEnabled else {
+            return
+        }
+        isDarkModeEnabled.value = isEnabled
+        if isEnabled {
+            isUSVPickerEnabled.value = false
+            isWhiteBalanceSliderEnabled.value = false
+            isSliderEnabled.value = false
+            currentSetting = .none
+            setupDarkRoomMode()
+        } else {
+            setupNormalLightMode()
+        }
+    }
+    
+    func setupNormalLightMode() {
+        guard lightMode != .normal else {
+            return
+        }
+        do {
+            try sdk.changeExposure(duration: currentShutterSpeed, iso: currentISO)
+        } catch {
+            assertionFailure(error.localizedDescription)
+        }
+        lightMode = .normal
+    }
+    
+    func setupDarkRoomMode() {
+        guard lightMode != .darkRoom else {
+            return
+        }
+        do {
+            currentISO = sdk.iso
+            currentShutterSpeed = sdk.shutterSpeed
+            try sdk.changeExposure(duration: sdk.maxShutterSpeed, iso: sdk.maxISO)
+        } catch {
+            assertionFailure(error.localizedDescription)
+        }
+        lightMode = .darkRoom
+    }
+    
     func presentFamilyDevicePicker() {
         router.presentFamilyDevicePicker()
     }
@@ -261,6 +331,14 @@ class CameraVM: NSObject {
         if self.brightness > self.maxBrightness || (self.isSingleShootEnabled.value && self.photosCount == 1) {
             //To make sure last photo was saved to photo library
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                //Set it back to Dark-room mode if needed
+                if self.isDarkModeEnabled.value {
+                    do {
+                        try self.sdk.changeExposure(duration: self.sdk.maxShutterSpeed, iso: self.sdk.maxISO)
+                    } catch {
+                        assertionFailure(error.localizedDescription)
+                    }
+                }
                 self.isCaptureEnabled.value = true
                 self.brightness = self.minBrightness
                 self.router.presentPhotosList(maxCount: self.photosCount)

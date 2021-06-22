@@ -49,7 +49,7 @@ class CameraSDK {
     }
     
     var maxShutterSpeed: Float {
-        return 0.7
+        return 0.6
     }
     
     var shutterSpeed: Float {
