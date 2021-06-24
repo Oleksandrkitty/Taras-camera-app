@@ -94,7 +94,7 @@ class ListPickerView: UIView {
         bottomView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10).isActive = true
         bottomView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10).isActive = true
         bottomView.topAnchor.constraint(equalTo: pickerView.bottomAnchor, constant: 8).isActive = true
-        bottomView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0).isActive = true
+        bottomView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -24).isActive = true
     }
 }
 
