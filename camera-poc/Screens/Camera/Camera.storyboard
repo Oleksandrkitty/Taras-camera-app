@@ -505,7 +505,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" white="1" alpha="0.34999999999999998" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="Uo8-po-yW0" firstAttribute="leading" secondItem="Rca-RO-SvK" secondAttribute="leading" id="2Dn-xy-DSC"/>
                                     <constraint firstItem="swk-hE-oxV" firstAttribute="centerY" secondItem="fEQ-SE-xl7" secondAttribute="centerY" id="2w6-lp-ap5"/>
@@ -532,7 +532,7 @@
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jsg-v0-Nrn">
                                 <rect key="frame" x="0.0" y="862" width="414" height="34"/>
-                                <color key="backgroundColor" white="1" alpha="0.34999999999999998" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mgu-cr-jkU">
                                 <rect key="frame" x="0.0" y="562" width="414" height="300"/>
