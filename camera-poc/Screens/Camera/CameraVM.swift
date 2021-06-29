@@ -82,6 +82,10 @@ class CameraVM: NSObject {
     private var currentISO: Float = 0.0
     private var currentShutterSpeed: Float = 0.0
     
+    //Detect volume button up/down to start capture
+    private var outputVolumeObserve: NSKeyValueObservation?
+    private let audioSession = AVAudioSession.sharedInstance()
+    
     var session: AVCaptureSession {
         return sdk.captureSession
     }
@@ -97,6 +101,7 @@ class CameraVM: NSObject {
         self.sdk.delegate = self
         usvPercents.value = "\(Int(brightness * 100))%"
         frameSize.value = FramingService.size()
+        listenVolumeButton()
     }
     
     func requestCameraAccess() {
@@ -104,10 +109,10 @@ class CameraVM: NSObject {
     }
     
     func capture() {
-        func start() {
-            
-        }
         guard sdk.isInitialized else {
+            return
+        }
+        guard isCaptureEnabled.value else {
             return
         }
         //Set Normal light state before making photos
@@ -361,6 +366,18 @@ class CameraVM: NSObject {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self.sdk.photoOutput.capturePhoto(with: settings, delegate: self)
             }
+        }
+    }
+
+    func listenVolumeButton() {
+        do {
+            try audioSession.setActive(true)
+        } catch {
+            assertionFailure(error.localizedDescription)
+        }
+
+        outputVolumeObserve = audioSession.observe(\.outputVolume) { [weak self] (audioSession, changes) in
+            self?.capture()
         }
     }
 }
