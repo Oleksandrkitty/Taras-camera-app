@@ -105,6 +105,9 @@ class CameraVM: NSObject {
     }
     
     func requestCameraAccess() {
+        guard !sdk.isInitialized else {
+            return
+        }
         sdk.requestCameraAccess()
     }
     
