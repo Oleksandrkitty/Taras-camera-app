@@ -359,7 +359,18 @@ class CameraVM: NSObject {
     
     private func capture(brightness: CGFloat) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            let settings = AVCapturePhotoSettings()
+            var settings: AVCapturePhotoSettings
+            if let uncompressedPixelType = self.sdk.photoOutput.supportedPhotoPixelFormatTypes(for: .tif).first {
+                settings = AVCapturePhotoSettings(format: [
+                    kCVPixelBufferPixelFormatTypeKey as String : uncompressedPixelType
+                ])
+            } else if let uncompressedPixelType = self.sdk.photoOutput.supportedPhotoPixelFormatTypes(for: .dng).first {
+                settings = AVCapturePhotoSettings(format: [
+                    kCVPixelBufferPixelFormatTypeKey as String : uncompressedPixelType
+                ])
+            } else {
+                settings = AVCapturePhotoSettings()
+            }
             settings.flashMode = .off
             //set starting brightness to achive flashing effect
             UIScreen.main.brightness = max(brightness - 0.12, self.series.min / 100)
@@ -396,7 +407,7 @@ extension CameraVM: AVCapturePhotoCaptureDelegate {
             PHPhotoLibrary.shared().performChanges {
                 let creationRequest = PHAssetCreationRequest.forAsset()
                 let options = PHAssetResourceCreationOptions()
-                let fileName = "\(UIDevice.modelName)_\(self.dateFormatter.string(from: Date()))_ISO: \("A \(Int(self.sdk.iso))")_Exp: \(String(format: "%0.2f", self.sdk.shutterSpeed))_Tint: \(Int(self.sdk.tint))_Temperature: \(Int(self.sdk.temperature))_Frame: \(self.series.title)_Light: \(Int(self.brightness * 100))%.jpg"
+                let fileName = "\(UIDevice.modelName)_\(self.dateFormatter.string(from: Date()))_ISO: \("A \(Int(self.sdk.iso))")_Exp: \(String(format: "%0.2f", self.sdk.shutterSpeed))_Tint: \(Int(self.sdk.tint))_Temperature: \(Int(self.sdk.temperature))_Frame: \(self.series.title)_Light: \(Int(self.brightness * 100))%"
                 options.originalFilename = fileName
                 if let data = photo.fileDataRepresentation() {
                     creationRequest.addResource(with: .photo, data: data, options: options)
