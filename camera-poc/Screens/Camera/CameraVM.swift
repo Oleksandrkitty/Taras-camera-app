@@ -347,8 +347,10 @@ class CameraVM: NSObject {
                         assertionFailure(error.localizedDescription)
                     }
                 }
+                if !self.isSingleShootEnabled.value {
+                    self.brightness = self.minBrightness
+                }
                 self.isCaptureEnabled.value = true
-                self.brightness = self.minBrightness
                 self.router.presentPhotosList(maxCount: self.photosCount)
             }
             return

@@ -37,6 +37,7 @@
 		632576C8266EB14100B55E27 /* BrigtnessSeries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632576C7266EB14100B55E27 /* BrigtnessSeries.swift */; };
 		632576CA266EB4DA00B55E27 /* WhiteBalanceSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632576C9266EB4DA00B55E27 /* WhiteBalanceSliderView.swift */; };
 		63530157267D16D200119AE0 /* FramingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63530156267D16D200119AE0 /* FramingService.swift */; };
+		6372AC962696D4B000BFC17A /* UIImage+toData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6372AC952696D4B000BFC17A /* UIImage+toData.swift */; };
 		6382A711267336A5009C7254 /* PhotosListRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6382A710267336A5009C7254 /* PhotosListRouter.swift */; };
 		63AB5858267345E000B0D104 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63AB5857267345E000B0D104 /* CameraViewController.swift */; };
 		63AB585A2673465B00B0D104 /* OvalOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63AB58592673465B00B0D104 /* OvalOverlayView.swift */; };
@@ -78,6 +79,7 @@
 		632576C7266EB14100B55E27 /* BrigtnessSeries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrigtnessSeries.swift; sourceTree = "<group>"; };
 		632576C9266EB4DA00B55E27 /* WhiteBalanceSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhiteBalanceSliderView.swift; sourceTree = "<group>"; };
 		63530156267D16D200119AE0 /* FramingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FramingService.swift; sourceTree = "<group>"; };
+		6372AC952696D4B000BFC17A /* UIImage+toData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+toData.swift"; sourceTree = "<group>"; };
 		6382A710267336A5009C7254 /* PhotosListRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosListRouter.swift; sourceTree = "<group>"; };
 		63AB5857267345E000B0D104 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		63AB58592673465B00B0D104 /* OvalOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OvalOverlayView.swift; sourceTree = "<group>"; };
@@ -186,6 +188,7 @@
 				631C4A3526711FD600765660 /* UIColor+Names.swift */,
 				631C4A452671289100765660 /* UIDevice+Model.swift */,
 				63AD3E99267890CC007D87E8 /* UIDevice+ScreenSize.swift */,
+				6372AC952696D4B000BFC17A /* UIImage+toData.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -360,6 +363,7 @@
 				632576CA266EB4DA00B55E27 /* WhiteBalanceSliderView.swift in Sources */,
 				6315859926676152006E60EA /* Bound.swift in Sources */,
 				63AB585A2673465B00B0D104 /* OvalOverlayView.swift in Sources */,
+				6372AC962696D4B000BFC17A /* UIImage+toData.swift in Sources */,
 				6315857026675AB5006E60EA /* AppDelegate.swift in Sources */,
 				63AB5858267345E000B0D104 /* CameraViewController.swift in Sources */,
 				630908542667F51E005CC22D /* CameraPreviewView.swift in Sources */,
