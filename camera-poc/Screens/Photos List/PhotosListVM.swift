@@ -10,6 +10,7 @@ import Photos
 
 class PhotosListVM {
     private let router: PhotosListRouting
+    private let authService = AuthService()
     private(set) var photos: Bound<[UIImage]> = Bound([])
     private var assets: [PHAsset] = []
     init(numberOfPhotos: Int, router: PhotosListRouting) {
@@ -19,6 +20,10 @@ class PhotosListVM {
     }
     
     func upload() {
+        guard let userName = authService.userName else {
+            router.showAuth(delegate: self)
+            return
+        }
         let requestOptions = PHImageRequestOptions()
         requestOptions.isSynchronous = true
         router.showProgress()
@@ -29,7 +34,7 @@ class PhotosListVM {
                 let type = resource.uniformTypeIdentifier
                 group.enter()
                 PHImageManager.default().requestImage(for: asset, targetSize: .zero, contentMode: .aspectFill, options: requestOptions) { (image, _) in
-                    if let image = image, let url = self.saveImage(imageName: filename, image: image) {
+                    if let image = image, let url = self.saveImage(imageName: "\(userName)_\(filename)", image: image) {
                         AWSS3Service.shared.uploadFileFromURL(url, conentType: type, progress: nil) { _, error in
                             group.leave()
                             guard let error = error else {
@@ -117,5 +122,11 @@ class PhotosListVM {
         } catch {
             assertionFailure(error.localizedDescription)
         }
+    }
+}
+
+extension PhotosListVM: AuthVMDelegate {
+    func didAuthorized() {
+        upload()
     }
 }

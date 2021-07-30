@@ -13,6 +13,7 @@ protocol PhotosListRouting {
     func showProgress()
     func showProgress(_ progress: Float)
     func hideProgress()
+    func showAuth(delegate: AuthVMDelegate)
 }
 
 struct PhotosListRouter: PhotosListRouting {
@@ -36,5 +37,10 @@ struct PhotosListRouter: PhotosListRouting {
     
     func hideProgress() {
         controller.hideProgress()
+    }
+
+    func showAuth(delegate: AuthVMDelegate) {
+        let controller = ScreenBuilder.Auth.auth(delegate: delegate)
+        self.controller.show(controller, sender: nil)
     }
 }

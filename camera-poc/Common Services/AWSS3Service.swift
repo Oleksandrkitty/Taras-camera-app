@@ -62,7 +62,7 @@ class AWSS3Service {
         // Start uploading using AWSS3TransferUtility
         let awsTransferUtility = AWSS3TransferUtility.default()
         let identifier = UIDevice.current.identifierForVendor?.uuidString ?? "undefined_iphone"
-        let path = "\(UIDevice.modelName)/\(identifier)/\(fileName)"
+        let path = "\(AuthService().userName ?? "")_\(UIDevice.modelName)/\(identifier)/\(fileName)"
         awsTransferUtility.uploadFile(fileUrl, bucket: bucketName, key: path, contentType: contenType, expression: expression, completionHandler: completionHandler).continueWith { (task) -> Any? in
             if let error = task.error {
                 print("error is: \(error.localizedDescription)")

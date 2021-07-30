@@ -15,4 +15,8 @@ extension UIStoryboard {
     static var photosList: UIStoryboard {
         return UIStoryboard(name: "PhotosList", bundle: nil)
     }
+
+    static var auth: UIStoryboard {
+        return UIStoryboard(name: "Auth", bundle: nil)
+    }
 }
