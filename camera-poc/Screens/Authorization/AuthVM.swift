@@ -18,7 +18,7 @@ class AuthService {
             userDefaults.set(newValue, forKey: AuthKey.userName.rawValue)
         }
         get {
-            return userDefaults.string(forKey: AuthKey.userName.rawValue)
+            return userDefaults.string(forKey: AuthKey.userName.rawValue)?.lowercased()
         }
     }
 }
