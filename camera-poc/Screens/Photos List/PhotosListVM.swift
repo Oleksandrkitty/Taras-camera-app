@@ -18,10 +18,14 @@ class PhotosListVM {
         fetchPhotos(totalImageCountNeeded: numberOfPhotos)
         createImageDirectoryIfNeeded()
     }
-    
+
+    func auth() {
+        router.showAuth(delegate: self)
+    }
+
     func upload() {
         guard let userName = authService.userName else {
-            router.showAuth(delegate: self)
+            auth()
             return
         }
         let requestOptions = PHImageRequestOptions()

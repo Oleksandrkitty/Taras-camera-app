@@ -152,14 +152,9 @@ class CameraSDK {
     }
     
     func changeExposure(duration: Float, iso: Float) throws {
-        let p = pow(Double(duration), kExposureDurationPower) // Apply power function to expand slider's low-end range
-        let minDurationSeconds = max(CMTimeGetSeconds(videoDevice.activeFormat.minExposureDuration), kExposureMinimumDuration)
-        let maxDurationSeconds = CMTimeGetSeconds(videoDevice.activeFormat.maxExposureDuration)
-        let newDurationSeconds = p * ( maxDurationSeconds - minDurationSeconds ) + minDurationSeconds; // Scale from 0-1 slider range to actual duration
-        let duration = CMTimeMakeWithSeconds(newDurationSeconds, preferredTimescale: 1000 * 1000 * 1000)
-        try videoDevice!.lockForConfiguration()
+        try videoDevice.lockForConfiguration()
         videoDevice.setExposureModeCustom(
-            duration: duration,
+            duration: exposureDuration(duration),
             iso: iso
         )
         videoDevice.unlockForConfiguration()
@@ -199,19 +194,32 @@ class CameraSDK {
     }
     
     private func setup() {
-        let iso: Float = 400.0
-        let duration: Float = maxShutterSpeed / 2
+        let iso: Float = min(1729, maxISO)
+        let duration: Float = min(0.6, maxShutterSpeed)
+        let temperatureAndTint = AVCaptureDevice.WhiteBalanceTemperatureAndTintValues(
+            temperature: min(5400, maxTemperature),
+            tint: min(0, maxTint)
+        )
+        let gains = videoDevice.deviceWhiteBalanceGains(for: temperatureAndTint)
+        let normalizedGains = self.normalizedGains(gains)
+
         do {
             try videoDevice.lockForConfiguration()
             videoDevice.exposureMode = .custom
             videoDevice.whiteBalanceMode = .locked
+            videoDevice.setExposureModeCustom(
+                duration: exposureDuration(duration),
+                iso: iso
+            )
+            videoDevice.setWhiteBalanceModeLocked(
+                with: normalizedGains,
+                completionHandler: nil
+            )
             videoDevice.unlockForConfiguration()
-            
-            try changeExposure(duration: duration, iso: iso)
         } catch {
             assertionFailure(error.localizedDescription)
         }
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             self.defaultISO = iso
             self.defaultShutterSpeed = duration
@@ -241,5 +249,13 @@ class CameraSDK {
         g.blueGain = min(videoDevice.maxWhiteBalanceGain, g.blueGain)
         
         return g
+    }
+
+    private func exposureDuration(_ duration: Float) -> CMTime {
+        let p = pow(Double(duration), kExposureDurationPower) // Apply power function to expand slider's low-end range
+        let minDurationSeconds = max(CMTimeGetSeconds(videoDevice.activeFormat.minExposureDuration), kExposureMinimumDuration)
+        let maxDurationSeconds = CMTimeGetSeconds(videoDevice.activeFormat.maxExposureDuration)
+        let newDurationSeconds = p * ( maxDurationSeconds - minDurationSeconds ) + minDurationSeconds; // Scale from 0-1 slider range to actual duration
+        return CMTimeMakeWithSeconds(newDurationSeconds, preferredTimescale: 1000 * 1000 * 1000)
     }
 }

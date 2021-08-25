@@ -24,7 +24,7 @@ class PhotosListViewController: UIViewController {
     @IBOutlet private weak var spinner: UIActivityIndicatorView!
     
     @IBAction private func uploadButtonPressed(_ button: UIButton) {
-        viewModel.upload()
+        viewModel.auth()
     }
     
     var viewModel: PhotosListVM! {
