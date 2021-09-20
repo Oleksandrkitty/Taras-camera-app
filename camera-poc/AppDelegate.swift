@@ -19,7 +19,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func showStartScreen() {
         let window = UIWindow()
-        window.rootViewController = ScreenBuilder.camera()
+        let service = LoginService()
+        if service.isLoggedIn {
+            window.rootViewController = ScreenBuilder.camera()
+        } else {
+            window.rootViewController = ScreenBuilder.Auth.login()
+        }
         self.window = window
         window.makeKeyAndVisible()
     }
