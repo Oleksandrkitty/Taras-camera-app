@@ -59,7 +59,7 @@
 		49612CDABF1A8241A819507E /* Pods-camera-poc.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-camera-poc.release.xcconfig"; path = "Target Support Files/Pods-camera-poc/Pods-camera-poc.release.xcconfig"; sourceTree = "<group>"; };
 		630908532667F51E005CC22D /* CameraPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreviewView.swift; sourceTree = "<group>"; };
 		630908552667F85D005CC22D /* CameraRoueter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraRoueter.swift; sourceTree = "<group>"; };
-		6315856C26675AB5006E60EA /* camera-poc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "camera-poc.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6315856C26675AB5006E60EA /* Astarte.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Astarte.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6315856F26675AB5006E60EA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6315857826675AB7006E60EA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6315857B26675AB7006E60EA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -131,7 +131,7 @@
 		6315856D26675AB5006E60EA /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6315856C26675AB5006E60EA /* camera-poc.app */,
+				6315856C26675AB5006E60EA /* Astarte.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -296,9 +296,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		6315856B26675AB5006E60EA /* camera-poc */ = {
+		6315856B26675AB5006E60EA /* Astarte */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6315858026675AB7006E60EA /* Build configuration list for PBXNativeTarget "camera-poc" */;
+			buildConfigurationList = 6315858026675AB7006E60EA /* Build configuration list for PBXNativeTarget "Astarte" */;
 			buildPhases = (
 				5C2CA7B197D3757CA339BF01 /* [CP] Check Pods Manifest.lock */,
 				6315856826675AB5006E60EA /* Sources */,
@@ -310,9 +310,9 @@
 			);
 			dependencies = (
 			);
-			name = "camera-poc";
+			name = Astarte;
 			productName = "camera-poc";
-			productReference = 6315856C26675AB5006E60EA /* camera-poc.app */;
+			productReference = 6315856C26675AB5006E60EA /* Astarte.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -329,7 +329,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 6315856726675AB5006E60EA /* Build configuration list for PBXProject "camera-poc" */;
+			buildConfigurationList = 6315856726675AB5006E60EA /* Build configuration list for PBXProject "Astarte" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -342,7 +342,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				6315856B26675AB5006E60EA /* camera-poc */,
+				6315856B26675AB5006E60EA /* Astarte */,
 			);
 		};
 /* End PBXProject section */
@@ -589,15 +589,15 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "camera-poc/camera-poc.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 24;
-				DEVELOPMENT_TEAM = Z5G3WDJ23W;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_TEAM = R3XX38HYTY;
 				INFOPLIST_FILE = "camera-poc/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.chernyshenko.camera-poc";
+				PRODUCT_BUNDLE_IDENTIFIER = com.cosmetics.astarte;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -612,15 +612,15 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "camera-poc/camera-poc.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 24;
-				DEVELOPMENT_TEAM = Z5G3WDJ23W;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_TEAM = R3XX38HYTY;
 				INFOPLIST_FILE = "camera-poc/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.chernyshenko.camera-poc";
+				PRODUCT_BUNDLE_IDENTIFIER = com.cosmetics.astarte;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -630,7 +630,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		6315856726675AB5006E60EA /* Build configuration list for PBXProject "camera-poc" */ = {
+		6315856726675AB5006E60EA /* Build configuration list for PBXProject "Astarte" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6315857E26675AB7006E60EA /* Debug */,
@@ -639,7 +639,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6315858026675AB7006E60EA /* Build configuration list for PBXNativeTarget "camera-poc" */ = {
+		6315858026675AB7006E60EA /* Build configuration list for PBXNativeTarget "Astarte" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6315858126675AB7006E60EA /* Debug */,
