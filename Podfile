@@ -7,7 +7,7 @@ post_install do |installer|
     end
 end
 
-target 'camera-poc' do
+target 'Astarte' do
 
   use_frameworks!
   inhibit_all_warnings!

@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:/Users/taras.chernyshenko/Development/Taras-camera-app/Astarte.xcodeproj">
+      location = "group:Astarte.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">

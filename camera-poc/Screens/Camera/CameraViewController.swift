@@ -213,8 +213,10 @@ class CameraViewController: UIViewController {
                     self.flashWidthConstraint.constant = UIScreen.main.bounds.width
                     self.flashHeightConstraint.constant = UIScreen.main.bounds.height
                 case .iPhoneSeven:
-                    self.flashWidthConstraint.constant = UIDevice.DeviceFamily.seven.screenSize.width
-                    self.flashHeightConstraint.constant = UIDevice.DeviceFamily.seven.screenSize.height
+                    self.flashWidthConstraint.constant = iPhoneSevenSizeInInches.width * (UIScreen.pointsPerInch ?? 0)
+                    self.flashHeightConstraint.constant = iPhoneSevenSizeInInches.height * (UIScreen.pointsPerInch ?? 0)
+                    print("width \(self.flashWidthConstraint.constant)")
+                    print("height \(self.flashHeightConstraint.constant)")
                 }
                 self.view.layoutIfNeeded()
                 //display example flashing
@@ -267,8 +269,8 @@ class CameraViewController: UIViewController {
             flashWidthConstraint.constant = UIScreen.main.bounds.width
             flashHeightConstraint.constant = UIScreen.main.bounds.height
         case .iPhoneSeven:
-            flashWidthConstraint.constant = UIDevice.DeviceFamily.seven.screenSize.width
-            flashHeightConstraint.constant = UIDevice.DeviceFamily.seven.screenSize.height
+            self.flashWidthConstraint.constant = iPhoneSevenSizeInInches.width * (UIScreen.pointsPerInch ?? 0)
+            self.flashHeightConstraint.constant = iPhoneSevenSizeInInches.height * (UIScreen.pointsPerInch ?? 0)
         }
         changeElementsVisibility()
     }

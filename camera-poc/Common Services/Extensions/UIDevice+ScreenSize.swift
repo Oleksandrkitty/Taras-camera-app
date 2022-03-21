@@ -7,6 +7,11 @@
 
 import UIKit
 
+let iPhoneSevenSizeInInches = CGSize(
+    width: 2.3033529097100818,
+    height: 4.0968970420709985
+)
+
 extension UIDevice {
     enum DeviceFamily: Int {
         case seven
