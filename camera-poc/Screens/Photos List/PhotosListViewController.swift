@@ -38,7 +38,14 @@ class PhotosListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Upload"
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .cancel,
+            target: self, action: #selector(cancel)
+        )
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .action,
+            target: self, action: #selector(share)
+        )
     }
     
     func showProgress() {
@@ -58,6 +65,10 @@ class PhotosListViewController: UIViewController {
     
     @objc private func cancel() {
         dismiss(animated: true)
+    }
+    
+    @objc private func share() {
+        viewModel.share()
     }
 }
 

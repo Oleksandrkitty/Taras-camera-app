@@ -14,6 +14,8 @@ protocol PhotosListRouting {
     func showProgress(_ progress: Float)
     func hideProgress()
     func showAuth(delegate: AuthVMDelegate)
+    @MainActor
+    func showSharing(_ files: [URL])
 }
 
 struct PhotosListRouter: PhotosListRouting {
@@ -42,5 +44,12 @@ struct PhotosListRouter: PhotosListRouting {
     func showAuth(delegate: AuthVMDelegate) {
         let controller = ScreenBuilder.Auth.auth(delegate: delegate)
         self.controller.show(controller, sender: nil)
+    }
+    
+    @MainActor
+    func showSharing(_ files: [URL]) {
+        let activityViewController = UIActivityViewController(activityItems: files, applicationActivities: nil)
+        activityViewController.popoverPresentationController?.sourceView = controller.view
+        controller.present(activityViewController, animated: true, completion: nil)
     }
 }

@@ -42,6 +42,7 @@
 		632576C8266EB14100B55E27 /* BrigtnessSeries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632576C7266EB14100B55E27 /* BrigtnessSeries.swift */; };
 		632576CA266EB4DA00B55E27 /* WhiteBalanceSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632576C9266EB4DA00B55E27 /* WhiteBalanceSliderView.swift */; };
 		63530157267D16D200119AE0 /* FramingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63530156267D16D200119AE0 /* FramingService.swift */; };
+		6365091C27F227FC00F552F7 /* PhotosStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6365091B27F227FB00F552F7 /* PhotosStore.swift */; };
 		6372AC962696D4B000BFC17A /* UIImage+toData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6372AC952696D4B000BFC17A /* UIImage+toData.swift */; };
 		6382A711267336A5009C7254 /* PhotosListRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6382A710267336A5009C7254 /* PhotosListRouter.swift */; };
 		638E443227E8F040001B0A2E /* UIScreenExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 638E443127E8F040001B0A2E /* UIScreenExtension.swift */; };
@@ -94,6 +95,7 @@
 		632576C7266EB14100B55E27 /* BrigtnessSeries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrigtnessSeries.swift; sourceTree = "<group>"; };
 		632576C9266EB4DA00B55E27 /* WhiteBalanceSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhiteBalanceSliderView.swift; sourceTree = "<group>"; };
 		63530156267D16D200119AE0 /* FramingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FramingService.swift; sourceTree = "<group>"; };
+		6365091B27F227FB00F552F7 /* PhotosStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosStore.swift; sourceTree = "<group>"; };
 		6372AC952696D4B000BFC17A /* UIImage+toData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+toData.swift"; sourceTree = "<group>"; };
 		6382A710267336A5009C7254 /* PhotosListRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosListRouter.swift; sourceTree = "<group>"; };
 		638E443127E8F040001B0A2E /* UIScreenExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIScreenExtension.swift; sourceTree = "<group>"; };
@@ -170,6 +172,7 @@
 				632576C7266EB14100B55E27 /* BrigtnessSeries.swift */,
 				6319CE5C267BA4A100AF6082 /* AWSS3Service.swift */,
 				63530156267D16D200119AE0 /* FramingService.swift */,
+				6365091B27F227FB00F552F7 /* PhotosStore.swift */,
 			);
 			path = "Common Services";
 			sourceTree = "<group>";
@@ -435,6 +438,7 @@
 				631585972667604A006E60EA /* CameraVM.swift in Sources */,
 				63530157267D16D200119AE0 /* FramingService.swift in Sources */,
 				632576BE266DFF6800B55E27 /* USVPickerView.swift in Sources */,
+				6365091C27F227FC00F552F7 /* PhotosStore.swift in Sources */,
 				63AD3E9A267890CC007D87E8 /* UIDevice+ScreenSize.swift in Sources */,
 				632576C8266EB14100B55E27 /* BrigtnessSeries.swift in Sources */,
 				63E6F22526F90188009BAF86 /* LoginService.swift in Sources */,
@@ -596,7 +600,7 @@
 				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = R3XX38HYTY;
 				INFOPLIST_FILE = "camera-poc/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -619,7 +623,7 @@
 				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = R3XX38HYTY;
 				INFOPLIST_FILE = "camera-poc/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

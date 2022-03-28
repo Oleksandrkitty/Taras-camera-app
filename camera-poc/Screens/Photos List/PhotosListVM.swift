@@ -9,14 +9,16 @@ import UIKit
 import Photos
 
 class PhotosListVM {
+    typealias Photo = (photo: UIImage, name: String, type: String)
     private let router: PhotosListRouting
     private let authService = AuthService()
+    private let photosStore = PhotosStore()
     private(set) var photos: Bound<[UIImage]> = Bound([])
     private var assets: [PHAsset] = []
+    
     init(numberOfPhotos: Int, router: PhotosListRouting) {
         self.router = router
-        fetchPhotos(totalImageCountNeeded: numberOfPhotos)
-        createImageDirectoryIfNeeded()
+        self.setup(numberOfPhotos: numberOfPhotos)
     }
 
     func auth() {
@@ -28,28 +30,53 @@ class PhotosListVM {
             auth()
             return
         }
-        let requestOptions = PHImageRequestOptions()
-        requestOptions.isSynchronous = true
         router.showProgress()
-        let group = DispatchGroup()
-        for asset in self.assets {
-            if let resource = PHAssetResource.assetResources(for: asset).first {
-                let filename = resource.originalFilename
-                let type = resource.uniformTypeIdentifier
-                group.enter()
-                PHImageManager.default().requestImage(for: asset, targetSize: .zero, contentMode: .aspectFill, options: requestOptions) { (image, _) in
-                    if let image = image, let url = self.saveImage(imageName: "\(userName)_\(filename)", image: image) {
-                        AWSS3Service.shared.uploadFileFromURL(url, conentType: type, progress: nil) { _, error in
-                            group.leave()
-                            guard let error = error else {
-                                return
-                            }
-                            assertionFailure(error.localizedDescription)
-                        }
-                    } else {
-                        group.leave()
-                    }
+        Task {
+            var result: [Photo] = []
+            for asset in self.assets {
+                guard let filename = asset.filename,
+                    let type = asset.type,
+                    let photo = await photosStore.fetchPhoto(asset) else {
+                    continue
                 }
+                let imageName = "\(userName)_\(filename)"
+                result.append((photo, imageName, type))
+            }
+            self.upload(photos: result)
+        }
+    }
+    
+    func share() {
+        guard let userName = authService.userName else {
+            auth()
+            return
+        }
+        Task {
+            var urls: [URL] = []
+            for asset in self.assets {
+                guard let filename = asset.filename,
+                    let photo = await photosStore.fetchPhoto(asset) else {
+                    continue
+                }
+                let imageName = "\(userName)_\(filename)"
+                guard let url = self.photosStore.save(image: photo, name: imageName) else {
+                    continue
+                }
+                urls.append(url)
+            }
+            let result = urls
+            await MainActor.run {
+                self.router.showSharing(result)
+            }
+        }
+    }
+    
+    private func upload(photos: [Photo]) {
+        let group = DispatchGroup()
+        for photo in photos {
+            group.enter()
+            upload(photo.photo, name: photo.name, type: photo.type) {
+                group.leave()
             }
         }
         group.notify(queue: .main) {
@@ -57,74 +84,35 @@ class PhotosListVM {
             self.router.dismiss()
         }
     }
-    
-    func fetchPhotos(totalImageCountNeeded: Int) {
-        var photos: [UIImage] = []
-        let fetchOptions = PHFetchOptions()
-        fetchOptions.sortDescriptors = [NSSortDescriptor(key:"creationDate", ascending: false)]
-        fetchOptions.fetchLimit = totalImageCountNeeded
-        let requestOptions = PHImageRequestOptions()
-        requestOptions.isSynchronous = true
-        let fetchResult: PHFetchResult = PHAsset.fetchAssets(with: PHAssetMediaType.image, options: fetchOptions)
-        let group = DispatchGroup()
-        for i in 0..<fetchResult.count {
-            let asset = fetchResult.object(at: i) as PHAsset
-            if let resource = PHAssetResource.assetResources(for: asset).first {
-                print(resource.originalFilename)
-                group.enter()
-                self.assets.append(asset)
-                PHImageManager.default().requestImage(for: asset, targetSize: .zero, contentMode: .aspectFill, options: requestOptions) { (image, _) in
-                    if let image = image {
-                        photos += [image]
-                    }
-                    group.leave()
-                }
+}
+
+extension PhotosListVM {
+    private func setup(numberOfPhotos: Int) {
+        Task {
+            let assets = self.photosStore.fetchAssets(
+                totalImageCountNeeded: numberOfPhotos
+            )
+            let photos = await self.photosStore.fetchPhotos(assets)
+            self.assets = assets
+            await MainActor.run {
+                self.photos.value = photos
             }
         }
-        
-        group.notify(queue: .main) {
-            self.photos.value = photos
-        }
     }
     
-    func saveImage(imageName: String, image: UIImage) -> URL? {
-        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
-        let fileName = imageName
-        let imagesDirectory = documentsDirectory.appendingPathComponent("images")
-        let fileURL = imagesDirectory.appendingPathComponent(fileName).appendingPathExtension("tiff")
-        let options: NSDictionary =     [
-            kCGImagePropertyHasAlpha: true,
-            kCGImageDestinationLossyCompressionQuality: 1.0
-        ]
-        guard let data = image.toData(options: options, type: .tiff) else { return nil }
-        //Checks if file exists, removes it if so.
-        if FileManager.default.fileExists(atPath: fileURL.path) {
-            return fileURL
+    private func upload(_ image: UIImage, name: String, type: String, completion: @escaping () -> Void) {
+        guard let url = self.photosStore.save(image: image, name: name) else {
+            completion()
+            return
         }
-        
-        do {
-            try data.write(to: fileURL)
-        } catch let error {
-            assertionFailure("Error saving file with error \(error)")
-            return nil
-        }
-        return fileURL
-    }
-    
-    private func createImageDirectoryIfNeeded() {
-        let fileManager = FileManager.default
-        guard let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
-        let imagesDirectory = documentsDirectory.appendingPathComponent("images")
-        do {
-            if !fileManager.fileExists(atPath: imagesDirectory.path) {
-                try fileManager.createDirectory(at: imagesDirectory, withIntermediateDirectories: true)
+        print("Start uploading \(name)...")
+        AWSS3Service.shared.uploadFileFromURL(url, conentType: type, progress: nil) { _,error in
+            if let error = error {
+                print("Error \(error.localizedDescription), while uploading \(name)")
             } else {
-                //Clear directory and create it again in order to remove all files
-                try fileManager.removeItem(at: imagesDirectory)
-                createImageDirectoryIfNeeded()
+                print("Uploaded \(name)!")
             }
-        } catch {
-            assertionFailure(error.localizedDescription)
+            completion()
         }
     }
 }
