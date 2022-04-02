@@ -11,18 +11,36 @@ class OvalOverlayView: UIView {
     private var overlayFrame: CGRect!
     private let width: CGFloat = 185
     private let height: CGFloat = 265
+    private var color: UIColor = UIColor.white.withAlphaComponent(0.0)
 
+    var frameColor: UIColor = .white {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
+
+    init(frame: CGRect, topSpace: CGFloat, backgroundColor: UIColor) {
+        super.init(frame: frame)
+        self.color = backgroundColor
+        setup(topSpace: topSpace)
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor.clear
-        overlayFrame = CGRect(x: (frame.width - width) / 2,
-                              y: 80,
-                              width: width,
-                              height: height)
+        setup()
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        setup()
+    }
+    
+    private func setup(topSpace: CGFloat = 80.0) {
+        backgroundColor = UIColor.clear
+        overlayFrame = CGRect(x: (frame.width - width) / 2,
+                              y: topSpace,
+                              width: width,
+                              height: height)
     }
 
     override func draw(_ rect: CGRect) {
@@ -34,16 +52,15 @@ class OvalOverlayView: UIView {
         let ovalLayer = CAShapeLayer()
         ovalLayer.path = ovalPath.cgPath
         ovalLayer.fillColor = UIColor.clear.cgColor
-        ovalLayer.strokeColor = UIColor.white.cgColor
+        ovalLayer.strokeColor = frameColor.cgColor
         ovalLayer.lineWidth = 5.0
         
         let fillLayer = CAShapeLayer()
         fillLayer.path = overlayPath.cgPath
         fillLayer.fillRule = CAShapeLayerFillRule.evenOdd
-        fillLayer.fillColor = UIColor.white.withAlphaComponent(0.0).cgColor
+        fillLayer.fillColor = color.cgColor
         
         layer.addSublayer(fillLayer)
         layer.addSublayer(ovalLayer)
     }
-
 }

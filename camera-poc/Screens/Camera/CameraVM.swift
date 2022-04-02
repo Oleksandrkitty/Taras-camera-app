@@ -56,6 +56,7 @@ class CameraVM: NSObject {
     private(set) var usvValue: Bound<String> = Bound("Low")
     private(set) var usvPercents: Bound<String> = Bound("0%")
     private(set) lazy var frameSize: Bound<FrameSize> = Bound(.none)
+    private(set) var distance: Bound<Int> = Bound(0)
     
     private var defaultSeries: BrigtnessSeries!
     private var series: BrigtnessSeries = Medium {
@@ -104,11 +105,11 @@ class CameraVM: NSObject {
         listenVolumeButton()
     }
     
-    func requestCameraAccess() {
+    func requestCameraAccess(_ previewLayer: AVCaptureVideoPreviewLayer) {
         guard !sdk.isInitialized else {
             return
         }
-        sdk.requestCameraAccess()
+        sdk.requestCameraAccess(previewLayer)
     }
     
     func capture() {
@@ -431,6 +432,10 @@ extension CameraVM: CameraSDKDelegate {
     func sessionDidStart() {
         defaultSeries = series
         updateUI()
+    }
+    
+    func updateDistance(_ distance: Int) {
+        self.distance.value = distance
     }
     
     private func updateUI() {

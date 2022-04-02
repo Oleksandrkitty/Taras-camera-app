@@ -32,6 +32,7 @@ class CameraViewController: UIViewController {
         }
     }
     @IBOutlet private weak var deviceFamilyLabel: UILabel!
+    @IBOutlet private weak var distanceLabel: UILabel!
     
     @IBOutlet private weak var singleLabel: UILabel!
     @IBOutlet private weak var darkModeLabel: UILabel!
@@ -225,6 +226,9 @@ class CameraViewController: UIViewController {
                     self.flashView.isHidden = true
                 }
             }
+            viewModel.distance.bind { [weak self] distance in
+                self?.distanceLabel.text = "\(distance)cm"
+            }
         }
     }
     
@@ -277,9 +281,8 @@ class CameraViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        containerView.videoPreviewLayer.session = viewModel.session
-        containerView.videoPreviewLayer.videoGravity = .resizeAspectFill
-        viewModel.requestCameraAccess()
+        containerView.videoPreviewLayer.frame = containerView.frame
+        viewModel.requestCameraAccess(containerView.videoPreviewLayer)
         containerView.addSubview(ovalOverlayView)
     }
     

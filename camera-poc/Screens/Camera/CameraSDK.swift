@@ -6,21 +6,24 @@
 //
 
 import Foundation
-import AVKit
+import AVFoundation
 
 protocol CameraSDKDelegate: AnyObject {
     func sessionDidStart()
+    func updateDistance(_ distance: Int)
 }
 
-class CameraSDK {
+class CameraSDK: NSObject {
     private enum Setting {
         case iso, exposure, shutterSpeed, whiteBalance, usv, none
     }
     
     private let kExposureDurationPower = 5.0 // Higher numbers will give the slider more sensitivity at shorter durations
     private let kExposureMinimumDuration = 1.0 / 1000 // Limit exposure duration to a useful range
-    
+    private let cameraQueue = DispatchQueue(label: "calibrate.camera.sdk.queue")
     private let router: CameraRouting
+    private let settings = Settings()
+    private var measure: DistanceMeasure!
     private var videoInput: AVCaptureDeviceInput?
     private var videoDevice: AVCaptureDevice!
     private(set) var isInitialized: Bool = false
@@ -29,6 +32,14 @@ class CameraSDK {
     private(set) var defaultTint: Float!
     private(set) var defaultTemperature: Float!
     
+    private let videoOutput: AVCaptureVideoDataOutput = {
+        let output = AVCaptureVideoDataOutput()
+        let formatKey = kCVPixelBufferPixelFormatTypeKey as NSString
+        let format = NSNumber(value: kCVPixelFormatType_32BGRA)
+        output.videoSettings = [formatKey: format] as [String : Any]
+        output.alwaysDiscardsLateVideoFrames = true
+        return output
+    }()
     let photoOutput = AVCapturePhotoOutput()
     let captureSession: AVCaptureSession = AVCaptureSession()
     
@@ -97,7 +108,10 @@ class CameraSDK {
         self.router = router
     }
     
-    func requestCameraAccess() {
+    func requestCameraAccess(_ previewLayer: AVCaptureVideoPreviewLayer) {
+        previewLayer.session = self.captureSession
+        previewLayer.videoGravity = .resizeAspectFill
+        self.measure = DistanceMeasure(box: previewLayer)
         switch AVCaptureDevice.authorizationStatus(for: .video) {
             case .authorized:
                 self.setupCaptureSession()
@@ -137,6 +151,13 @@ class CameraSDK {
             captureSession.sessionPreset = .photo
             captureSession.addOutput(photoOutput)
         }
+        videoOutput.setSampleBufferDelegate(self, queue: cameraQueue)
+        captureSession.addOutput(videoOutput)
+        guard let connection = videoOutput.connection(with: .video),
+            connection.isVideoOrientationSupported else {
+            return
+        }
+        connection.videoOrientation = .portrait
         captureSession.commitConfiguration()
         captureSession.startRunning()
         setup()
@@ -257,5 +278,28 @@ class CameraSDK {
         let maxDurationSeconds = CMTimeGetSeconds(videoDevice.activeFormat.maxExposureDuration)
         let newDurationSeconds = p * ( maxDurationSeconds - minDurationSeconds ) + minDurationSeconds; // Scale from 0-1 slider range to actual duration
         return CMTimeMakeWithSeconds(newDurationSeconds, preferredTimescale: 1000 * 1000 * 1000)
+    }
+}
+
+extension CameraSDK: AVCaptureVideoDataOutputSampleBufferDelegate {
+    func captureOutput(
+        _ output: AVCaptureOutput,
+        didOutput sampleBuffer: CMSampleBuffer,
+        from connection: AVCaptureConnection) {
+            guard let frame = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+                debugPrint("unable to get image from sample buffer")
+                return
+            }
+            Task {
+                let distance = await self.measure.eyesDistance(in: frame)
+                let faceDistance = self.settings.referalFaceDistance
+                let eyesDistance = self.settings.referalEyesDistance
+                let resultDistance: Float? = Float(eyesDistance) / distance * Float(faceDistance)
+                if let result = resultDistance, result > 0, result != .infinity {
+                    await MainActor.run {
+                        self.delegate?.updateDistance(Int(ceil(result)))
+                    }
+                }
+            }
     }
 }
