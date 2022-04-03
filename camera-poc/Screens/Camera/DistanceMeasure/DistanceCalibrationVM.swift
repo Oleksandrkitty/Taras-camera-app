@@ -115,12 +115,15 @@ extension DistanceCalibrationVM: AVCaptureVideoDataOutputSampleBufferDelegate {
             let distance = await measurue.eyesDistance(in: frame)
             guard distance > 0 && distance != .infinity else { return }
             await MainActor.run {
-                self.session.stopRunning()
-                self.videoOutput.setSampleBufferDelegate(nil, queue: self.cameraQueue)
+                guard self.step == .eyesDistance else { return }
                 self.isStepCompleted.value = true
                 self.settings.referalEyesDistance = Int(ceil(distance))
                 self.settings.referalFaceDistance = self.referalDistance
-                self.router.presentCamera()
+                self.router.presentCamera() { [weak self] in
+                    self?.session.stopRunning()
+                    self?.videoOutput.setSampleBufferDelegate(nil, queue: self?.cameraQueue)
+                }
+                self.step = .completed
             }
         }
     }

@@ -17,14 +17,18 @@ class DistanceCalibrationRouter {
         self.isRecalibration = isRecalibration
     }
 
-    func presentCamera() {
+    func presentCamera(completion: (() -> Void)? = nil) {
         guard !isPresented else { return }
         if isRecalibration {
-            controller.dismiss(animated: true)
+            controller.dismiss(animated: false) {
+                completion?()
+            }
         } else {
             let controller = ScreenBuilder.camera()
             controller.modalPresentationStyle = .fullScreen
-            self.controller.present(controller, animated: true)
+            self.controller.present(controller, animated: false) {
+                completion?()
+            }
         }
         isPresented = true
     }
