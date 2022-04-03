@@ -12,6 +12,7 @@ protocol CameraRouting {
     func presentPhotosList(maxCount: Int)
     func presentChangeLight(from: Float, to: Float)
     func presentFamilyDevicePicker()
+    func presentCalibrationCamera()
 }
 
 struct CameraRouter: CameraRouting {
@@ -48,5 +49,11 @@ struct CameraRouter: CameraRouting {
     
     func presentFamilyDevicePicker() {
         controller.presentFamilyDevicePicker()
+    }
+    
+    func presentCalibrationCamera() {
+        let controller = ScreenBuilder.calibrate(isRecalibration: true)
+        controller.modalPresentationStyle = .fullScreen
+        self.controller.present(controller, animated: false)
     }
 }

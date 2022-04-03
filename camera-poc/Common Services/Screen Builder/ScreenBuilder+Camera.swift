@@ -16,9 +16,12 @@ extension ScreenBuilder {
         return controller
     }
     
-    static func calibrate() -> UIViewController {
+    static func calibrate(isRecalibration: Bool = false) -> UIViewController {
         let controller = DistanceCalibrationViewController.instantiateFromStoryboard(.distanceCalibration)
-        let router = DistanceCalibrationRouter(controller: controller)
+        let router = DistanceCalibrationRouter(
+            controller: controller,
+            isRecalibration: isRecalibration
+        )
         let viewModel = DistanceCalibrationVM(router: router)
         controller.viewModel = viewModel
         return controller

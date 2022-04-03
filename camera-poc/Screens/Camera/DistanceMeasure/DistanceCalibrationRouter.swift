@@ -9,18 +9,23 @@ import UIKit
 
 class DistanceCalibrationRouter {
     private weak var controller: UIViewController!
-
-    init(controller: UIViewController) {
+    private let isRecalibration: Bool
+    private var isPresented: Bool = false
+    
+    init(controller: UIViewController, isRecalibration: Bool = false) {
         self.controller = controller
+        self.isRecalibration = isRecalibration
     }
 
     func presentCamera() {
-        if controller.isBeingPresented {
+        guard !isPresented else { return }
+        if isRecalibration {
             controller.dismiss(animated: true)
         } else {
             let controller = ScreenBuilder.camera()
             controller.modalPresentationStyle = .fullScreen
             self.controller.present(controller, animated: true)
         }
+        isPresented = true
     }
 }

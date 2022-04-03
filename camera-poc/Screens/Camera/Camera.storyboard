@@ -4,6 +4,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -28,6 +29,22 @@
                                     <constraint firstAttribute="height" constant="50" id="N1w-gT-iuE"/>
                                 </constraints>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VfN-75-N3s">
+                                <rect key="frame" x="354" y="593" width="40" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="CD0-ak-TLQ"/>
+                                    <constraint firstAttribute="height" constant="40" id="CQX-Em-MBy"/>
+                                </constraints>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <imageReference key="image" image="camera.metering.matrix" catalog="system" symbolScale="large"/>
+                                </state>
+                                <connections>
+                                    <action selector="calibrateButtonPressed:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="rbv-WD-dnC"/>
+                                </connections>
+                            </button>
                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xdm-jR-eIb">
                                 <rect key="frame" x="0.0" y="682" width="414" height="180"/>
                                 <subviews>
@@ -581,10 +598,12 @@
                             <constraint firstItem="xdm-jR-eIb" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="PMZ-aR-3CB"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="xdm-jR-eIb" secondAttribute="trailing" id="Qus-Tg-D1V"/>
                             <constraint firstItem="gGF-yB-1oh" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="XD3-ts-TYd"/>
+                            <constraint firstItem="VfN-75-N3s" firstAttribute="centerY" secondItem="ofC-yb-qfh" secondAttribute="centerY" id="acC-ft-zOz"/>
                             <constraint firstItem="mgu-cr-jkU" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="cfm-cF-5XT"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="gGF-yB-1oh" secondAttribute="trailing" id="gwA-uJ-KXK"/>
                             <constraint firstItem="jsg-v0-Nrn" firstAttribute="leading" secondItem="5EZ-qb-Rvc" secondAttribute="leading" id="iHP-Xn-ag7"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="mgu-cr-jkU" secondAttribute="bottom" id="kfc-le-D9v"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="VfN-75-N3s" secondAttribute="trailing" constant="20" id="mj6-QK-lrG"/>
                             <constraint firstItem="1Ik-mP-6cQ" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="o0W-6L-88Y"/>
                             <constraint firstItem="1Ik-mP-6cQ" firstAttribute="trailing" secondItem="vDu-zF-Fre" secondAttribute="trailing" id="ra1-T6-ObI"/>
                             <constraint firstItem="xdm-jR-eIb" firstAttribute="top" secondItem="1Ik-mP-6cQ" secondAttribute="bottom" id="sPf-2J-6lT"/>
@@ -630,6 +649,7 @@
     </scenes>
     <resources>
         <image name="arrow.uturn.backward" catalog="system" width="128" height="112"/>
+        <image name="camera.metering.matrix" catalog="system" width="128" height="93"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

@@ -87,10 +87,6 @@ class CameraVM: NSObject {
     private var outputVolumeObserve: NSKeyValueObservation?
     private let audioSession = AVAudioSession.sharedInstance()
     
-    var session: AVCaptureSession {
-        return sdk.captureSession
-    }
-    
     init(router: CameraRouting) {
         self.router = router
         self.sdk = CameraSDK(router: router)
@@ -334,6 +330,18 @@ class CameraVM: NSObject {
         } catch {
             assertionFailure(error.localizedDescription)
         }
+    }
+    
+    func pauseCamera() {
+        sdk.pause()
+    }
+    
+    func continueCamera() {
+        sdk.start()
+    }
+    
+    func calibrateCamera() {
+        router.presentCalibrationCamera()
     }
     
     private func makePhoto() {

@@ -41,7 +41,7 @@ class CameraSDK: NSObject {
         return output
     }()
     let photoOutput = AVCapturePhotoOutput()
-    let captureSession: AVCaptureSession = AVCaptureSession()
+    private let captureSession: AVCaptureSession = AVCaptureSession()
     
     var minISO: Float {
         return videoDevice.activeFormat.minISO
@@ -107,6 +107,17 @@ class CameraSDK: NSObject {
     init(router: CameraRouting) {
         self.router = router
     }
+    
+    func start() {
+        videoOutput.setSampleBufferDelegate(self, queue: cameraQueue)
+        captureSession.startRunning()
+    }
+    
+    func pause() {
+        captureSession.stopRunning()
+        videoOutput.setSampleBufferDelegate(nil, queue: cameraQueue)
+    }
+    
     
     func requestCameraAccess(_ previewLayer: AVCaptureVideoPreviewLayer) {
         previewLayer.session = self.captureSession

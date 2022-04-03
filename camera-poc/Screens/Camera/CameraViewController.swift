@@ -92,6 +92,10 @@ class CameraViewController: UIViewController {
         viewModel.presentFamilyDevicePicker()
     }
     
+    @IBAction private func calibrateButtonPressed(_ button: UIButton) {
+        viewModel.calibrateCamera()
+    }
+    
     private lazy var ovalOverlayView = OvalOverlayView(frame: containerView.bounds)
     
     private lazy var usvPicker: UIView = {
@@ -232,6 +236,8 @@ class CameraViewController: UIViewController {
         }
     }
     
+    private var isInitialized: Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         pickerView.addSubview(usvPicker)
@@ -278,12 +284,27 @@ class CameraViewController: UIViewController {
         }
         changeElementsVisibility()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if isInitialized {
+            viewModel.continueCamera()
+        }
+    }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        containerView.videoPreviewLayer.frame = containerView.frame
-        viewModel.requestCameraAccess(containerView.videoPreviewLayer)
-        containerView.addSubview(ovalOverlayView)
+        if !isInitialized {
+            containerView.videoPreviewLayer.frame = containerView.frame
+            viewModel.requestCameraAccess(containerView.videoPreviewLayer)
+            containerView.addSubview(ovalOverlayView)
+            isInitialized = true
+        }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        viewModel.pauseCamera()
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {

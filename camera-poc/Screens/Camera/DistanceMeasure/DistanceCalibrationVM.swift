@@ -13,6 +13,7 @@ class DistanceCalibrationVM: NSObject {
     enum Step {
         case faceDistance
         case eyesDistance
+        case completed
     }
 
     private let cameraQueue = DispatchQueue(label: "calibrate.camera.queue")
@@ -34,6 +35,8 @@ class DistanceCalibrationVM: NSObject {
             case .eyesDistance:
                 measureEyesDistance()
             case .faceDistance:
+                break
+            case .completed:
                 break
             }
         }
@@ -110,16 +113,14 @@ extension DistanceCalibrationVM: AVCaptureVideoDataOutputSampleBufferDelegate {
         }
         Task {
             let distance = await measurue.eyesDistance(in: frame)
-            if distance == .infinity { return }
+            guard distance > 0 && distance != .infinity else { return }
             await MainActor.run {
                 self.session.stopRunning()
                 self.videoOutput.setSampleBufferDelegate(nil, queue: self.cameraQueue)
                 self.isStepCompleted.value = true
                 self.settings.referalEyesDistance = Int(ceil(distance))
                 self.settings.referalFaceDistance = self.referalDistance
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                    self.router.presentCamera()
-                }
+                self.router.presentCamera()
             }
         }
     }
