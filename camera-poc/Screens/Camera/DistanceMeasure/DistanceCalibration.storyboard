@@ -4,6 +4,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -29,17 +30,17 @@
                                 <rect key="frame" x="0.0" y="420" width="414" height="476"/>
                                 <subviews>
                                     <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="wB0-Lz-9BM">
-                                        <rect key="frame" x="188.5" y="225" width="37" height="37"/>
+                                        <rect key="frame" x="188.5" y="155" width="37" height="37"/>
                                         <color key="color" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </activityIndicatorView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Calibration..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="b0V-dY-7qq">
-                                        <rect key="frame" x="0.0" y="272" width="414" height="18"/>
+                                        <rect key="frame" x="0.0" y="202" width="414" height="18"/>
                                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="lrw-c5-Yyz">
-                                        <rect key="frame" x="20" y="300" width="374" height="18"/>
+                                        <rect key="frame" x="20" y="230" width="374" height="18"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please, move camera on 51cm from face" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rtx-RF-fzd">
                                                 <rect key="frame" x="0.0" y="0.0" width="374" height="18"/>
@@ -62,33 +63,52 @@
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0cm" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nDT-Ij-8wz">
-                                <rect key="frame" x="187" y="818" width="40.5" height="24"/>
+                                <rect key="frame" x="187" y="748" width="40.5" height="24"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="20"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aHe-IW-UB5">
+                                <rect key="frame" x="20" y="792" width="374" height="50"/>
+                                <color key="backgroundColor" name="Turbo"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="gEK-4Y-wEC"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="Calibrate">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="calibrateButtonPressed:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="8pn-qU-kTD"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="tertiarySystemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="Qli-cs-PMJ" secondAttribute="bottom" constant="80" id="1GY-DI-PAN"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="Qli-cs-PMJ" secondAttribute="trailing" id="2LW-eN-STg"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="aHe-IW-UB5" secondAttribute="trailing" constant="20" id="B8F-d6-8cG"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="Thy-aq-Rx3" secondAttribute="trailing" id="D2C-PZ-WZ4"/>
                             <constraint firstItem="Thy-aq-Rx3" firstAttribute="top" secondItem="5EZ-qb-Rvc" secondAttribute="top" id="IpO-0R-fEG"/>
-                            <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="nDT-Ij-8wz" secondAttribute="bottom" constant="20" id="O0X-Fe-8fI"/>
                             <constraint firstAttribute="bottom" secondItem="EeU-lc-J6d" secondAttribute="bottom" id="UNG-Xy-sdf"/>
                             <constraint firstItem="EeU-lc-J6d" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="XXx-t8-Uy0"/>
                             <constraint firstItem="Qli-cs-PMJ" firstAttribute="top" secondItem="5EZ-qb-Rvc" secondAttribute="top" constant="90" id="cK7-IK-13b"/>
                             <constraint firstItem="Qli-cs-PMJ" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="fZ4-so-4PP"/>
                             <constraint firstItem="nDT-Ij-8wz" firstAttribute="top" secondItem="lrw-c5-Yyz" secondAttribute="bottom" constant="80" id="hJR-gU-eV7"/>
                             <constraint firstAttribute="bottom" secondItem="Thy-aq-Rx3" secondAttribute="bottom" id="kdA-qg-Elv"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="aHe-IW-UB5" secondAttribute="bottom" constant="20" id="maQ-0u-OhH"/>
                             <constraint firstItem="nDT-Ij-8wz" firstAttribute="centerX" secondItem="vDu-zF-Fre" secondAttribute="centerX" id="mee-sQ-Iof"/>
+                            <constraint firstItem="aHe-IW-UB5" firstAttribute="top" secondItem="nDT-Ij-8wz" secondAttribute="bottom" constant="20" id="nUY-Yk-WXV"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="EeU-lc-J6d" secondAttribute="trailing" id="qoq-Me-0LV"/>
                             <constraint firstItem="Thy-aq-Rx3" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="rcK-h9-Vpk"/>
+                            <constraint firstItem="aHe-IW-UB5" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="20" id="si1-rW-MS6"/>
                             <constraint firstItem="EeU-lc-J6d" firstAttribute="top" secondItem="5EZ-qb-Rvc" secondAttribute="top" constant="420" id="xyh-Mf-s5V"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="calibrateButton" destination="aHe-IW-UB5" id="Y0H-ep-GAO"/>
                         <outlet property="calibrationView" destination="EeU-lc-J6d" id="zSv-I8-zum"/>
                         <outlet property="containerView" destination="Qli-cs-PMJ" id="oWK-mP-D34"/>
                         <outlet property="distanceLabel" destination="nDT-Ij-8wz" id="Fny-u8-aYO"/>
@@ -101,6 +121,9 @@
         </scene>
     </scenes>
     <resources>
+        <namedColor name="Turbo">
+            <color red="0.99607843137254903" green="0.83137254901960789" blue="0.086274509803921567" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <systemColor name="tertiarySystemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

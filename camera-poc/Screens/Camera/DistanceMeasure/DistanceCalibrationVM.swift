@@ -29,25 +29,14 @@ class DistanceCalibrationVM: NSObject {
     }()
     private let settings = Settings()
     private var measure: DistanceMeasure!
-    private var step: Step = .faceDistance {
-        didSet {
-            switch step {
-            case .eyesDistance:
-                measureEyesDistance()
-            case .faceDistance:
-                break
-            case .completed:
-                break
-            }
-        }
-    }
+    private var step: Step = .faceDistance
     private var faceNode = SCNNode()
     private var leftEye = SCNNode()
     private var rightEye = SCNNode()
     
     let referalDistance = 40
     
-    private(set) var isStepCompleted: Bound<Bool> = Bound(false)
+    private(set) var isFaceDistanceCorrect: Bound<Bool> = Bound(false)
     private(set) var distance: Bound<Int> = Bound(0)
     
     lazy var preview = CameraPreviewView(frame: .zero)
@@ -59,12 +48,12 @@ class DistanceCalibrationVM: NSObject {
     
     func setup() {
         preview.videoPreviewLayer.session = session
-//        preview.videoPreviewLayer.videoGravity = .resizeAspectFill
         measure = DistanceMeasure(box: preview.videoPreviewLayer)
         setupCameraSession()
     }
     
     func calibrate() {
+        step = .faceDistance
         preview.isHidden = true
         sceneView.isHidden = false
         if session.isRunning {
@@ -75,6 +64,7 @@ class DistanceCalibrationVM: NSObject {
     }
     
     func measureEyesDistance() {
+        step = .eyesDistance
         sceneView.session.pause()
         sceneView.isHidden = true
         preview.isHidden = false
@@ -118,7 +108,6 @@ extension DistanceCalibrationVM: AVCaptureVideoDataOutputSampleBufferDelegate {
             guard distance > 0 && distance != .infinity else { return }
             await MainActor.run {
                 guard self.step == .eyesDistance else { return }
-                self.isStepCompleted.value = true
                 self.settings.referalEyesDistance = Int(ceil(distance))
                 self.settings.referalFaceDistance = self.referalDistance
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
@@ -191,7 +180,9 @@ extension DistanceCalibrationVM: ARSCNViewDelegate {
             let referalDistance = Int(round(averageDistance * 100))
             self.distance.value = referalDistance
             if referalDistance == self.referalDistance {
-                self.step = .eyesDistance
+                self.isFaceDistanceCorrect.value = true
+            } else {
+                self.isFaceDistanceCorrect.value = false
             }
         }
     }

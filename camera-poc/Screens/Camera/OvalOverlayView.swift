@@ -44,6 +44,7 @@ class OvalOverlayView: UIView {
     }
 
     override func draw(_ rect: CGRect) {
+        layer.sublayers?.forEach { $0.removeFromSuperlayer() }
         let overlayPath = UIBezierPath(rect: bounds)
         let ovalPath = UIBezierPath(ovalIn: overlayFrame)
         overlayPath.append(ovalPath)

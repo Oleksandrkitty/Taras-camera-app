@@ -13,19 +13,34 @@ class DistanceCalibrationViewController: UIViewController {
     @IBOutlet private weak var calibrationView: UIView!
     @IBOutlet private weak var distanceLabel: UILabel!
     @IBOutlet private weak var referalDistanceLabel: UILabel!
+    @IBOutlet private weak var calibrateButton: UIButton! {
+        didSet {
+            calibrateButton.layer.cornerRadius = 8.0
+            calibrateButton.clipsToBounds = true
+        }
+    }
+    
+    @IBAction private func calibrateButtonPressed(_ button: UIButton) {
+        viewModel.measureEyesDistance()
+    }
+    
     private lazy var ovalOverlayView = OvalOverlayView(
         frame: containerView.bounds,
         topSpace: 125.0,
         backgroundColor: UIColor.black.withAlphaComponent(0.5)
     )
     
+    private var isOverlayViewInGreen: Bool = false
+    
     var viewModel: DistanceCalibrationVM! {
         didSet {
-            viewModel.isStepCompleted.bind { [weak self] isCompleted in
-                self?.ovalOverlayView.frameColor = .green
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                    self?.ovalOverlayView.frameColor = .white
+            viewModel.isFaceDistanceCorrect.bind { [weak self] isCorrect in
+                guard let self = self else { return }
+                if self.isOverlayViewInGreen != isCorrect {
+                    self.ovalOverlayView.frameColor = isCorrect ? .green : .white
+                    self.isOverlayViewInGreen = isCorrect
                 }
+                
             }
             viewModel.distance.bind { [weak self] distance in
                 self?.distanceLabel.text = "\(distance)cm"
