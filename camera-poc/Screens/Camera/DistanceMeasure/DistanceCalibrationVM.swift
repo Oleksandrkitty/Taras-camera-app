@@ -28,7 +28,7 @@ class DistanceCalibrationVM: NSObject {
         return output
     }()
     private let settings = Settings()
-    private lazy var measurue = DistanceMeasure(box: previewLayer)
+    private var measure: DistanceMeasure!
     private var step: Step = .faceDistance {
         didSet {
             switch step {
@@ -45,14 +45,12 @@ class DistanceCalibrationVM: NSObject {
     private var leftEye = SCNNode()
     private var rightEye = SCNNode()
     
-    let referalDistance = 51
+    let referalDistance = 40
     
     private(set) var isStepCompleted: Bound<Bool> = Bound(false)
     private(set) var distance: Bound<Int> = Bound(0)
     
-    lazy var previewLayer = AVCaptureVideoPreviewLayer(
-        session: session
-    )
+    lazy var preview = CameraPreviewView(frame: .zero)
     lazy var sceneView = ARSCNView(frame: .zero)
     
     init(router: DistanceCalibrationRouter) {
@@ -60,10 +58,14 @@ class DistanceCalibrationVM: NSObject {
     }
     
     func setup() {
-        
+        preview.videoPreviewLayer.session = session
+//        preview.videoPreviewLayer.videoGravity = .resizeAspectFill
+        measure = DistanceMeasure(box: preview.videoPreviewLayer)
+        setupCameraSession()
     }
+    
     func calibrate() {
-        previewLayer.isHidden = true
+        preview.isHidden = true
         sceneView.isHidden = false
         if session.isRunning {
             session.stopRunning()
@@ -73,11 +75,10 @@ class DistanceCalibrationVM: NSObject {
     }
     
     func measureEyesDistance() {
-        setupCameraSession()
         sceneView.session.pause()
         sceneView.isHidden = true
-        previewLayer.isHidden = false
-        videoOutput.setSampleBufferDelegate(self, queue: cameraQueue)
+        preview.isHidden = false
+
         session.startRunning()
     }
 }
@@ -99,6 +100,7 @@ extension DistanceCalibrationVM {
             return
         }
         connection.videoOrientation = .portrait
+        videoOutput.setSampleBufferDelegate(self, queue: cameraQueue)
     }
 }
 
@@ -112,16 +114,18 @@ extension DistanceCalibrationVM: AVCaptureVideoDataOutputSampleBufferDelegate {
             return
         }
         Task {
-            let distance = await measurue.eyesDistance(in: frame)
+            let distance = await measure.eyesDistance(in: frame)
             guard distance > 0 && distance != .infinity else { return }
             await MainActor.run {
                 guard self.step == .eyesDistance else { return }
                 self.isStepCompleted.value = true
                 self.settings.referalEyesDistance = Int(ceil(distance))
                 self.settings.referalFaceDistance = self.referalDistance
-                self.router.presentCamera() { [weak self] in
-                    self?.session.stopRunning()
-                    self?.videoOutput.setSampleBufferDelegate(nil, queue: self?.cameraQueue)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    self.router.presentCamera() { [weak self] in
+                        self?.session.stopRunning()
+                        self?.videoOutput.setSampleBufferDelegate(nil, queue: self?.cameraQueue)
+                    }
                 }
                 self.step = .completed
             }

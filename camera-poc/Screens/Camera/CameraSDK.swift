@@ -26,6 +26,7 @@ class CameraSDK: NSObject {
     private var measure: DistanceMeasure!
     private var videoInput: AVCaptureDeviceInput?
     private var videoDevice: AVCaptureDevice!
+    private var distances: [Int] = []
     private(set) var isInitialized: Bool = false
     private(set) var defaultISO: Float!
     private(set) var defaultShutterSpeed: Float!
@@ -43,6 +44,15 @@ class CameraSDK: NSObject {
     let photoOutput = AVCapturePhotoOutput()
     private let captureSession: AVCaptureSession = AVCaptureSession()
     
+    var currentDistance: Int {
+        let sum = self.distances.reduce(0, +)
+        let distance = Float(sum) / Float(self.distances.count)
+        let average = ceil(distance)
+        if average > 0 && average != .infinity {
+            return Int(average)
+        }
+        return 0
+    }
     var minISO: Float {
         return videoDevice.activeFormat.minISO
     }
@@ -306,9 +316,18 @@ extension CameraSDK: AVCaptureVideoDataOutputSampleBufferDelegate {
                 let faceDistance = self.settings.referalFaceDistance
                 let eyesDistance = self.settings.referalEyesDistance
                 let resultDistance: Float? = Float(eyesDistance) / distance * Float(faceDistance)
-                if let result = resultDistance, result > 0, result != .infinity {
-                    await MainActor.run {
-                        self.delegate?.updateDistance(Int(ceil(result)))
+                await MainActor.run {
+                    guard let result = resultDistance,
+                        result > 0,
+                        result != .infinity else {
+                        self.delegate?.updateDistance(0)
+                        self.distances = []
+                        return
+                    }
+                    self.distances.append(Int(ceil(result)))
+                    if self.distances.count >= 3 {
+                        self.delegate?.updateDistance(currentDistance)
+                        self.distances = []
                     }
                 }
             }

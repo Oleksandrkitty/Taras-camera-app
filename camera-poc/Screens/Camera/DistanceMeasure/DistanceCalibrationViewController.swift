@@ -35,7 +35,12 @@ class DistanceCalibrationViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        containerView.layer.addSublayer(viewModel.previewLayer)
+        containerView.addSubview(viewModel.preview)
+        viewModel.preview.translatesAutoresizingMaskIntoConstraints = false
+        viewModel.preview.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
+        viewModel.preview.bottomAnchor.constraint(equalTo: containerView.bottomAnchor).isActive = true
+        viewModel.preview.rightAnchor.constraint(equalTo: containerView.rightAnchor).isActive = true
+        viewModel.preview.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
         containerView.addSubview(viewModel.sceneView)
         viewModel.sceneView.translatesAutoresizingMaskIntoConstraints = false
         viewModel.sceneView.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
@@ -44,16 +49,12 @@ class DistanceCalibrationViewController: UIViewController {
         viewModel.sceneView.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
         
         referalDistanceLabel.text = "Please, move camera on \(viewModel.referalDistance)cm from face"
+        viewModel.setup()
         viewModel.calibrate()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         containerView.addSubview(ovalOverlayView)
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        self.viewModel.previewLayer.frame = self.containerView.frame
     }
 }
