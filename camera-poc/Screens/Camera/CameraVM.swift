@@ -418,7 +418,7 @@ extension CameraVM: AVCapturePhotoCaptureDelegate {
             PHPhotoLibrary.shared().performChanges {
                 let creationRequest = PHAssetCreationRequest.forAsset()
                 let options = PHAssetResourceCreationOptions()
-                let fileName = "\(UIDevice.modelName)_\(self.dateFormatter.string(from: Date()))_ISO: \("A \(Int(self.sdk.iso))")_Exp: \(String(format: "%0.2f", self.sdk.shutterSpeed))_Tint: \(Int(self.sdk.tint))_Temperature: \(Int(self.sdk.temperature))_Frame: \(self.series.title)_Light: \(Int(self.brightness * 100))%"
+                let fileName = "\(UIDevice.modelName)_\(self.dateFormatter.string(from: Date()))_ISO: \("A \(Int(self.sdk.iso))")_Exp: \(String(format: "%0.2f", self.sdk.shutterSpeed))_Tint: \(Int(self.sdk.tint))_Temperature: \(Int(self.sdk.temperature))_Frame: \(self.series.title)_Light: \(Int(self.brightness * 100))%_Distance: \(self.distance.value)cm"
                 options.originalFilename = fileName
                 if let data = photo.fileDataRepresentation() {
                     creationRequest.addResource(with: .photo, data: data, options: options)

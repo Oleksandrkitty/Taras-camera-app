@@ -30,6 +30,7 @@ class PhotosListVM {
             auth()
             return
         }
+        photosStore.createImageDirectoryIfNeeded()
         router.showProgress()
         Task {
             var result: [Photo] = []

@@ -9,34 +9,6 @@ import UIKit
 import Photos
 
 struct PhotosStore {
-    private func photos(_ userName: String, assets: [PHAsset]) async -> [URL] {
-        return []
-//        var urls: [URL] = []
-//        let requestOptions = PHImageRequestOptions()
-//        requestOptions.isSynchronous = true
-//        let group = DispatchGroup()
-//        for asset in assets {
-//            if let resource = PHAssetResource.assetResources(for: asset).first {
-//                let filename = resource.originalFilename
-//                let type = resource.uniformTypeIdentifier
-//                group.enter()
-//                PHImageManager.default().requestImage(for: asset, targetSize: .zero, contentMode: .aspectFill, options: requestOptions) { (image, _) in
-//                    guard let image = image else {
-//                        group.leave()
-//                        return
-//                    }
-//                    let imageName = "\(userName)_\(filename)"
-//                    if let url = self.saveImage(imageName: imageName, image: image) {
-//                        urls.append(url)
-//                    }
-//                }
-//            }
-//        }
-//        group.notify(queue: .main) {
-//
-//        }
-    }
-    
     func fetchAssets(totalImageCountNeeded: Int) -> [PHAsset] {
         var assets: [PHAsset] = []
         let fetchOptions = PHFetchOptions()
@@ -101,7 +73,7 @@ struct PhotosStore {
         return fileURL
     }
     
-    private func createImageDirectoryIfNeeded() {
+    func createImageDirectoryIfNeeded() {
         let fileManager = FileManager.default
         guard let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
         let imagesDirectory = documentsDirectory.appendingPathComponent("images")

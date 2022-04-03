@@ -44,7 +44,7 @@ class CameraSDK: NSObject {
     let photoOutput = AVCapturePhotoOutput()
     private let captureSession: AVCaptureSession = AVCaptureSession()
     
-    var currentDistance: Int {
+    private var currentDistance: Int {
         let sum = self.distances.reduce(0, +)
         let distance = Float(sum) / Float(self.distances.count)
         let average = ceil(distance)
