@@ -29,7 +29,7 @@
                                     <constraint firstAttribute="height" constant="50" id="N1w-gT-iuE"/>
                                 </constraints>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VfN-75-N3s">
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VfN-75-N3s">
                                 <rect key="frame" x="354" y="583" width="40" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="40" id="CD0-ak-TLQ"/>

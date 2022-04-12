@@ -48,6 +48,7 @@ class DistanceCalibrationVM: NSObject {
     
     func setup() {
         preview.videoPreviewLayer.session = session
+        preview.videoPreviewLayer.videoGravity = .resizeAspectFill
         measure = DistanceMeasure(box: preview.videoPreviewLayer)
         setupCameraSession()
     }
@@ -108,8 +109,8 @@ extension DistanceCalibrationVM: AVCaptureVideoDataOutputSampleBufferDelegate {
             guard distance > 0 && distance != .infinity else { return }
             await MainActor.run {
                 guard self.step == .eyesDistance else { return }
-                self.settings.referalEyesDistance = Int(ceil(distance))
-                self.settings.referalFaceDistance = self.referalDistance
+//                self.settings.referalEyesDistance = Int(ceil(distance))
+//                self.settings.referalFaceDistance = self.referalDistance
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                     self.router.presentCamera() { [weak self] in
                         self?.session.stopRunning()

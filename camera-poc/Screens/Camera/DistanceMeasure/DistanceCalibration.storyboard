@@ -23,7 +23,7 @@
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Qli-cs-PMJ">
-                                <rect key="frame" x="0.0" y="90" width="414" height="692"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="682"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EeU-lc-J6d">
@@ -87,14 +87,14 @@
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="tertiarySystemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="Qli-cs-PMJ" secondAttribute="bottom" constant="80" id="1GY-DI-PAN"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="Qli-cs-PMJ" secondAttribute="bottom" constant="180" id="1GY-DI-PAN"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="Qli-cs-PMJ" secondAttribute="trailing" id="2LW-eN-STg"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="aHe-IW-UB5" secondAttribute="trailing" constant="20" id="B8F-d6-8cG"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="Thy-aq-Rx3" secondAttribute="trailing" id="D2C-PZ-WZ4"/>
                             <constraint firstItem="Thy-aq-Rx3" firstAttribute="top" secondItem="5EZ-qb-Rvc" secondAttribute="top" id="IpO-0R-fEG"/>
                             <constraint firstAttribute="bottom" secondItem="EeU-lc-J6d" secondAttribute="bottom" id="UNG-Xy-sdf"/>
                             <constraint firstItem="EeU-lc-J6d" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="XXx-t8-Uy0"/>
-                            <constraint firstItem="Qli-cs-PMJ" firstAttribute="top" secondItem="5EZ-qb-Rvc" secondAttribute="top" constant="90" id="cK7-IK-13b"/>
+                            <constraint firstItem="Qli-cs-PMJ" firstAttribute="top" secondItem="5EZ-qb-Rvc" secondAttribute="top" id="cK7-IK-13b"/>
                             <constraint firstItem="Qli-cs-PMJ" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="fZ4-so-4PP"/>
                             <constraint firstItem="nDT-Ij-8wz" firstAttribute="top" secondItem="lrw-c5-Yyz" secondAttribute="bottom" constant="80" id="hJR-gU-eV7"/>
                             <constraint firstAttribute="bottom" secondItem="Thy-aq-Rx3" secondAttribute="bottom" id="kdA-qg-Elv"/>

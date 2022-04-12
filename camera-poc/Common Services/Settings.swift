@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 class Settings {
     private struct Key {
@@ -15,20 +16,10 @@ class Settings {
     private let userDefaults = UserDefaults.standard
 
     var referalFaceDistance: Int {
-        set {
-            userDefaults.setValue(newValue, forKey: Key.faceDistance)
-        }
-        get {
-            userDefaults.integer(forKey: Key.faceDistance)
-        }
+        return 40
     }
     
     var referalEyesDistance: Int {
-        set {
-            userDefaults.setValue(newValue, forKey: Key.eyesDistance)
-        }
-        get {
-            userDefaults.integer(forKey: Key.eyesDistance)
-        }
+        return Int(UIScreen.main.bounds.width - 320) / 7 + 57
     }
 }
