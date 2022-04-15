@@ -21,7 +21,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let window = UIWindow()
         let service = LoginService()
         if service.isLoggedIn {
-            window.rootViewController = ScreenBuilder.camera()
+            if service.isCameraCalibrated {
+                window.rootViewController = ScreenBuilder.camera()
+            } else {
+                window.rootViewController = ScreenBuilder.calibrate()
+            }
         } else {
             window.rootViewController = ScreenBuilder.Auth.login()
         }
