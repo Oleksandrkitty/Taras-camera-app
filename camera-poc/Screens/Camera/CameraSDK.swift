@@ -82,6 +82,15 @@ class CameraSDK: NSObject {
         return Float(pow(p, 1 / kExposureDurationPower))
     }
     
+    var aperture: Float {
+        return videoDevice.lensAperture
+    }
+    
+    var speed: Float {
+        let time = videoDevice.exposureDuration
+        return Float(CMTimeGetSeconds(time))
+    }
+    
     var minTint: Float {
         return -150
     }
@@ -193,14 +202,14 @@ class CameraSDK: NSObject {
         videoDevice.unlockForConfiguration()
     }
     
-    func changeExposure(duration: Float, iso: Float) throws {
-        try videoDevice.lockForConfiguration()
-        videoDevice.setExposureModeCustom(
-            duration: exposureDuration(duration),
-            iso: iso
-        )
-        videoDevice.unlockForConfiguration()
-    }
+//    func changeExposure(duration: Float, iso: Float) throws {
+//        try videoDevice.lockForConfiguration()
+//        videoDevice.setExposureModeCustom(
+//            duration: exposureDuration(duration),
+//            iso: iso
+//        )
+//        videoDevice.unlockForConfiguration()
+//    }
     
     func changeExposure(_ value: Float) throws {
         try videoDevice.lockForConfiguration()
@@ -299,6 +308,47 @@ class CameraSDK: NSObject {
         let maxDurationSeconds = CMTimeGetSeconds(videoDevice.activeFormat.maxExposureDuration)
         let newDurationSeconds = p * ( maxDurationSeconds - minDurationSeconds ) + minDurationSeconds; // Scale from 0-1 slider range to actual duration
         return CMTimeMakeWithSeconds(newDurationSeconds, preferredTimescale: 1000 * 1000 * 1000)
+    }
+    
+    func setCustomExposure(speed: Float, iso: Float) {
+        guard let cameraDevice = videoDevice else { return }
+        
+        let ev = ExposureValue(aperture: aperture, speed: speed, iso: iso)
+        
+        var safeSpeed = min(max(speed, Float(CMTimeGetSeconds(cameraDevice.activeFormat.minExposureDuration))), 1/15.0)
+        var safeISO = ev.iso(withAperture: aperture, speed: safeSpeed)
+        if safeISO < cameraDevice.activeFormat.minISO || safeISO > cameraDevice.activeFormat.maxISO {
+            safeISO = min(max(safeISO, cameraDevice.activeFormat.minISO), cameraDevice.activeFormat.maxISO)
+            safeSpeed = min(max(ev.speed(withAperture: aperture, iso: safeISO), Float(CMTimeGetSeconds(cameraDevice.activeFormat.minExposureDuration))), Float(CMTimeGetSeconds(cameraDevice.activeFormat.maxExposureDuration)))
+        }
+        var duration = CMTimeMakeWithSeconds(Double(safeSpeed), preferredTimescale: 1000000000)
+        if duration < cameraDevice.activeFormat.minExposureDuration {
+            duration = cameraDevice.activeFormat.minExposureDuration
+        }
+        if duration > cameraDevice.activeFormat.maxExposureDuration {
+            duration = cameraDevice.activeFormat.maxExposureDuration
+        }
+        do {
+            try cameraDevice.lockForConfiguration()
+            cameraDevice.exposureMode = .custom
+            cameraDevice.setExposureModeCustom(
+                duration: duration,
+                iso: safeISO,
+                completionHandler: nil
+            )
+            cameraDevice.unlockForConfiguration()
+        } catch {
+        }
+    }
+    
+    func clearCustomExposure() {
+        guard let cameraDevice = videoDevice, cameraDevice.exposureMode != .continuousAutoExposure else { return }
+        do {
+            try cameraDevice.lockForConfiguration()
+            cameraDevice.exposureMode = .continuousAutoExposure
+            cameraDevice.unlockForConfiguration()
+        } catch {
+        }
     }
 }
 

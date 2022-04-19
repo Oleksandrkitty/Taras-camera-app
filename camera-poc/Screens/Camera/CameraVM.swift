@@ -8,6 +8,7 @@
 import Foundation
 import AVKit
 import Photos
+import Combine
 
 class CameraVM: NSObject {
     enum LightMode {
@@ -16,7 +17,7 @@ class CameraVM: NSObject {
     }
     
     private enum Setting {
-        case iso, exposure, whiteBalance, usv, none
+        case iso, exposure, aperture, whiteBalance, usv, none
     }
     private let router: CameraRouting
     private let sdk: CameraSDK
@@ -26,6 +27,9 @@ class CameraVM: NSObject {
         return dateFormatter
     }()
     
+    private var isoCancellabel: AnyObject?
+    private var exposureCancellabel: AnyObject?
+    private var apertureCancellabel: AnyObject?
     private var screenBrightness: CGFloat = 0.5
     private(set) var isFlashEnabled: Bound<Bool> = Bound(false)
     private(set) var isUSVPickerEnabled: Bound<Bool> = Bound(false)
@@ -52,6 +56,7 @@ class CameraVM: NSObject {
     
     private(set) var isoValue: Bound<String> = Bound("A 100")
     private(set) var exposureValue: Bound<String> = Bound("0.0")
+    private(set) var apertureValue: Bound<String> = Bound("0.0")
     private(set) var wbValue: Bound<String> = Bound("0.0")
     private(set) var usvValue: Bound<String> = Bound("Low")
     private(set) var usvPercents: Bound<String> = Bound("0%")
@@ -82,10 +87,12 @@ class CameraVM: NSObject {
     private var lightMode: LightMode = .normal
     private var currentISO: Float = 0.0
     private var currentShutterSpeed: Float = 0.0
+    private var currentAperture: Float = 0.0
     
     //Detect volume button up/down to start capture
     private var outputVolumeObserve: NSKeyValueObservation?
     private let audioSession = AVAudioSession.sharedInstance()
+    private(set) lazy var lightMeter = LightMeter(camera: sdk)
     
     init(router: CameraRouting) {
         self.router = router
@@ -117,11 +124,9 @@ class CameraVM: NSObject {
         }
         //Set Normal light state before making photos
         if isDarkModeEnabled.value {
-            do {
-                try sdk.changeExposure(duration: currentShutterSpeed, iso: currentISO)
-            } catch {
-                assertionFailure(error.localizedDescription)
-            }
+            lightMeter.iso = currentISO
+            lightMeter.speed = currentShutterSpeed
+            lightMeter.aperture = currentAperture
         }
         self.isCaptureEnabled.value = false
         photosCount = 0
@@ -138,11 +143,15 @@ class CameraVM: NSObject {
         isWhiteBalanceSliderEnabled.value = false
         isSliderEnabled.value = true
         currentSetting = .iso
+        let minIndex = 0
+        let maxIndex = self.lightMeter.exposureStops.isoStops.count - 1
+        let iso = lightMeter.exposureStops.iso(from: lightMeter.iso)
+        let index = lightMeter.exposureStops.isoStops.firstIndex(of: iso)!
         let delay = isDarkModeEnabled.value ? 0.5 : 0.0
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-            self.sliderMinValue.value = self.sdk.minISO
-            self.sliderMaxValue.value = self.sdk.maxISO
-            self.sliderCurrentValue.value = self.sdk.iso
+            self.sliderMinValue.value = Float(minIndex)
+            self.sliderMaxValue.value = Float(maxIndex)
+            self.sliderCurrentValue.value = Float(index)
         }
         setDarkModeEnabled(false)
     }
@@ -158,12 +167,45 @@ class CameraVM: NSObject {
         isSliderEnabled.value = true
         currentSetting = .exposure
         let delay = isDarkModeEnabled.value ? 0.5 : 0.0
+        let minIndex = 0
+        let maxIndex = lightMeter.exposureStops.speedStops.count - 1
+        let speed = lightMeter.exposureStops.speed(from: lightMeter.speed)
+        let index = lightMeter.exposureStops.speedStops.firstIndex(of: speed)!
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-            self.sliderMinValue.value = self.sdk.minShutterSpeed
-            self.sliderMaxValue.value = self.sdk.maxShutterSpeed
-            self.sliderCurrentValue.value = self.sdk.shutterSpeed
+            self.sliderMinValue.value = Float(minIndex)
+            self.sliderMaxValue.value = Float(maxIndex)
+            self.sliderCurrentValue.value = Float(index)
         }
         setDarkModeEnabled(false)
+    }
+    
+    func selectAperture() {
+        guard currentSetting != .aperture else {
+            isSliderEnabled.value = false
+            currentSetting = .none
+            return
+        }
+        isUSVPickerEnabled.value = false
+        isWhiteBalanceSliderEnabled.value = false
+        isSliderEnabled.value = true
+        currentSetting = .aperture
+        let delay = isDarkModeEnabled.value ? 0.5 : 0.0
+        let minIndex = 0
+        let maxIndex = lightMeter.exposureStops.apertureStops.count - 1
+        let aperture = lightMeter.exposureStops.aperture(from: lightMeter.aperture)
+        let index = lightMeter.exposureStops.apertureStops.firstIndex(of: aperture)!
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            self.sliderMinValue.value = Float(minIndex)
+            self.sliderMaxValue.value = Float(maxIndex)
+            self.sliderCurrentValue.value = Float(index)
+        }
+        setDarkModeEnabled(false)
+    }
+    
+    func hideSliders() {
+        isUSVPickerEnabled.value = false
+        isWhiteBalanceSliderEnabled.value = false
+        isSliderEnabled.value = false
     }
     
     func selectWhiteBalance() {
@@ -201,18 +243,39 @@ class CameraVM: NSObject {
     func change(value: Float) {
         guard sdk.isInitialized else { return }
         setDarkModeEnabled(false)
-        do {
-            switch currentSetting {
-                case .iso:
-                    try sdk.changeExposure(duration: sdk.shutterSpeed, iso: value)
-                    self.isoValue.value = "A \(Int(sdk.iso))"
-                case .exposure:
-                    try sdk.changeExposure(duration: value, iso: sdk.iso)
-                    self.exposureValue.value = String(format: "%0.2f", sdk.shutterSpeed)
-                default: break
-            }
-        } catch {
-            assertionFailure("Could not lock device for configuration: \(error)")
+        let index = Int(value)
+        switch currentSetting {
+        case .iso:
+            let iso = self.lightMeter.exposureStops.isoStops[index]
+            self.lightMeter.iso = iso
+            self.isoValue.value = "A \(Int(iso))"
+        case .exposure:
+            let speed = self.lightMeter.exposureStops.speedStops[index]
+            self.lightMeter.speed = speed
+            self.exposureValue.value = speedToString(speed)
+        case .aperture:
+            let aperture = self.lightMeter.exposureStops.apertureStops[index]
+            self.lightMeter.aperture = aperture
+            self.apertureValue.value = apertureToString(aperture)
+        default: break
+        }
+    }
+    
+    func update(value: Float) {
+        guard sdk.isInitialized else { return }
+        setDarkModeEnabled(false)
+        let index = Int(value)
+        switch currentSetting {
+        case .iso:
+            let iso = self.lightMeter.exposureStops.isoStops[index]
+            self.isoValue.value = "A \(Int(iso))"
+        case .exposure:
+            let speed = self.lightMeter.exposureStops.speedStops[index]
+            self.exposureValue.value = speedToString(speed)
+        case .aperture:
+            let aperture = self.lightMeter.exposureStops.apertureStops[index]
+            self.apertureValue.value = apertureToString(aperture)
+        default: break
         }
     }
     
@@ -266,9 +329,7 @@ class CameraVM: NSObject {
         }
         isDarkModeEnabled.value = isEnabled
         if isEnabled {
-            isUSVPickerEnabled.value = false
-            isWhiteBalanceSliderEnabled.value = false
-            isSliderEnabled.value = false
+            hideSliders()
             currentSetting = .none
             setupDarkRoomMode()
         } else {
@@ -280,11 +341,9 @@ class CameraVM: NSObject {
         guard lightMode != .normal else {
             return
         }
-        do {
-            try sdk.changeExposure(duration: currentShutterSpeed, iso: currentISO)
-        } catch {
-            assertionFailure(error.localizedDescription)
-        }
+        lightMeter.iso = currentISO
+        lightMeter.speed = currentShutterSpeed
+        lightMeter.aperture = currentAperture
         lightMode = .normal
     }
     
@@ -292,13 +351,13 @@ class CameraVM: NSObject {
         guard lightMode != .darkRoom else {
             return
         }
-        do {
-            currentISO = sdk.iso
-            currentShutterSpeed = sdk.shutterSpeed
-            try sdk.changeExposure(duration: sdk.maxShutterSpeed, iso: sdk.maxISO)
-        } catch {
-            assertionFailure(error.localizedDescription)
-        }
+        currentISO = lightMeter.iso
+        currentShutterSpeed = lightMeter.speed
+        currentAperture = lightMeter.aperture
+        
+        lightMeter.iso = 100
+        lightMeter.speed = 0.25
+        lightMeter.aperture = 1.0
         lightMode = .darkRoom
     }
     
@@ -321,7 +380,9 @@ class CameraVM: NSObject {
         isSliderEnabled.value = false
         isSingleShootEnabled.value = false
         do {
-            try sdk.changeExposure(duration: sdk.defaultShutterSpeed, iso: sdk.defaultISO)
+            self.lightMeter.iso = 100
+            self.lightMeter.speed = 0.25
+            self.lightMeter.aperture = 1.0
             try sdk.changeWhiteBalance(tint: sdk.defaultTint, temperature: sdk.defaultTemperature)
             change(series: defaultSeries)
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
@@ -350,11 +411,9 @@ class CameraVM: NSObject {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 //Set it back to Dark-room mode if needed
                 if self.isDarkModeEnabled.value {
-                    do {
-                        try self.sdk.changeExposure(duration: self.sdk.maxShutterSpeed, iso: self.sdk.maxISO)
-                    } catch {
-                        assertionFailure(error.localizedDescription)
-                    }
+                    self.lightMeter.iso = 100
+                    self.lightMeter.speed = 0.25
+                    self.lightMeter.aperture = 1.0
                 }
                 if !self.isSingleShootEnabled.value {
                     self.brightness = self.minBrightness
@@ -418,7 +477,19 @@ extension CameraVM: AVCapturePhotoCaptureDelegate {
             PHPhotoLibrary.shared().performChanges {
                 let creationRequest = PHAssetCreationRequest.forAsset()
                 let options = PHAssetResourceCreationOptions()
-                let fileName = "\(UIDevice.modelName)_\(self.dateFormatter.string(from: Date()))_ISO: \("A \(Int(self.sdk.iso))")_Exp: \(String(format: "%0.2f", self.sdk.shutterSpeed))_Tint: \(Int(self.sdk.tint))_Temperature: \(Int(self.sdk.temperature))_Frame: \(self.series.title)_Light: \(Int(self.brightness * 100))%_Distance: \(self.distance.value)cm"
+                let values: [String] = [
+                    UIDevice.modelName,
+                    self.dateFormatter.string(from: Date()),
+                    "ISO: \("A_\(Int(self.lightMeter.iso))")",
+                    "Exp: \(self.speedToString(self.lightMeter.speed, divider: "%"))",
+                    "F:\(self.apertureToString(self.lightMeter.aperture))",
+                    "Tint: \(Int(self.sdk.tint))",
+                    "Temperature: \(Int(self.sdk.temperature))",
+                    "Frame: \(self.series.title)",
+                    "Light: \(Int(self.brightness * 100))%",
+                    "Distance: \(self.distance.value)cm"
+                ]
+                let fileName = values.joined(separator: "_")
                 options.originalFilename = fileName
                 if let data = photo.fileDataRepresentation() {
                     creationRequest.addResource(with: .photo, data: data, options: options)
@@ -440,6 +511,16 @@ extension CameraVM: CameraSDKDelegate {
     func sessionDidStart() {
         defaultSeries = series
         updateUI()
+        isoCancellabel = lightMeter.$iso.sink { [unowned self] value in
+            self.isoValue.value = "A \(value)"
+        }
+        exposureCancellabel = lightMeter.$speed.sink { [unowned self] value in
+            self.exposureValue.value = speedToString(value)
+        }
+        apertureCancellabel = lightMeter.$aperture.sink { [unowned self] aperture in
+            self.apertureValue.value = apertureToString(aperture)
+        }
+        lightMeter.startUpdating()
     }
     
     func updateDistance(_ distance: Int) {
@@ -447,11 +528,27 @@ extension CameraVM: CameraSDKDelegate {
     }
     
     private func updateUI() {
+        self.lightMeter.iso = 100
+        self.lightMeter.speed = 0.25
+        self.lightMeter.aperture = 1.0
         self.isoValue.value = "A \(Int(sdk.iso))"
         self.exposureValue.value = String(format: "%0.2f", sdk.shutterSpeed)
         self.wbValue.value = "AWB"
         self.usvValue.value = series.title
         self.tintLabel.value = "\(Int(sdk.tint))"
         self.temperatureLabel.value = "\(Int(sdk.temperature))"
+    }
+}
+
+extension CameraVM {
+    private func speedToString(_ speed: Float, divider: String = "/") -> String {
+        if speed >= 1.0 {
+            return String(Int(speed)) + "\""
+        }
+        return "1\(divider)" + String(Int(round(1 / speed)))
+    }
+    
+    private func apertureToString(_ aperture: Float) -> String {
+        return String(format: "F%.1f", aperture)
     }
 }

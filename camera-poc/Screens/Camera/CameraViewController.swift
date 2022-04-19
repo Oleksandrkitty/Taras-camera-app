@@ -48,6 +48,11 @@ class CameraViewController: UIViewController {
     @IBOutlet private weak var flashWidthConstraint: NSLayoutConstraint!
     @IBOutlet private weak var flashHeightConstraint: NSLayoutConstraint!
     
+    @IBOutlet weak var apertureLabel: UILabel!
+    @IBOutlet private weak var lockISOSwitch: UISwitch!
+    @IBOutlet private weak var lockExposureSwitch: UISwitch!
+    @IBOutlet private weak var lockApertureSwitch: UISwitch!
+    
     @IBAction private func cameraButtonPressed(_ button: UIButton) {
         viewModel.capture()
     }
@@ -58,6 +63,25 @@ class CameraViewController: UIViewController {
     
     @IBAction private func exposureButtonPressed(_ button: UIButton) {
         viewModel.selectExposure()
+    }
+    
+    @IBAction private func apertureButtonPressed(_ button: UIButton) {
+        viewModel.selectAperture()
+    }
+    
+    @IBAction private func lockISOValueChanged(_ sender: UISwitch) {
+        viewModel.hideSliders()
+        viewModel.lightMeter.isoLock = !sender.isOn
+    }
+    
+    @IBAction private func lockExposureValueChanged(_ sender: UISwitch) {
+        viewModel.hideSliders()
+        viewModel.lightMeter.speedLock = !sender.isOn
+    }
+    
+    @IBAction private func lockApertureValueChanged(_ sender: UISwitch) {
+        viewModel.hideSliders()
+        viewModel.lightMeter.apertureLock = !sender.isOn
     }
     
     @IBAction private func whiteBalanceButtonPressed(_ button: UIButton) {
@@ -187,6 +211,9 @@ class CameraViewController: UIViewController {
             viewModel.exposureValue.bind { [unowned self] value in
                 self.exposureValueLabel.text = value
             }
+            viewModel.apertureValue.bind { [unowned self] value in
+                self.apertureLabel.text = value
+            }
             viewModel.wbValue.bind { [unowned self] value in
                 self.whiteBalanceValueLabel.text = value
             }
@@ -266,6 +293,9 @@ class CameraViewController: UIViewController {
         singleShootSwitch.isOn = viewModel.isSingleShootEnabled.value
         darkModeSwitch.isOn = viewModel.isDarkModeEnabled.value
         lightView.isHidden = !viewModel.isSingleShootEnabled.value
+        lockISOSwitch.isOn = !viewModel.lightMeter.isoLock
+        lockExposureSwitch.isOn = !viewModel.lightMeter.speedLock
+        lockApertureSwitch.isOn = !viewModel.lightMeter.apertureLock
         
         lightPickerContainerView.addSubview(listPickerView)
         listPickerView.leftAnchor.constraint(equalTo: lightPickerContainerView.leftAnchor, constant: 0).isActive = true
@@ -380,7 +410,11 @@ extension CameraViewController: USVPickerViewDelegate {
 }
 
 extension CameraViewController: SliderViewDelegate {
-    func sliderDidChangedValue(_ value: Float) {
+    func sliderDidChangeValue(_ value: Float) {
+        viewModel.update(value: value)
+    }
+    
+    func sliderChangedValue(_ value: Float) {
         viewModel.change(value: value)
     }
 }

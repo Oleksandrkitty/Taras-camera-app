@@ -8,17 +8,24 @@
 import UIKit
 
 protocol SliderViewDelegate: AnyObject {
-    func sliderDidChangedValue(_ value: Float)
+    func sliderDidChangeValue(_ value: Float)
+    func sliderChangedValue(_ value: Float)
 }
 
 class SliderView: UIView {
     private lazy var slider: UISlider = {
         let slider = UISlider(frame: .zero)
-        slider.addTarget(self, action: #selector(sliderDidChangedValue(_:)), for: .valueChanged)
+        slider.addTarget(self, action: #selector(sliderDidChangeValue(_:)), for: .valueChanged)
+        slider.addTarget(self, action: #selector(sliderChangedValue(_:)), for: [.touchUpInside, .touchUpOutside])
         slider.tintColor = UIColor.turbo
         return slider
     }()
     
+    var isContinuous: Bool = true {
+        didSet {
+            slider.isContinuous = isContinuous
+        }
+    }
     weak var delegate: SliderViewDelegate?
     
     override init(frame: CGRect) {
@@ -52,7 +59,11 @@ class SliderView: UIView {
         slider.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0).isActive = true
     }
     
-    @objc private func sliderDidChangedValue(_ slider: UISlider) {
-        delegate?.sliderDidChangedValue(slider.value)
+    @objc private func sliderDidChangeValue(_ slider: UISlider) {
+        delegate?.sliderDidChangeValue(slider.value)
+    }
+    
+    @objc private func sliderChangedValue(_ slider: UISlider) {
+        delegate?.sliderChangedValue(slider.value)
     }
 }
