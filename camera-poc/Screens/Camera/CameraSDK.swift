@@ -7,10 +7,12 @@
 
 import Foundation
 import AVFoundation
+import UIKit
 
 protocol CameraSDKDelegate: AnyObject {
     func sessionDidStart()
     func updateDistance(_ distance: Int)
+    func updateLuminosity(_ luminosity: Int)
 }
 
 class CameraSDK: NSObject {
@@ -357,12 +359,15 @@ extension CameraSDK: AVCaptureVideoDataOutputSampleBufferDelegate {
         _ output: AVCaptureOutput,
         didOutput sampleBuffer: CMSampleBuffer,
         from connection: AVCaptureConnection) {
-            guard let frame = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+            guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
                 debugPrint("unable to get image from sample buffer")
                 return
             }
+            let ciimage = CIImage(cvPixelBuffer: imageBuffer)
+            let image = self.convert(cmage: ciimage)
+            let luminosity = Int(image.luminosity)
             Task {
-                let distance = await self.measure.eyesDistance(in: frame)
+                let distance = await self.measure.eyesDistance(in: imageBuffer)
                 let faceDistance = self.settings.referalFaceDistance
                 let eyesDistance = self.settings.referalEyesDistance
                 let resultDistance: Float? = Float(eyesDistance) / distance * Float(faceDistance)
@@ -379,7 +384,15 @@ extension CameraSDK: AVCaptureVideoDataOutputSampleBufferDelegate {
                         self.delegate?.updateDistance(currentDistance)
                         self.distances = []
                     }
+                    self.delegate?.updateLuminosity(luminosity)
                 }
             }
+    }
+    
+    private func convert(cmage: CIImage) -> UIImage {
+         let context = CIContext(options: nil)
+         let cgImage = context.createCGImage(cmage, from: cmage.extent)!
+         let image = UIImage(cgImage: cgImage)
+         return image
     }
 }

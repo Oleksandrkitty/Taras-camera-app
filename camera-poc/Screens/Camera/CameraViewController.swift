@@ -32,7 +32,6 @@ class CameraViewController: UIViewController {
         }
     }
     @IBOutlet private weak var deviceFamilyLabel: UILabel!
-    @IBOutlet private weak var distanceLabel: UILabel!
     
     @IBOutlet private weak var singleLabel: UILabel!
     @IBOutlet private weak var darkModeLabel: UILabel!
@@ -48,7 +47,9 @@ class CameraViewController: UIViewController {
     @IBOutlet private weak var flashWidthConstraint: NSLayoutConstraint!
     @IBOutlet private weak var flashHeightConstraint: NSLayoutConstraint!
     
-    @IBOutlet weak var apertureLabel: UILabel!
+    @IBOutlet private weak var luminosityLabel: UILabel!
+    @IBOutlet private weak var distanceLabel: UILabel!
+    @IBOutlet private weak var apertureLabel: UILabel!
     @IBOutlet private weak var lockISOSwitch: UISwitch!
     @IBOutlet private weak var lockExposureSwitch: UISwitch!
     @IBOutlet private weak var lockApertureSwitch: UISwitch!
@@ -257,8 +258,11 @@ class CameraViewController: UIViewController {
                     self.flashView.isHidden = true
                 }
             }
-            viewModel.distance.bind { [weak self] distance in
-                self?.distanceLabel.text = "\(distance)cm"
+            viewModel.distance.bind { [unowned self] distance in
+                self.distanceLabel.text = "\(distance)cm"
+            }
+            viewModel.luminosity.bind { [unowned self] luminosity in
+                self.luminosityLabel.text = "\(luminosity)"
             }
         }
     }

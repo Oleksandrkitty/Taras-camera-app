@@ -597,10 +597,32 @@
                                 </constraints>
                             </view>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="SLB-30-PHM">
-                                <rect key="frame" x="10" y="489" width="155" height="123"/>
+                                <rect key="frame" x="10" y="467" width="155" height="145"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="phT-dn-6fo">
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="77J-ln-hcm">
                                         <rect key="frame" x="0.0" y="0.0" width="155" height="18"/>
+                                        <subviews>
+                                            <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Mu8-qF-OeZ">
+                                                <rect key="frame" x="0.0" y="0.0" width="92.5" height="18"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Luminosity:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lKq-1r-enV">
+                                                        <rect key="frame" x="0.0" y="0.0" width="74.5" height="18"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oNm-Wn-Slv">
+                                                        <rect key="frame" x="82.5" y="0.0" width="10" height="18"/>
+                                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
+                                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                </subviews>
+                                            </stackView>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="phT-dn-6fo">
+                                        <rect key="frame" x="0.0" y="22" width="155" height="18"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="I6l-sw-TOB">
                                                 <rect key="frame" x="0.0" y="0.0" width="100" height="18"/>
@@ -622,7 +644,7 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="3Do-0U-ybM">
-                                        <rect key="frame" x="0.0" y="22" width="155" height="31"/>
+                                        <rect key="frame" x="0.0" y="44" width="155" height="31"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Auto ISO:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="K3Q-Og-TKP">
                                                 <rect key="frame" x="0.0" y="0.0" width="98" height="31"/>
@@ -639,7 +661,7 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="cSv-yQ-LaL">
-                                        <rect key="frame" x="0.0" y="57" width="155" height="31"/>
+                                        <rect key="frame" x="0.0" y="79" width="155" height="31"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Auto Exposure:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Be0-AT-vra">
                                                 <rect key="frame" x="0.0" y="0.0" width="98" height="31"/>
@@ -656,7 +678,7 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="dWR-Z0-SXe">
-                                        <rect key="frame" x="0.0" y="92" width="155" height="31"/>
+                                        <rect key="frame" x="0.0" y="114" width="155" height="31"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Auto Aperture:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="R0v-LH-3nV">
                                                 <rect key="frame" x="0.0" y="0.0" width="98" height="31"/>
@@ -757,6 +779,7 @@
                         <outlet property="lockApertureSwitch" destination="QFN-Pq-moG" id="ocM-w2-BbA"/>
                         <outlet property="lockExposureSwitch" destination="7OX-Bh-qpv" id="cEM-sV-TaG"/>
                         <outlet property="lockISOSwitch" destination="GbN-kh-Fwq" id="zHb-ag-IS6"/>
+                        <outlet property="luminosityLabel" destination="oNm-Wn-Slv" id="U8l-V9-HAK"/>
                         <outlet property="panelLabel" destination="Uo8-po-yW0" id="SM4-BA-MGU"/>
                         <outlet property="panelSwitch" destination="4TC-iP-udT" id="K4E-u3-qg6"/>
                         <outlet property="pickerView" destination="1Ik-mP-6cQ" id="jw7-V1-fze"/>

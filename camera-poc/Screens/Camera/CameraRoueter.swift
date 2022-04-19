@@ -13,7 +13,6 @@ protocol CameraRouting {
     func presentChangeLight(from: Float, to: Float)
     func presentFamilyDevicePicker()
     func presentCalibrationCamera()
-    func showPicker(values: [String])
 }
 
 struct CameraRouter: CameraRouting {
@@ -56,14 +55,5 @@ struct CameraRouter: CameraRouting {
         let controller = ScreenBuilder.calibrate(isRecalibration: true)
         controller.modalPresentationStyle = .fullScreen
         self.controller.present(controller, animated: false)
-    }
-    
-    func showPicker(values: [String]) {
-        let controller = PickerViewController()
-        controller.modalPresentationStyle = .popover
-        controller.values = values
-        let popover = controller.popoverPresentationController
-        popover?.sourceView = self.controller.apertureLabel
-        self.controller.present(controller, animated: true)
     }
 }

@@ -62,6 +62,7 @@ class CameraVM: NSObject {
     private(set) var usvPercents: Bound<String> = Bound("0%")
     private(set) lazy var frameSize: Bound<FrameSize> = Bound(.none)
     private(set) var distance: Bound<Int> = Bound(0)
+    private(set) var luminosity: Bound<Int> = Bound(0)
     
     private var defaultSeries: BrigtnessSeries!
     private var series: BrigtnessSeries = Medium {
@@ -525,6 +526,10 @@ extension CameraVM: CameraSDKDelegate {
     
     func updateDistance(_ distance: Int) {
         self.distance.value = distance
+    }
+    
+    func updateLuminosity(_ luminosity: Int) {
+        self.luminosity.value = luminosity
     }
     
     private func updateUI() {
