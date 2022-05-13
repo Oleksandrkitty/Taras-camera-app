@@ -390,9 +390,28 @@ extension CameraSDK: AVCaptureVideoDataOutputSampleBufferDelegate {
     }
     
     private func convert(cmage: CIImage) -> UIImage {
-         let context = CIContext(options: nil)
-         let cgImage = context.createCGImage(cmage, from: cmage.extent)!
-         let image = UIImage(cgImage: cgImage)
-         return image
+        let context = CIContext(options: nil)
+        let cgImage = context.createCGImage(cmage, from: cmage.extent)!
+        let width = cgImage.width
+        
+        let y = Int(80 * UIScreen.main.nativeScale)
+        let ovalWidth = Int(185 * UIScreen.main.nativeScale)
+        let ovalheight = Int(265 * UIScreen.main.nativeScale)
+        let cropRect = CGRect(x: width / 2 - ovalWidth / 2, y: y, width: ovalWidth, height: ovalheight)
+        let croppedImage = cgImage.cropping(to: cropRect) ?? cgImage
+        let image = UIImage(cgImage: croppedImage)
+        return image.ellipseMasked
+    }
+}
+
+fileprivate extension UIImage {
+    var ellipseMasked: UIImage {
+        let rect = CGRect(origin: .zero, size: size)
+        let format = imageRendererFormat
+        format.opaque = false
+        return UIGraphicsImageRenderer(size: size, format: format).image { _ in
+            UIBezierPath(ovalIn: rect).addClip()
+            draw(in: rect)
+        }
     }
 }
