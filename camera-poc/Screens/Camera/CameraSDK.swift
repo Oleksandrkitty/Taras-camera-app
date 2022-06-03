@@ -204,15 +204,6 @@ class CameraSDK: NSObject {
         videoDevice.unlockForConfiguration()
     }
     
-//    func changeExposure(duration: Float, iso: Float) throws {
-//        try videoDevice.lockForConfiguration()
-//        videoDevice.setExposureModeCustom(
-//            duration: exposureDuration(duration),
-//            iso: iso
-//        )
-//        videoDevice.unlockForConfiguration()
-//    }
-    
     func changeExposure(_ value: Float) throws {
         try videoDevice.lockForConfiguration()
         videoDevice.setExposureTargetBias(value)

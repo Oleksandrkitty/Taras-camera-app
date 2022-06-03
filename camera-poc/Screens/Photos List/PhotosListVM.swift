@@ -11,13 +11,15 @@ import Photos
 class PhotosListVM {
     typealias Photo = (photo: UIImage, name: String, type: String)
     private let router: PhotosListRouting
+    private let format: CaptureFormat
     private let authService = AuthService()
     private let photosStore = PhotosStore()
     private(set) var photos: Bound<[UIImage]> = Bound([])
     private var assets: [PHAsset] = []
     
-    init(numberOfPhotos: Int, router: PhotosListRouting) {
+    init(numberOfPhotos: Int, router: PhotosListRouting, format: CaptureFormat) {
         self.router = router
+        self.format = format
         self.setup(numberOfPhotos: numberOfPhotos)
     }
 
@@ -60,7 +62,7 @@ class PhotosListVM {
                     continue
                 }
                 let imageName = "\(userName)_\(filename)"
-                guard let url = self.photosStore.save(image: photo, name: imageName) else {
+                guard let url = self.photosStore.save(image: photo, name: imageName, format: self.format) else {
                     continue
                 }
                 urls.append(url)
@@ -76,7 +78,12 @@ class PhotosListVM {
         let group = DispatchGroup()
         for photo in photos {
             group.enter()
-            upload(photo.photo, name: photo.name, type: photo.type) {
+            upload(
+                photo.photo,
+                name: photo.name,
+                type: photo.type,
+                format: self.format
+            ) {
                 group.leave()
             }
         }
@@ -101,13 +108,27 @@ extension PhotosListVM {
         }
     }
     
-    private func upload(_ image: UIImage, name: String, type: String, completion: @escaping () -> Void) {
-        guard let url = self.photosStore.save(image: image, name: name) else {
+    private func upload(
+        _ image: UIImage,
+        name: String,
+        type: String,
+        format: CaptureFormat,
+        completion: @escaping () -> Void) {
+        guard let url = self.photosStore.save(
+            image: image,
+            name: name,
+            format: format
+        ) else {
             completion()
             return
         }
         print("Start uploading \(name)...")
-        AWSS3Service.shared.uploadFileFromURL(url, conentType: type, progress: nil) { _,error in
+        AWSS3Service.shared.uploadFileFromURL(
+            url,
+            conentType:
+                type,
+            progress: nil
+        ) { _,error in
             if let error = error {
                 print("Error \(error.localizedDescription), while uploading \(name)")
             } else {

@@ -38,6 +38,7 @@ class CameraViewController: UIViewController {
     @IBOutlet private weak var panelLabel: UILabel!
     @IBOutlet private weak var contolsStackView: UIStackView!
     @IBOutlet private weak var frameView: UIView!
+    @IBOutlet private weak var captureFormatView: UIView!
     
     @IBOutlet private weak var lightPickerContainerViewBottomConstraint: NSLayoutConstraint! {
         didSet {
@@ -119,6 +120,10 @@ class CameraViewController: UIViewController {
     
     @IBAction private func calibrateButtonPressed(_ button: UIButton) {
         viewModel.calibrateCamera()
+    }
+    
+    @IBAction private func captureFormatChanged(_ segment: UISegmentedControl) {
+        viewModel.changeCaptureFormat(segment.selectedSegmentIndex == 0 ? .tiff : .raw)
     }
     
     private lazy var ovalOverlayView = OvalOverlayView(frame: containerView.bounds)
@@ -396,6 +401,7 @@ class CameraViewController: UIViewController {
         singleShootSwitch.isHidden = !panelSwitch.isOn
         darkModeSwitch.isHidden = !panelSwitch.isOn
         frameView.isHidden = !panelSwitch.isOn
+        captureFormatView.isHidden = !viewModel.isCaptureFormatSelectionEnabled
     }
 }
 

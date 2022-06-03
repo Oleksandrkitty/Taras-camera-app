@@ -9,10 +9,14 @@ import UIKit
 
 extension ScreenBuilder {
     struct PhotosList {
-        static func photosList(numberOfPhotos: Int) -> UIViewController {
+        static func photosList(numberOfPhotos: Int, format: CaptureFormat) -> UIViewController {
             let controller = PhotosListViewController.instantiateFromStoryboard(.photosList)
             let router = PhotosListRouter(controller: controller)
-            let viewModel = PhotosListVM(numberOfPhotos: numberOfPhotos, router: router)
+            let viewModel = PhotosListVM(
+                numberOfPhotos: numberOfPhotos,
+                router: router,
+                format: format
+            )
             controller.viewModel = viewModel
             let navController = UINavigationController(rootViewController: controller)
             navController.modalPresentationStyle = .fullScreen

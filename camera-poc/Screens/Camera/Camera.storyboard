@@ -597,7 +597,7 @@
                                 </constraints>
                             </view>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="SLB-30-PHM">
-                                <rect key="frame" x="10" y="467" width="155" height="145"/>
+                                <rect key="frame" x="10" y="432" width="155" height="180"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="77J-ln-hcm">
                                         <rect key="frame" x="0.0" y="0.0" width="155" height="18"/>
@@ -694,6 +694,21 @@
                                             </switch>
                                         </subviews>
                                     </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="1SD-oe-aRY">
+                                        <rect key="frame" x="0.0" y="149" width="155" height="31"/>
+                                        <subviews>
+                                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="CnY-8b-FHR">
+                                                <rect key="frame" x="0.0" y="0.0" width="155" height="32"/>
+                                                <segments>
+                                                    <segment title="TIFF"/>
+                                                    <segment title="RAW"/>
+                                                </segments>
+                                                <connections>
+                                                    <action selector="captureFormatChanged:" destination="Y6W-OH-hqX" eventType="valueChanged" id="NXc-HU-aSH"/>
+                                                </connections>
+                                            </segmentedControl>
+                                        </subviews>
+                                    </stackView>
                                 </subviews>
                             </stackView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jsg-v0-Nrn">
@@ -759,6 +774,7 @@
                     <connections>
                         <outlet property="apertureLabel" destination="WlI-jf-Wg8" id="adM-QN-4FL"/>
                         <outlet property="captureButton" destination="QHm-Cw-izA" id="JLr-Wn-TYd"/>
+                        <outlet property="captureFormatView" destination="1SD-oe-aRY" id="aUW-fG-x3g"/>
                         <outlet property="containerView" destination="JAh-tR-KFK" id="p8R-0o-NeU"/>
                         <outlet property="contolsStackView" destination="V8F-9p-odt" id="FIt-H7-Cx3"/>
                         <outlet property="controlsView" destination="xdm-jR-eIb" id="ECL-MW-AHq"/>

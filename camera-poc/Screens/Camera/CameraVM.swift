@@ -21,16 +21,12 @@ class CameraVM: NSObject {
     }
     private let router: CameraRouting
     private let sdk: CameraSDK
-    private let dateFormatter: DateFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MM-dd-yyyy HH:mm"
-        return dateFormatter
-    }()
     
     private var isoCancellabel: AnyObject?
     private var exposureCancellabel: AnyObject?
     private var apertureCancellabel: AnyObject?
     private var screenBrightness: CGFloat = 0.5
+    private var captureFormat: CaptureFormat = .tiff
     private(set) var isFlashEnabled: Bound<Bool> = Bound(false)
     private(set) var isUSVPickerEnabled: Bound<Bool> = Bound(false)
     private(set) var isSliderEnabled: Bound<Bool> = Bound(false)
@@ -38,6 +34,12 @@ class CameraVM: NSObject {
     private(set) var isCaptureEnabled: Bound<Bool> = Bound(true)
     private(set) var isSingleShootEnabled: Bound<Bool> = Bound(false)
     private(set) var isDarkModeEnabled: Bound<Bool> = Bound(false)
+    var isCaptureFormatSelectionEnabled: Bool {
+        if #available(iOS 14.3, *) {
+            return true
+        }
+        return false
+    }
     
     private(set) var flashBrightness: Bound<CGFloat> = Bound(0.0)
     private(set) var sliderMinValue: Bound<Float> = Bound(0.0)
@@ -406,6 +408,10 @@ class CameraVM: NSObject {
         router.presentCalibrationCamera()
     }
     
+    func changeCaptureFormat(_ newFormat: CaptureFormat) {
+        self.captureFormat = newFormat
+    }
+    
     private func makePhoto() {
         if self.brightness > self.maxBrightness || (self.isSingleShootEnabled.value && self.photosCount == 1) {
             //To make sure last photo was saved to photo library
@@ -420,7 +426,10 @@ class CameraVM: NSObject {
                     self.brightness = self.minBrightness
                 }
                 self.isCaptureEnabled.value = true
-                self.router.presentPhotosList(maxCount: self.photosCount)
+                self.router.presentPhotosList(
+                    maxCount: self.photosCount,
+                    format: self.captureFormat
+                )
             }
             return
         }
@@ -428,29 +437,53 @@ class CameraVM: NSObject {
         self.capture(brightness: self.brightness)
     }
     
+    private var captureDelegates: [Int64 : CaptureDelegate] = [:]
+    
     private func capture(brightness: CGFloat) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            var settings: AVCapturePhotoSettings
-            if let uncompressedPixelType = self.sdk.photoOutput.supportedPhotoPixelFormatTypes(for: .tif).first {
-                settings = AVCapturePhotoSettings(format: [
-                    kCVPixelBufferPixelFormatTypeKey as String : uncompressedPixelType
-                ])
-            } else if let uncompressedPixelType = self.sdk.photoOutput.supportedPhotoPixelFormatTypes(for: .dng).first {
-                settings = AVCapturePhotoSettings(format: [
-                    kCVPixelBufferPixelFormatTypeKey as String : uncompressedPixelType
-                ])
-            } else {
-                settings = AVCapturePhotoSettings()
-            }
-            settings.flashMode = .off
+        DispatchQueue.main.async {
+            let settings = CaptureSettings(
+                output: self.sdk.photoOutput,
+                format: self.captureFormat
+            ).make()
             //set starting brightness to achive flashing effect
             UIScreen.main.brightness = max(brightness - 0.12, self.series.min / 100)
             self.screenBrightness = max(brightness - 0.12, self.series.min / 100)
             self.isFlashEnabled.value = true
             UIScreen.main.brightness = brightness
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                self.sdk.photoOutput.capturePhoto(with: settings, delegate: self)
+            
+            let params = CaptureParams(
+                title: self.series.title,
+                iso: self.lightMeter.iso,
+                exposure: self.lightMeter.speed,
+                aperture: self.lightMeter.aperture,
+                tint: self.sdk.tint,
+                temperature: self.sdk.temperature,
+                brightness: Float(self.brightness),
+                distance: self.distance.value
+            )
+            
+            let completion = {
+                self.captureDelegates[settings.uniqueID] = nil
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    self.isFlashEnabled.value = false
+                    if !self.isSingleShootEnabled.value {
+                        let brightness = self.brightness + self.series.step
+                        self.brightness = round(brightness * 100) / 100
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        self.makePhoto()
+                    }
+                }
             }
+            var captureDelegate: CaptureDelegate
+            if #available(iOS 14.3, *), self.captureFormat == .raw {
+                captureDelegate = RAWCaptureDelegate(params: params)
+            } else {
+                captureDelegate = TIFFCaptureDelegate(params: params)
+            }
+            self.captureDelegates[settings.uniqueID] = captureDelegate
+            captureDelegate.didFinish = completion
+            self.sdk.photoOutput.capturePhoto(with: settings, delegate: captureDelegate)
         }
     }
 
@@ -474,24 +507,20 @@ extension CameraVM: AVCapturePhotoCaptureDelegate {
         
         PHPhotoLibrary.requestAuthorization { status in
             guard status == .authorized else { return }
-            
             PHPhotoLibrary.shared().performChanges {
                 let creationRequest = PHAssetCreationRequest.forAsset()
                 let options = PHAssetResourceCreationOptions()
-                let values: [String] = [
-                    UIDevice.modelName,
-                    self.dateFormatter.string(from: Date()),
-                    "ISO: \("A_\(Int(self.lightMeter.iso))")",
-                    "Exp: \(self.speedToString(self.lightMeter.speed, divider: "%"))",
-                    "F:\(self.apertureToString(self.lightMeter.aperture))",
-                    "Tint: \(Int(self.sdk.tint))",
-                    "Temperature: \(Int(self.sdk.temperature))",
-                    "Frame: \(self.series.title)",
-                    "Light: \(Int(self.brightness * 100))%",
-                    "Distance: \(self.distance.value)cm"
-                ]
-                let fileName = values.joined(separator: "_")
-                options.originalFilename = fileName
+                let params = CaptureParams(
+                    title: self.series.title,
+                    iso: self.lightMeter.iso,
+                    exposure: self.lightMeter.speed,
+                    aperture: self.lightMeter.aperture,
+                    tint: self.sdk.tint,
+                    temperature: self.sdk.temperature,
+                    brightness: Float(self.brightness),
+                    distance: self.distance.value
+                )
+                options.originalFilename = params.makeFileName()
                 if let data = photo.fileDataRepresentation() {
                     creationRequest.addResource(with: .photo, data: data, options: options)
                 }
@@ -542,18 +571,5 @@ extension CameraVM: CameraSDKDelegate {
         self.usvValue.value = series.title
         self.tintLabel.value = "\(Int(sdk.tint))"
         self.temperatureLabel.value = "\(Int(sdk.temperature))"
-    }
-}
-
-extension CameraVM {
-    private func speedToString(_ speed: Float, divider: String = "/") -> String {
-        if speed >= 1.0 {
-            return String(Int(speed)) + "\""
-        }
-        return "1\(divider)" + String(Int(round(1 / speed)))
-    }
-    
-    private func apertureToString(_ aperture: Float) -> String {
-        return String(format: "F%.1f", aperture)
     }
 }

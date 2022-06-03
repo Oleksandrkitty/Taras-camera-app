@@ -50,10 +50,10 @@ struct PhotosStore {
         }
     }
     
-    func save(image: UIImage, name: String) -> URL? {
+    func save(image: UIImage, name: String, format: CaptureFormat) -> URL? {
         guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
         let imagesDirectory = documentsDirectory.appendingPathComponent("images")
-        let fileURL = imagesDirectory.appendingPathComponent(name).appendingPathExtension("tiff")
+        let fileURL = imagesDirectory.appendingPathComponent(name).appendingPathExtension(format.fileExtension)
         let options: NSDictionary =     [
             kCGImagePropertyHasAlpha: true,
             kCGImageDestinationLossyCompressionQuality: 1.0
