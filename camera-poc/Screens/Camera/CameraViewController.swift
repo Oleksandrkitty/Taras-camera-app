@@ -39,6 +39,7 @@ class CameraViewController: UIViewController {
     @IBOutlet private weak var contolsStackView: UIStackView!
     @IBOutlet private weak var frameView: UIView!
     @IBOutlet private weak var captureFormatView: UIView!
+    @IBOutlet private weak var captureFormatSegmentControl: UISegmentedControl!
     
     @IBOutlet private weak var lightPickerContainerViewBottomConstraint: NSLayoutConstraint! {
         didSet {
@@ -321,6 +322,8 @@ class CameraViewController: UIViewController {
             self.flashWidthConstraint.constant = iPhoneSevenSizeInInches.width * (UIScreen.pointsPerInch ?? 0)
             self.flashHeightConstraint.constant = iPhoneSevenSizeInInches.height * (UIScreen.pointsPerInch ?? 0)
         }
+        let segmentIndex = viewModel.captureFormat == .tiff ? 0 : 1
+        captureFormatSegmentControl.selectedSegmentIndex = segmentIndex
         changeElementsVisibility()
     }
     

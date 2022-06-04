@@ -26,7 +26,7 @@ class CameraVM: NSObject {
     private var exposureCancellabel: AnyObject?
     private var apertureCancellabel: AnyObject?
     private var screenBrightness: CGFloat = 0.5
-    private var captureFormat: CaptureFormat = .tiff
+    private(set) var captureFormat: CaptureFormat = .raw
     private(set) var isFlashEnabled: Bound<Bool> = Bound(false)
     private(set) var isUSVPickerEnabled: Bound<Bool> = Bound(false)
     private(set) var isSliderEnabled: Bound<Bool> = Bound(false)

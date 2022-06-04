@@ -774,6 +774,7 @@
                     <connections>
                         <outlet property="apertureLabel" destination="WlI-jf-Wg8" id="adM-QN-4FL"/>
                         <outlet property="captureButton" destination="QHm-Cw-izA" id="JLr-Wn-TYd"/>
+                        <outlet property="captureFormatSegmentControl" destination="CnY-8b-FHR" id="bEE-9Y-xi7"/>
                         <outlet property="captureFormatView" destination="1SD-oe-aRY" id="aUW-fG-x3g"/>
                         <outlet property="containerView" destination="JAh-tR-KFK" id="p8R-0o-NeU"/>
                         <outlet property="contolsStackView" destination="V8F-9p-odt" id="FIt-H7-Cx3"/>
