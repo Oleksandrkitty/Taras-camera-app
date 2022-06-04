@@ -9,7 +9,7 @@ import UIKit
 import Photos
 
 class PhotosListVM {
-    typealias Photo = (photo: UIImage, name: String, type: String)
+    typealias Photo = (photoURL: URL, name: String, type: String)
     private let router: PhotosListRouting
     private let format: CaptureFormat
     private let authService = AuthService()
@@ -37,13 +37,14 @@ class PhotosListVM {
         Task {
             var result: [Photo] = []
             for asset in self.assets {
-                guard let filename = asset.filename,
-                    let type = asset.type,
-                    let photo = await photosStore.fetchPhoto(asset) else {
+                guard let filename = asset.filename, let type = asset.type else {
                     continue
                 }
                 let imageName = "\(userName)_\(filename)"
-                result.append((photo, imageName, type))
+                guard let url = try? await self.photosStore.save(asset: asset, name: imageName, format: self.format) else {
+                    continue
+                }
+                result.append((url, imageName, type))
             }
             self.upload(photos: result)
         }
@@ -57,12 +58,11 @@ class PhotosListVM {
         Task {
             var urls: [URL] = []
             for asset in self.assets {
-                guard let filename = asset.filename,
-                    let photo = await photosStore.fetchPhoto(asset) else {
+                guard let filename = asset.filename else {
                     continue
                 }
                 let imageName = "\(userName)_\(filename)"
-                guard let url = self.photosStore.save(image: photo, name: imageName, format: self.format) else {
+                guard let url = try? await self.photosStore.save(asset: asset, name: imageName, format: self.format) else {
                     continue
                 }
                 urls.append(url)
@@ -79,7 +79,7 @@ class PhotosListVM {
         for photo in photos {
             group.enter()
             upload(
-                photo.photo,
+                from: photo.photoURL,
                 name: photo.name,
                 type: photo.type,
                 format: self.format
@@ -109,24 +109,15 @@ extension PhotosListVM {
     }
     
     private func upload(
-        _ image: UIImage,
+        from fileURL: URL,
         name: String,
         type: String,
         format: CaptureFormat,
         completion: @escaping () -> Void) {
-        guard let url = self.photosStore.save(
-            image: image,
-            name: name,
-            format: format
-        ) else {
-            completion()
-            return
-        }
         print("Start uploading \(name)...")
         AWSS3Service.shared.uploadFileFromURL(
-            url,
-            conentType:
-                type,
+            fileURL,
+            conentType: type,
             progress: nil
         ) { _,error in
             if let error = error {

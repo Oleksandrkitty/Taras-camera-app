@@ -50,26 +50,27 @@ struct PhotosStore {
         }
     }
     
-    func save(image: UIImage, name: String, format: CaptureFormat) -> URL? {
+    func save(asset: PHAsset, name: String, format: CaptureFormat) async throws -> URL? {
         guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
         let imagesDirectory = documentsDirectory.appendingPathComponent("images")
         let fileURL = imagesDirectory.appendingPathComponent(name).appendingPathExtension(format.fileExtension)
-        let options: NSDictionary =     [
-            kCGImagePropertyHasAlpha: true,
-            kCGImageDestinationLossyCompressionQuality: 1.0
-        ]
-        guard let data = image.toData(options: options, type: .tiff) else { return nil }
         
         if FileManager.default.fileExists(atPath: fileURL.path) {
-            return fileURL
+            do {
+                try FileManager.default.removeItem(at: fileURL)
+            } catch {
+                assertionFailure(error.localizedDescription)
+                return nil
+            }
         }
         
-        do {
-            try data.write(to: fileURL)
-        } catch let error {
-            assertionFailure("Error saving file with error \(error)")
-            return nil
-        }
+        let resource = PHAssetResource.assetResources(for: asset).first!
+        let resourceManager = PHAssetResourceManager.default()
+        try await resourceManager.writeData(
+            for: resource,
+            toFile: fileURL,
+            options: nil
+        )
         return fileURL
     }
     
