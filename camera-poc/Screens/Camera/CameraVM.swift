@@ -26,7 +26,7 @@ class CameraVM: NSObject {
     private var exposureCancellabel: AnyObject?
     private var apertureCancellabel: AnyObject?
     private var screenBrightness: CGFloat = 0.5
-    private(set) var captureFormat: CaptureFormat = .raw
+    private(set) var captureFormat: Bound<CaptureFormat> = Bound(.raw)
     private(set) var isFlashEnabled: Bound<Bool> = Bound(false)
     private(set) var isUSVPickerEnabled: Bound<Bool> = Bound(false)
     private(set) var isSliderEnabled: Bound<Bool> = Bound(false)
@@ -35,10 +35,8 @@ class CameraVM: NSObject {
     private(set) var isSingleShootEnabled: Bound<Bool> = Bound(false)
     private(set) var isDarkModeEnabled: Bound<Bool> = Bound(false)
     var isCaptureFormatSelectionEnabled: Bool {
-        if #available(iOS 14.3, *) {
-            return true
-        }
-        return false
+        return sdk.photoOutput.isRawSupported ||
+                sdk.photoOutput.isDNGSupported
     }
     
     private(set) var flashBrightness: Bound<CGFloat> = Bound(0.0)
@@ -409,7 +407,13 @@ class CameraVM: NSObject {
     }
     
     func changeCaptureFormat(_ newFormat: CaptureFormat) {
-        self.captureFormat = newFormat
+        if newFormat == .raw, sdk.photoOutput.isRawSupported {
+            self.captureFormat.value = .raw
+        } else if newFormat == .raw, !sdk.photoOutput.isRawSupported {
+            self.captureFormat.value = .dng
+        } else {
+            self.captureFormat.value = .tiff
+        }
     }
     
     private func makePhoto() {
@@ -428,7 +432,7 @@ class CameraVM: NSObject {
                 self.isCaptureEnabled.value = true
                 self.router.presentPhotosList(
                     maxCount: self.photosCount,
-                    format: self.captureFormat
+                    format: self.captureFormat.value
                 )
             }
             return
@@ -443,7 +447,7 @@ class CameraVM: NSObject {
         DispatchQueue.main.async {
             let settings = CaptureSettings(
                 output: self.sdk.photoOutput,
-                format: self.captureFormat
+                format: self.captureFormat.value
             ).make()
             //set starting brightness to achive flashing effect
             UIScreen.main.brightness = max(brightness - 0.12, self.series.min / 100)
@@ -476,7 +480,8 @@ class CameraVM: NSObject {
                 }
             }
             var captureDelegate: CaptureDelegate
-            if #available(iOS 14.3, *), self.captureFormat == .raw {
+            if #available(iOS 14.3, *),
+               self.captureFormat.value == .raw {
                 captureDelegate = RAWCaptureDelegate(params: params)
             } else {
                 captureDelegate = TIFFCaptureDelegate(params: params)
@@ -551,6 +556,13 @@ extension CameraVM: CameraSDKDelegate {
             self.apertureValue.value = apertureToString(aperture)
         }
         lightMeter.startUpdating()
+        if sdk.photoOutput.isRawSupported {
+            captureFormat.value = .raw
+        } else if sdk.photoOutput.isDNGSupported {
+            captureFormat.value = .dng
+        } else {
+            captureFormat.value = .tiff
+        }
     }
     
     func updateDistance(_ distance: Int) {

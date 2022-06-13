@@ -270,6 +270,10 @@ class CameraViewController: UIViewController {
             viewModel.luminosity.bind { [unowned self] luminosity in
                 self.luminosityLabel.text = "\(luminosity)"
             }
+            viewModel.captureFormat.bind { [weak self] format in
+                self?.captureFormatSegmentControl.selectedSegmentIndex = format == .tiff ? 0 : 1
+                self?.captureFormatSegmentControl.isEnabled = self?.viewModel.isCaptureFormatSelectionEnabled == true
+            }
         }
     }
     
@@ -322,7 +326,7 @@ class CameraViewController: UIViewController {
             self.flashWidthConstraint.constant = iPhoneSevenSizeInInches.width * (UIScreen.pointsPerInch ?? 0)
             self.flashHeightConstraint.constant = iPhoneSevenSizeInInches.height * (UIScreen.pointsPerInch ?? 0)
         }
-        let segmentIndex = viewModel.captureFormat == .tiff ? 0 : 1
+        let segmentIndex = viewModel.captureFormat.value == .tiff ? 0 : 1
         captureFormatSegmentControl.selectedSegmentIndex = segmentIndex
         changeElementsVisibility()
     }
@@ -404,7 +408,7 @@ class CameraViewController: UIViewController {
         singleShootSwitch.isHidden = !panelSwitch.isOn
         darkModeSwitch.isHidden = !panelSwitch.isOn
         frameView.isHidden = !panelSwitch.isOn
-        captureFormatView.isHidden = !viewModel.isCaptureFormatSelectionEnabled
+//        captureFormatView.isHidden = !viewModel.isCaptureFormatSelectionEnabled
     }
 }
 

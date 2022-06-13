@@ -17,11 +17,15 @@ struct CaptureSettings {
     }
     
     func make() -> AVCapturePhotoSettings {
-        if #available(iOS 14.3, *), format == .raw {
-            return makeRAWSettings()
-        } else {
-            return makeTIFFSettings()
+        if format == .raw {
+            if #available(iOS 14.3, *), output.isRawSupported {
+                return makeRAWSettings()
+            }
+            if output.isDNGSupported {
+                return makeDNGSettings()
+            }
         }
+        return makeTIFFSettings()
     }
     
     @available(iOS 14.3, *)
@@ -46,13 +50,22 @@ struct CaptureSettings {
         return settings
     }
     
-    private func makeTIFFSettings() -> AVCapturePhotoSettings {
+    private func makeDNGSettings() -> AVCapturePhotoSettings {
         var settings: AVCapturePhotoSettings
-        if let uncompressedPixelType = output.supportedPhotoPixelFormatTypes(for: .tif).first {
+        if let uncompressedPixelType = output.supportedPhotoPixelFormatTypes(for: .dng).first {
             settings = AVCapturePhotoSettings(format: [
                 kCVPixelBufferPixelFormatTypeKey as String : uncompressedPixelType
             ])
-        } else if let uncompressedPixelType = output.supportedPhotoPixelFormatTypes(for: .dng).first {
+        } else {
+            settings = AVCapturePhotoSettings()
+        }
+        settings.flashMode = .off
+        return settings
+    }
+
+    private func makeTIFFSettings() -> AVCapturePhotoSettings {
+        var settings: AVCapturePhotoSettings
+        if let uncompressedPixelType = output.supportedPhotoPixelFormatTypes(for: .tif).first {
             settings = AVCapturePhotoSettings(format: [
                 kCVPixelBufferPixelFormatTypeKey as String : uncompressedPixelType
             ])
